@@ -21,7 +21,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'          # Ako šalješ preko Gmail-a
 EMAIL_USE_TLS = True                    # TLS enkripcija
 EMAIL_PORT = 587                        # Standardni port za TLS
-EMAIL_HOST_USER = 'cloockot.probniemail@gmail.com'    # Tvoj Gmail
+EMAIL_HOST_USER = 'cloockot@gmail.com'    # Tvoj Gmail
 EMAIL_HOST_PASSWORD = 'csdl bisi pfuj bzmg' # App password za Gmail (nije obična lozinka)
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 

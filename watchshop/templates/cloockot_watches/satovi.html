@@ -737,6 +737,54 @@ if(menuBtn && menu){
     menu.classList.toggle("active");
   });
 }
+const modal = document.getElementById('sliderModal');
+const openBtn = document.getElementById('openSliderModal');
+const closeBtn = modal.querySelector('.modal__close');
+
+openBtn.addEventListener('click', () => {
+  modal.classList.add('open');
+});
+
+closeBtn.addEventListener('click', () => {
+  modal.classList.remove('open');
+});
+
+modal.addEventListener('click', (e) => {
+  if(e.target === modal) {
+    modal.classList.remove('open');
+  }
+});
+
+// Slider functionality
+const track = modal.querySelector('.slider-track');
+const slides = Array.from(track.children);
+const nextBtn = modal.querySelector('.next');
+const prevBtn = modal.querySelector('.prev');
+const dots = Array.from(modal.querySelectorAll('.dot'));
+let index = 0;
+
+function updateSlider() {
+  track.style.transform = `translateX(-${index * 100}%)`;
+  dots.forEach(dot => dot.classList.remove('active'));
+  dots[index].classList.add('active');
+}
+
+nextBtn.addEventListener('click', () => {
+  index = (index + 1) % slides.length;
+  updateSlider();
+});
+
+prevBtn.addEventListener('click', () => {
+  index = (index - 1 + slides.length) % slides.length;
+  updateSlider();
+});
+
+dots.forEach((dot, i) => {
+  dot.addEventListener('click', () => {
+    index = i;
+    updateSlider();
+  });
+});
 </script>
 </body>
 </html>

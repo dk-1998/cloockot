@@ -8,6 +8,60 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
    <link rel="stylesheet" href="{% static 'cloockot_watches/css/satovi.css' %}">
 </head>
+<style>
+/* FILTER PANEL */
+.filter-panel {
+  display: none;
+}
+
+.filter-panel.active {
+  display: block;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  overflow-y: auto;
+}
+
+.modal.active {
+  display: block;
+}
+
+.modal-content {
+  background: white;
+  margin: 20px;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.close-btn {
+  font-size: 24px;
+  cursor: pointer;
+  float: right;
+}
+
+/* SLIKE */
+.modal-images img {
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+/* GLOBALNO ZA MOBILNI */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+</style>
 <body>
   <!-- Header / nav -->
   <header>
@@ -477,6 +531,7 @@
         </div>
 </article>
     </div>
+    
   </main>
   <!-- Footer -->
   <footer style="background:#111;color:#fff;margin-top:60px;">
@@ -585,6 +640,69 @@
   </div>
 </div>
 <script>
+  const filterBtn = document.getElementById("filterToggle");
+const filterPanel = document.getElementById("filterPanel");
+
+if (filterBtn && filterPanel) {
+  filterBtn.addEventListener("click", () => {
+    filterPanel.classList.toggle("active");
+  });
+}
+
+// ================= PREVIEW =================
+function pregledaj(event) {
+  const btn = event.currentTarget; // BITNO: ne event.target
+  const card = btn.closest(".card");
+
+  if (!card) return;
+
+  const images = JSON.parse(card.dataset.images || "[]");
+  const desc = card.dataset.desc || "";
+  const spec = JSON.parse(card.dataset.spec || "{}");
+
+  // Kreiraj modal ako ne postoji
+  let modal = document.getElementById("previewModal");
+
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "previewModal";
+    modal.className = "modal";
+
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <div class="modal-images"></div>
+        <div class="modal-desc"></div>
+        <div class="modal-spec"></div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    modal.querySelector(".close-btn").onclick = () => {
+      modal.classList.remove("active");
+    };
+  }
+
+  const imgContainer = modal.querySelector(".modal-images");
+  const descContainer = modal.querySelector(".modal-desc");
+  const specContainer = modal.querySelector(".modal-spec");
+
+  // UBACI SLIKE
+  imgContainer.innerHTML = images.map(img => `
+    <img src="${img}" alt="sat">
+  `).join("");
+
+  // OPIS
+  descContainer.innerHTML = `<p>${desc}</p>`;
+
+  // SPECIFIKACIJE
+  specContainer.innerHTML = Object.entries(spec).map(([key, val]) => `
+    <div><strong>${key}:</strong> ${val}</div>
+  `).join("");
+
+  modal.classList.add("active");
+}
    // ====== GLOBALNE VARIJABLE ======
    let currentCard = null;
    const CART_KEY = 'cart';

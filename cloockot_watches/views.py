@@ -19,10 +19,17 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import json
 from django.core.mail import EmailMultiAlternatives
-#from django.template.loader import render_to_string
-#from django.utils.html import strip_tags
+from django.core.mail import EmailMultiAlternatives
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from email.mime.image import MIMEImage
+import logging
+from django.core.mail import send_mail
 
-@csrf_exempt  # Dodajte ovaj dekorator za AJAX zahteve
+logger = logging.getLogger(__name__)
+
+@csrf_exempt
 def posalji_email(request):
     if request.method == "POST":
         try:
@@ -55,71 +62,99 @@ def posalji_email(request):
                 )
 
             subject = "Upit sa Cloockot sajta"
-            body_text = f"Email: {email}\nTelefon: {telefon}\nPoruka: {poruka}"
             
+            # Tekstualna verzija (plain text)
+            body_text = f"""
+Email pošiljaoca: {email}
+Telefon: {telefon}
+Poruka: {poruka}
+            """
+            
+            # HTML verzija
             body_html = f"""
             <html>
             <body>
                 <h2>Nov upit sa Cloockot sajta</h2>
-                <p><b>Email pošiljaoca:</b> {email}</p>
-                <p><b>Telefon:</b> {telefon}</p>
-                <p><b>Poruka:</b><br>{poruka}</p>
+                <p><strong>Email pošiljaoca:</strong> {email}</p>
+                <p><strong>Telefon:</strong> {telefon}</p>
+                <p><strong>Poruka:</strong><br>{poruka.replace(chr(10), '<br>')}</p>
             </body>
             </html>
             """
 
+            # Kreiraj email poruku
             msg = EmailMultiAlternatives(
                 subject=subject,
                 body=body_text,
                 from_email=settings.EMAIL_HOST_USER,
-                to=["cloockot@gmail.com"],
+                to=['cloockot@gmail.com'],  # Proverite da li je ova adresa ispravna
                 reply_to=[email],
             )
+            
+            # Dodaj HTML verziju
             msg.attach_alternative(body_html, "text/html")
 
+            # Ako postoji slika, dodaj je
             if slika:
-                # Proverite veličinu slike
-                if slika.size > 5 * 1024 * 1024:  # 5MB limit
+                # Proveri veličinu slike (maks 5MB)
+                if slika.size > 5 * 1024 * 1024:
                     return JsonResponse(
                         {'error': 'Slika je prevelika. Maksimalna veličina je 5MB.'},
                         status=400
                     )
                 
-                img_data = slika.read()
-                img = MIMEImage(img_data)
-                img.add_header('Content-ID', '<slika1>')
-                img.add_header('Content-Disposition', 'inline', filename=slika.name)
-                msg.attach(img)
-                
-                # Dodajte sliku u HTML
-                body_html += f'''
-                <p><b>Uploadovana slika:</b><br>
-                <img src="cid:slika1" style="max-width:400px;border:1px solid #ccc;border-radius:8px">
-                </p>
-                '''
-                msg.alternatives = []  # Obriši stare alternative
-                msg.attach_alternative(body_html, "text/html")
+                # Dodaj sliku kao attachment sa inline prikazom
+                try:
+                    img_data = slika.read()
+                    img = MIMEImage(img_data)
+                    img.add_header('Content-ID', '<attachment1>')
+                    img.add_header('Content-Disposition', 'attachment', filename=slika.name)
+                    msg.attach(img)
+                    
+                    # Dodaj referencu slike u HTML (opciono)
+                    body_html_with_img = body_html.replace('</body>', f'<p><strong>Priložena slika:</strong> {slika.name}</p></body>')
+                    msg.attach_alternative(body_html_with_img, "text/html")
+                    
+                except Exception as img_error:
+                    logger.error(f"Greška sa slikom: {str(img_error)}")
+                    # Nastavi bez slike
 
+            # Pokušaj poslati email
             try:
                 msg.send(fail_silently=False)
-                return JsonResponse({'success': True})
-            except Exception as e:
-                print(f"Email sending error: {e}")
+                logger.info(f"Email uspešno poslat od: {email}")
+                return JsonResponse({'success': True, 'message': 'Email je uspešno poslat.'})
+                
+            except Exception as email_error:
+                logger.error(f"Greška pri slanju emaila: {str(email_error)}")
                 return JsonResponse(
-                    {'error': 'Greška prilikom slanja emaila. Proverite konfiguraciju servera.'},
+                    {'error': f'Greška pri slanju emaila: {str(email_error)}'},
                     status=500
                 )
 
         except Exception as e:
-            print(f"General error: {e}")
+            logger.error(f"Opšta greška: {str(e)}")
             return JsonResponse(
-                {'error': 'Došlo je do greške prilikom obrade zahteva.'},
+                {'error': f'Došlo je do greške: {str(e)}'},
                 status=500
             )
 
     return JsonResponse({'error': 'Metoda nije dozvoljena.'}, status=405)
 
+# Dodajte u views.py
 
+def test_email(request):
+    try:
+        send_mail(
+            'Test email',
+            'Ovo je test poruka.',
+            settings.EMAIL_HOST_USER,
+            ['cloockot@gmail.com'],  # Vaša email adresa
+            fail_silently=False,
+        )
+        return JsonResponse({'success': True, 'message': 'Test email je poslat!'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
 # Osnovne stranice
 def index(request): return render(request, 'cloockot_watches/index.html')
 def onama(request): return render(request, 'cloockot_watches/onama.html')

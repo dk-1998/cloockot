@@ -12,4 +12,5 @@ urlpatterns = [
     path('odjava/', views.odjava, name='odjava'),
     path('checkout/', views.checkout, name='checkout'),
     path("posalji_email/", views.posalji_email, name="posalji_email"),
+    path('test-email/', views.test_email, name='test_email')
 ]

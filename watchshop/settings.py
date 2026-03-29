@@ -17,17 +17,56 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # settings.py
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Dodajte ove postavke na kraj settings.py
+
+# Email konfiguracija - PROVERITE DA LI JE ISPRAVNA
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'          # Ako šalješ preko Gmail-a
-EMAIL_USE_TLS = True                    # TLS enkripcija
-EMAIL_PORT = 587                        # Standardni port za TLS
-EMAIL_HOST_USER = 'cloockot@gmail.com'    # Tvoj Gmail
-EMAIL_HOST_PASSWORD = 'onih gezu pzmd rwkj' # App password za Gmail (nije obična lozinka)
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'cloockot@gmail.com'
+EMAIL_HOST_PASSWORD = 'onih gezu pzmd rwkj'  # Proverite da li je ovo ispravan app password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+# Za DEBUG=False, morate imati ove postavke
+SECURE_SSL_REDIRECT = False  # Postavite na True ako imate SSL sertifikat
+SESSION_COOKIE_SECURE = False  # Postavite na True ako imate HTTPS
+CSRF_COOKIE_SECURE = False  # Postavite na True ako imate HTTPS
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+# Dodajte za email debugging
+EMAIL_USE_LOCALTIME = False
+EMAIL_TIMEOUT = 30
+
+# Logging za praćenje grešaka
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'debug.log',
+        },
+    },
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'DEBUG',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.core.mail': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-^4$6&iyc#l(f!vwr0fp^25kytr-9ay%g&f6g*@&q#s8rh3st9#'

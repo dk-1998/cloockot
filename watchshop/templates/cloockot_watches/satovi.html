@@ -9,6 +9,31 @@
    <link rel="stylesheet" href="{% static 'cloockot_watches/css/satovi.css' %}">
 </head>
 <style>
+  /* MOBILE FIX ZA SLIKE U MODALU */
+@media (max-width: 768px) {
+
+  .slider-track {
+    display: block !important;
+    transform: none !important;
+  }
+
+  .slide {
+    width: 100% !important;
+    margin-bottom: 10px;
+  }
+
+  .slide img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* sakrij strelice i dots na mobilnom */
+  .slider-nav,
+  .slider-dots {
+    display: none !important;
+  }
+}
 /* FILTER PANEL */
 .filter-panel {
   display: none;

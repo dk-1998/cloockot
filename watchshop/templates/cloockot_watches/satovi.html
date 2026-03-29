@@ -640,1003 +640,145 @@ img {
   </div>
 </div>
 <script>
-  const filterBtn = document.getElementById("filterToggle");
-const filterPanel = document.getElementById("filterPanel");
+document.addEventListener('DOMContentLoaded', function() {
 
-if (filterBtn && filterPanel) {
-  filterBtn.addEventListener("click", () => {
-    filterPanel.classList.toggle("active");
-  });
-}
+  // ================= FILTER TOGGLE =================
+  function toggleFilterPanel(open) {
+    const filterToggle = document.getElementById('filterToggle');
+    const filterPanel = document.getElementById('filterPanel');
 
-// ================= PREVIEW =================
-function pregledaj(event) {
-  const btn = event.currentTarget; // BITNO: ne event.target
-  const card = btn.closest(".card");
+    if (!filterPanel || !filterToggle) return;
 
-  if (!card) return;
+    if (open === undefined) {
+      open = !filterPanel.classList.contains('open');
+    }
 
-  const images = JSON.parse(card.dataset.images || "[]");
-  const desc = card.dataset.desc || "";
-  const spec = JSON.parse(card.dataset.spec || "{}");
-
-  // Kreiraj modal ako ne postoji
-  let modal = document.getElementById("previewModal");
-
-  if (!modal) {
-    modal = document.createElement("div");
-    modal.id = "previewModal";
-    modal.className = "modal";
-
-    modal.innerHTML = `
-      <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <div class="modal-images"></div>
-        <div class="modal-desc"></div>
-        <div class="modal-spec"></div>
-      </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    modal.querySelector(".close-btn").onclick = () => {
-      modal.classList.remove("active");
-    };
+    if (open) {
+      filterPanel.classList.add('open');
+      filterToggle.classList.add('open');
+      filterPanel.setAttribute('aria-hidden', 'false');
+    } else {
+      filterPanel.classList.remove('open');
+      filterToggle.classList.remove('open');
+      filterPanel.setAttribute('aria-hidden', 'true');
+    }
   }
 
-  const imgContainer = modal.querySelector(".modal-images");
-  const descContainer = modal.querySelector(".modal-desc");
-  const specContainer = modal.querySelector(".modal-spec");
+  const filterToggle = document.getElementById('filterToggle');
+  if (filterToggle) {
+    filterToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFilterPanel();
+    });
+  }
 
-  // UBACI SLIKE
-  imgContainer.innerHTML = images.map(img => `
-    <img src="${img}" alt="sat">
-  `).join("");
+  // ================= PREVIEW (SAMO JEDNA FUNKCIJA!) =================
+  window.pregledaj = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
 
-  // OPIS
-  descContainer.innerHTML = `<p>${desc}</p>`;
+    const btn = event.currentTarget;
+    const card = btn.closest('.card');
+    if (!card) return;
 
-  // SPECIFIKACIJE
-  specContainer.innerHTML = Object.entries(spec).map(([key, val]) => `
-    <div><strong>${key}:</strong> ${val}</div>
-  `).join("");
-
-  modal.classList.add("active");
-}
-   // ====== GLOBALNE VARIJABLE ======
-   let currentCard = null;
-   const CART_KEY = 'cart';
-   let currentSlide = 0;
-   let totalSlides = 0;
-
-   // ====== POMOĆNE FUNKCIJE ======
-   const din = (n) => new Intl.NumberFormat('sr-RS').format(n) + ' RSD';
-
-   // Pomocna funkcija za CSRF token
-   function getCSRFToken() {
-     const csrfCookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
-     return csrfCookie ? csrfCookie.split('=')[1] : '';
-   }
-
-   // ====== FUNKCIJA ZA PRIKAZ MODALA ZA PRIJAVU ======
-   function showLoginModal() {
-     const loginModal = document.getElementById('loginRequiredModal');
-     if (!loginModal) {
-       console.error('Login modal nije pronađen');
-       return;
-     }
-     
-     // Postavi modal na vidljivo
-     loginModal.style.display = 'block';
-     loginModal.classList.add('open');
-     loginModal.setAttribute('aria-hidden', 'false');
-     
-     // Dodaj event listener za zatvaranje
-     const closeBtn = document.getElementById('closeLoginModal');
-     if (closeBtn) {
-       closeBtn.onclick = function() {
-         loginModal.style.display = 'none';
-         loginModal.classList.remove('open');
-         loginModal.setAttribute('aria-hidden', 'true');
-       };
-     }
-     
-     // Zatvori modal klikom van njega
-     loginModal.onclick = function(e) {
-       if(e.target === loginModal) {
-         loginModal.style.display = 'none';
-         loginModal.classList.remove('open');
-         loginModal.setAttribute('aria-hidden', 'true');
-       }
-     };
-     
-     // Zatvori ESC tasterom
-     const escHandler = function(e) {
-       if(e.key === 'Escape' && loginModal.classList.contains('open')) {
-         loginModal.style.display = 'none';
-         loginModal.classList.remove('open');
-         loginModal.setAttribute('aria-hidden', 'true');
-         window.removeEventListener('keydown', escHandler);
-       }
-     };
-     window.addEventListener('keydown', escHandler);
-   }
-
-   // ====== CHECKOUT FUNKCIJE ======
-   async function processCheckout() {
-     try {
-       // Proveri da li je korisnik ulogovan
-       const isLoggedIn = {% if request.session.korisnicko_ime %}true{% else %}false{% endif %};
-       
-       if (!isLoggedIn) {
-         showLoginModal();
-         return;
-       }
-       
-       const cart = readCart();
-       
-       if (cart.length === 0) {
-         alert('Korpa je prazna.');
-         return;
-       }
-       
-       // Prikaži potvrdni modal
-       const confirmOverlay = document.getElementById('confirmOverlay');
-       if (confirmOverlay) {
-         confirmOverlay.style.display = 'flex';
-         
-         // Sačekaj korisnikov odgovor
-         return new Promise((resolve) => {
-           const confirmYes = document.getElementById('confirmYes');
-           const confirmNo = document.getElementById('confirmNo');
-           
-           const cleanup = () => {
-             confirmYes.removeEventListener('click', onYes);
-             confirmNo.removeEventListener('click', onNo);
-             confirmOverlay.style.display = 'none';
-           };
-           
-           const onYes = async () => {
-             cleanup();
-             
-             try {
-               // Pošalji porudžbinu na server
-               const response = await fetch('{% url "checkout" %}', {
-                 method: 'POST',
-                 headers: {
-                   'Content-Type': 'application/json',
-                   'X-CSRFToken': getCSRFToken(),
-                 },
-                 body: JSON.stringify({ cart: cart })
-               });
-               
-               const data = await response.json();
-               
-               if (response.ok && data.success) {
-                 // Prikaži uspešan modal
-                 const successOverlay = document.getElementById('successOverlay');
-                 if (successOverlay) {
-                   successOverlay.style.display = 'flex';
-                   
-                   const successOk = document.getElementById('successOk');
-                   successOk.onclick = () => {
-                     successOverlay.style.display = 'none';
-                     
-                     // Isprazni korpu
-                     localStorage.removeItem(CART_KEY);
-                     renderCart();
-                     closeCart();
-                   };
-                   
-                   // Automatski zatvori modal nakon 5 sekundi
-                   setTimeout(() => {
-                     if (successOverlay.style.display === 'flex') {
-                       successOverlay.style.display = 'none';
-                       localStorage.removeItem(CART_KEY);
-                       renderCart();
-                       closeCart();
-                     }
-                   }, 5000);
-                 }
-               } else {
-                 alert(data.error || 'Došlo je do greške prilikom porudžbine.');
-               }
-             } catch (error) {
-               console.error('Greška:', error);
-               alert('Došlo je do greške prilikom komunikacije sa serverom.');
-             }
-           };
-           
-           const onNo = () => {
-             cleanup();
-             resolve(false);
-           };
-           
-           confirmYes.addEventListener('click', onYes);
-           confirmNo.addEventListener('click', onNo);
-         });
-       }
-     } catch (error) {
-       console.error('Greška u procesu checkout:', error);
-       alert('Došlo je do greške.');
-     }
-   }
-
-   // ====== KORPA FUNKCIJE ======
-   function readCart() {
-     try {
-        return JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-      } catch {
-        return [];
-      }
-   }
-
-   function writeCart(cart) {
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    const modal = document.getElementById('productModal');
+    if (!modal) {
+      console.error('Nema productModal u HTML-u');
+      return;
     }
 
-   // KLJUČNA FUNKCIJA - SA PROVEROM ZA PRIJAVU
-   function addCardToCart(card) {
-     // Provera da li je korisnik ulogovan
-     const isLoggedIn = {% if request.session.korisnicko_ime %}true{% else %}false{% endif %};
-     
-     if (!isLoggedIn) {
-       // Prikaži SAMO modal za prijavu (ne otvaraj korpu)
-       showLoginModal();
-       return; // STOP - ne nastavlja se sa dodavanjem u korpu
-     }
-     
-     // Nastavi sa dodavanjem u korpu samo ako je korisnik ulogovan
-     if (!card) {
-       console.error('Nema card elementa');
-       return;
-     }
-     
-     const id = card.dataset.id;
-     const brand = card.querySelector('.brand-name')?.textContent?.trim() || '';
-     const title = card.querySelector('.title')?.textContent?.trim() || '';
-     const price = Number(card.dataset.price) || 0;
-     const img = card.querySelector('img')?.src || '';
-     
-     console.log('Dodavanje u korpu:', { id, brand, title, price });
-     
-     let cart = readCart();
-     const idx = cart.findIndex(i => i.id === id);
-     
-     if (idx > -1) {
-       cart[idx].qty += 1;
-     } else {
-       cart.push({ id, brand, title, price, img, qty: 1 });
-     }
-     
-     writeCart(cart);
-     renderCart();
-     showNotification('Proizvod je dodat u korpu!');
-     
-     // Samo ulogovanim korisnicima otvaramo korpu automatski
-     openCart();
-   }
+    const modalBrand = document.getElementById('modalBrand');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalSpecs = document.getElementById('modalSpecs');
+    const modalDesc = document.getElementById('modalDesc');
 
-   function removeFromCart(id) {
-     let cart = readCart().filter(i => i.id !== id);
-     writeCart(cart);
-     renderCart();
-   }
+    modalBrand.textContent = card.querySelector('.brand-name')?.textContent || '';
+    modalTitle.textContent = card.querySelector('.title')?.textContent || '';
+    modalPrice.textContent = card.dataset.price + ' RSD';
 
-   function changeQty(id, delta) {
-     let cart = readCart();
-     const it = cart.find(i => i.id === id);
-     if (!it) return;
-     it.qty += delta;
-     if (it.qty <= 0) {
-       cart = cart.filter(i => i.id !== id);
-     }
-     writeCart(cart);
-     renderCart();
-   }
+    // SPEC
+    modalSpecs.innerHTML = '';
+    let specs = {};
+    try {
+      specs = JSON.parse(card.dataset.spec || '{}');
+    } catch {}
 
-   function renderCart() {
-     const cart = readCart();
-     const cartBadge = document.getElementById('cartBadge');
-     const cartItemsEl = document.getElementById('cartItems');
-     const cartEmptyEl = document.getElementById('cartEmpty');
-     const cartSubtotalEl = document.getElementById('cartSubtotal');
-     
-     const totalQty = cart.reduce((s, i) => s + i.qty, 0);
-     if (totalQty > 0) {
-        cartBadge.style.display = 'block';
-        cartBadge.textContent = String(totalQty);
-      } else {
-        cartBadge.style.display = 'none';
-      }
-     cartItemsEl.innerHTML = '';
-     if (cart.length === 0) {
-        cartEmptyEl.style.display = 'block';
-        cartSubtotalEl.textContent = din(0);
-        return;
-      }
-     cartEmptyEl.style.display = 'none';
+    Object.entries(specs).forEach(([k, v]) => {
+      const div = document.createElement('div');
+      div.innerHTML = `<strong>${k}:</strong> ${v}`;
+      modalSpecs.appendChild(div);
+    });
 
-     let subtotal = 0;
-     cart.forEach(it => {
-       subtotal += it.price * it.qty;
-       const row = document.createElement('div');
-       row.className = 'cart-item';
-       row.setAttribute('data-id', it.id);
-       row.innerHTML = `
-         <img src="${it.img}" alt="${it.title}">
-         <div>
-           <div class="ci-title">${it.title}</div>
-           <div class="ci-brand">${it.brand}</div>
-           <div class="qty">
-             <button aria-label="Smanji" data-act="dec" data-id="${it.id}">−</button>
-             <span>${it.qty}</span>
-             <button aria-label="Povećaj" data-act="inc" data-id="${it.id}">+</button>
-             <button aria-label="Ukloni" class="btn" style="margin-left:auto" data-act="rem" data-id="${it.id}">Ukloni</button>
-           </div>
-         </div>
-         <div class="ci-price">${din(it.price * it.qty)}</div>
-       `;
-       cartItemsEl.appendChild(row);
-     });
+    // DESC
+    modalDesc.textContent = card.dataset.desc || '';
 
-     cartSubtotalEl.textContent = din(subtotal);
+    // SLIKE
+    let images = [];
+    try {
+      images = JSON.parse(card.dataset.images || '[]');
+    } catch {}
 
-     // Dodaj event listener-e za dugmad u korpi
-     cartItemsEl.querySelectorAll('button[data-act]').forEach(b => {
-       b.addEventListener('click', (e) => {
-         const id = e.currentTarget.getAttribute('data-id');
-         const act = e.currentTarget.getAttribute('data-act');
-         if (act === 'inc') changeQty(id, +1);
-         else if (act === 'dec') changeQty(id, -1);
-         else if (act === 'rem') removeFromCart(id);
-       });
-     });
-   }
+    const modalMedia = document.querySelector('.modal__media');
+    modalMedia.innerHTML = images.map(img => `
+      <img src="${img}" style="width:100%; margin-bottom:10px;">
+    `).join('');
 
-   function showNotification(message) {
-     let notification = document.getElementById('cartNotification');
-     if (!notification) {
-       notification = document.createElement('div');
-       notification.id = 'cartNotification';
-       notification.style.cssText = `
-         position: fixed;
-         top: 20px;
-         right: 20px;
-         background: #10b981;
-         color: white;
-         padding: 12px 20px;
-         border-radius: 8px;
-         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-         z-index: 9999;
-         font-weight: 600;
-         display: none;
-         transition: opacity 0.3s;
-       `;
-       document.body.appendChild(notification);
-     }
-     
-     notification.textContent = message;
-     notification.style.display = 'block';
-     notification.style.opacity = '1';
-     
-     setTimeout(() => {
-       notification.style.opacity = '0';
-       setTimeout(() => {
-         notification.style.display = 'none';
-       }, 300);
-     }, 2000);
-   }
+    modal.classList.add('open');
+  };
 
-   function openCart() {
-      const cartDrawer = document.getElementById('cartDrawer');
-     cartDrawer.classList.add('open');
-      cartDrawer.setAttribute('aria-hidden', 'false');
+  // ================= FILTER =================
+  window.applyFilters = function() {
+    const selectedGenders = Array.from(document.querySelectorAll('#filterForm input[name="pol"]:checked')).map(cb => cb.value);
+    const selectedBrands = Array.from(document.querySelectorAll('#filterForm input[name="brend"]:checked')).map(cb => cb.value);
+    const selectedNarukvice = Array.from(document.querySelectorAll('#filterForm input[name="narukvica"]:checked')).map(cb => cb.value);
+    const selectedCategories = Array.from(document.querySelectorAll('#filterForm input[name="kategorija"]:checked')).map(cb => cb.value);
+    const selectedColors = Array.from(document.querySelectorAll('#filterForm input[name="boja"]:checked')).map(cb => cb.value);
+
+    const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+
+    document.querySelectorAll('#grid .card').forEach(card => {
+      const price = parseFloat(card.dataset.price);
+      const show =
+        (selectedGenders.length === 0 || selectedGenders.includes(card.dataset.pol)) &&
+        (selectedBrands.length === 0 || selectedBrands.includes(card.dataset.brend)) &&
+        (selectedNarukvice.length === 0 || selectedNarukvice.includes(card.dataset.narukvica)) &&
+        (selectedCategories.length === 0 || selectedCategories.includes(card.dataset.kategorija)) &&
+        (selectedColors.length === 0 || selectedColors.includes(card.dataset.boja)) &&
+        price >= minPrice && price <= maxPrice;
+
+      card.style.display = show ? 'block' : 'none';
+    });
+
+    toggleFilterPanel(false);
+  };
+
+  // ================= EVENTI =================
+  document.querySelectorAll('.preview-btn').forEach(btn => {
+    btn.addEventListener('click', pregledaj);
+  });
+
+  document.querySelectorAll('.add-to-cart').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const card = e.currentTarget.closest('.card');
+      if (card) addCardToCart(card);
+    });
+  });
+
+  // Zatvaranje filtera klikom van
+  document.addEventListener('click', (e) => {
+    const panel = document.getElementById('filterPanel');
+    if (panel && panel.classList.contains('open') && !panel.contains(e.target)) {
+      toggleFilterPanel(false);
     }
+  });
 
-   function closeCart() {
-      const cartDrawer = document.getElementById('cartDrawer');
-     cartDrawer.classList.remove('open');
-      cartDrawer.setAttribute('aria-hidden', 'true');
-    }
+  console.log("JS učitan - sve spremno");
 
-   // ====== SLIDER FUNKCIJE ======
-   function goToSlide(index) {
-     const sliderTrack = document.getElementById('sliderTrack');
-     const dots = document.querySelectorAll('.dot');
-     
-     if (!sliderTrack || index < 0 || index >= totalSlides) return;
-     
-     currentSlide = index;
-     sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
-     
-     // Ažuriraj aktivnu tačkicu
-     dots.forEach((dot, i) => {
-       dot.classList.toggle('active', i === currentSlide);
-     });
-   }
+});
 
-   function nextSlide() {
-     currentSlide = (currentSlide + 1) % totalSlides;
-     goToSlide(currentSlide);
-   }
-
-   function prevSlide() {
-     currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-     goToSlide(currentSlide);
-   }
-
-   function handleSwipe(startX, endX) {
-     const swipeThreshold = 50;
-     const diff = startX - endX;
-     
-     if (Math.abs(diff) > swipeThreshold) {
-       if (diff > 0) {
-         // Swipe levo - sledeći slajd
-         nextSlide();
-       } else {
-         // Swipe desno - prethodni slajd
-         prevSlide();
-       }
-     }
-   }
-
-   // Funkcija za učitavanje slika pre nego što se prikažu
-   function preloadImages(imageUrls, callback) {
-     let loadedCount = 0;
-     const totalImages = imageUrls.length;
-     
-     if (totalImages === 0) {
-       callback();
-       return;
-     }
-     
-     imageUrls.forEach((url) => {
-       const img = new Image();
-       img.onload = () => {
-         loadedCount++;
-         if (loadedCount === totalImages) {
-           callback();
-         }
-       };
-       img.onerror = () => {
-         loadedCount++;
-         if (loadedCount === totalImages) {
-           callback();
-         }
-       };
-       img.src = url;
-     });
-   }
-
-   // ====== MODAL FUNKCIJE SA SLIDER-OM ======
-   function pregledaj(event) {
-     event.preventDefault();
-     event.stopPropagation();
-     
-     const btn = event.currentTarget;
-     const card = btn.closest('.card');
-     currentCard = card;
-
-     const modal = document.getElementById('productModal');
-     const modalBrand = document.getElementById('modalBrand');
-     const modalTitle = document.getElementById('modalTitle');
-     const modalPrice = document.getElementById('modalPrice');
-     const modalSpecs = document.getElementById('modalSpecs');
-     const modalDescWrap = document.getElementById('modalDescWrap');
-     const modalDesc = document.getElementById('modalDesc');
-
-     // Popuni modal tekstualne informacije
-     modalBrand.textContent = card.querySelector('.brand-name')?.textContent || '';
-     modalTitle.textContent = card.querySelector('.title').textContent;
-     modalPrice.textContent = card.dataset.price + ' RSD';
-
-     // Specifikacije
-     modalSpecs.innerHTML = '';
-     const specs = JSON.parse(card.dataset.spec || '{}');
-     for (let key in specs) {
-       const dt = document.createElement('dt');
-       dt.textContent = key;
-       const dd = document.createElement('dd');
-       dd.textContent = specs[key];
-       modalSpecs.appendChild(dt);
-       modalSpecs.appendChild(dd);
-     }
-
-     // Opis
-     const desc = card.dataset.desc || '';
-     if(desc) {
-       modalDescWrap.style.display = 'block';
-       modalDesc.textContent = desc;
-     } else {
-       modalDescWrap.style.display = 'none';
-     }
-
-     // === KREIRAJ SLIDER SA SLIKAMA ===
-     const modalMedia = document.querySelector('.modal__media');
-     
-     // Kreiraj slider strukturu ako ne postoji
-     if (!document.getElementById('sliderContainer')) {
-       modalMedia.innerHTML = `
-         <div class="slider-container" id="sliderContainer">
-           <div class="slider-track" id="sliderTrack"></div>
-           <div class="slider-nav">
-             <button class="slider-btn" id="prevBtn">‹</button>
-             <button class="slider-btn" id="nextBtn">›</button>
-           </div>
-           <div class="slider-dots" id="sliderDots"></div>
-         </div>
-       `;
-     }
-     
-     const sliderTrack = document.getElementById('sliderTrack');
-     const sliderDots = document.getElementById('sliderDots');
-     
-     // Očisti prethodni slider
-     sliderTrack.innerHTML = '';
-     sliderDots.innerHTML = '';
-     
-     // Učitaj slike iz data-images atributa ili koristi jednu sliku
-     let images = [];
-     try {
-       images = JSON.parse(card.dataset.images || '[]');
-     } catch (e) {
-       console.error('Greška pri parsiranju slika:', e);
-     }
-     
-     // Ako nema slika u nizu, koristi glavnu sliku
-     if (images.length === 0) {
-       images = [card.querySelector('img').src];
-     }
-     
-     // Prikaži loading stanje
-     sliderTrack.innerHTML = '<div class="slide" style="display: flex; align-items: center; justify-content: center;"><div style="color: white;">Učitavanje slika...</div></div>';
-     
-     // Preload slike pre nego što se prikažu
-     preloadImages(images, () => {
-       // Očisti loading stanje
-       sliderTrack.innerHTML = '';
-       
-       // Kreiraj slajdove
-       images.forEach((imgSrc, index) => {
-         const slide = document.createElement('div');
-         slide.className = 'slide';
-         
-         // Kreiraj sliku sa object-fit: contain za konzistentne veličine
-         const img = document.createElement('img');
-         img.src = imgSrc;
-         img.alt = `${modalTitle.textContent} - slika ${index + 1}`;
-         img.loading = 'eager'; // Za brže učitavanje u slideru
-         
-         slide.appendChild(img);
-         sliderTrack.appendChild(slide);
-       });
-       
-       // Kreiraj tačkice
-       images.forEach((_, index) => {
-         const dot = document.createElement('button');
-         dot.className = `dot ${index === 0 ? 'active' : ''}`;
-         dot.setAttribute('data-index', index);
-         dot.addEventListener('click', () => goToSlide(index));
-         sliderDots.appendChild(dot);
-       });
-       
-       // Inicijalizuj slider
-       currentSlide = 0;
-       totalSlides = images.length;
-       sliderTrack.style.transform = `translateX(0)`;
-       
-       // Sakrij navigaciju ako je samo jedna slika
-       const sliderNav = document.querySelector('.slider-nav');
-       if (totalSlides <= 1) {
-         if (sliderNav) sliderNav.style.display = 'none';
-         if (sliderDots) sliderDots.style.display = 'none';
-       } else {
-         if (sliderNav) sliderNav.style.display = 'flex';
-         if (sliderDots) sliderDots.style.display = 'flex';
-       }
-       
-       // Postavi event listener-e za slider kontrole
-       const prevBtn = document.getElementById('prevBtn');
-       const nextBtn = document.getElementById('nextBtn');
-       
-       if (prevBtn) {
-         prevBtn.onclick = prevSlide;
-       }
-       
-       if (nextBtn) {
-         nextBtn.onclick = nextSlide;
-       }
-       
-       // Dodaj touch/swipe podršku za mobilne uređaje
-       let touchStartX = 0;
-       let touchEndX = 0;
-       
-       sliderTrack.addEventListener('touchstart', (e) => {
-         touchStartX = e.changedTouches[0].screenX;
-       }, { passive: true });
-       
-       sliderTrack.addEventListener('touchend', (e) => {
-         touchEndX = e.changedTouches[0].screenX;
-         handleSwipe(touchStartX, touchEndX);
-       }, { passive: true });
-       
-       // Postavi timeout da se osigura da su slike učitane pre podešavanja veličine
-       setTimeout(() => {
-         // Osiguraj da sve slike imaju istu visinu
-         const slides = sliderTrack.querySelectorAll('.slide');
-         if (slides.length > 0) {
-           // Pronađi maksimalnu visinu
-           let maxHeight = 0;
-           slides.forEach(slide => {
-             const img = slide.querySelector('img');
-             if (img && img.offsetHeight > maxHeight) {
-               maxHeight = img.offsetHeight;
-             }
-           });
-           
-           // Ako imamo maksimalnu visinu, primeni je na sve
-           if (maxHeight > 0) {
-             slides.forEach(slide => {
-               const img = slide.querySelector('img');
-               if (img) {
-                 img.style.height = `${maxHeight}px`;
-               }
-             });
-           }
-         }
-       }, 500);
-     });
-
-     // Prikaži modal
-     modal.classList.add('open');
-     modal.setAttribute('aria-hidden', 'false');
-
-     // Postavi event listener za dugme "Dodaj u korpu" u modalu
-     const modalAddBtn = document.getElementById('modalAdd');
-     if (modalAddBtn) {
-       modalAddBtn.onclick = function() {
-         console.log('Kliknuto na dugme u modalu, currentCard:', currentCard);
-         if (currentCard) {
-           addCardToCart(currentCard);
-           modal.classList.remove('open');
-           modal.setAttribute('aria-hidden', 'true');
-         }
-       };
-     }
-
-     // Zatvaranje modala
-     const modalClose = document.getElementById('modalClose');
-     if (modalClose) {
-       modalClose.onclick = function() {
-         modal.classList.remove('open');
-         modal.setAttribute('aria-hidden', 'true');
-       };
-     }
-
-     modal.onclick = function(e) {
-       if(e.target === modal) {
-         modal.classList.remove('open');
-         modal.setAttribute('aria-hidden', 'true');
-       }
-     };
-     
-     // Dodaj ESC taster za zatvaranje
-     window.addEventListener('keydown', function escHandler(e) {
-       if (e.key === 'Escape' && modal.classList.contains('open')) {
-         modal.classList.remove('open');
-         modal.setAttribute('aria-hidden', 'true');
-         window.removeEventListener('keydown', escHandler);
-       }
-     });
-   }
-
-   // ====== FILTER FUNKCIJE - AŽURIRANE ZA KATEGORIJE I BOJE ======
-   function applyFilters() {
-     // Get selected genders
-     const selectedGenders = Array.from(document.querySelectorAll('#filterForm input[name="pol"]:checked')).map(cb => cb.value);
-     
-     // Get selected brands
-     const selectedBrands = Array.from(document.querySelectorAll('#filterForm input[name="brend"]:checked')).map(cb => cb.value);
-     
-     // Get selected narukvica types
-     const selectedNarukvice = Array.from(document.querySelectorAll('#filterForm input[name="narukvica"]:checked')).map(cb => cb.value);
-     
-     // Get selected categories
-     const selectedCategories = Array.from(document.querySelectorAll('#filterForm input[name="kategorija"]:checked')).map(cb => cb.value);
-     
-     // Get selected colors - NOVO DODATO
-     const selectedColors = Array.from(document.querySelectorAll('#filterForm input[name="boja"]:checked')).map(cb => cb.value);
-     
-     // Get price range
-     const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
-     const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
-
-     const items = Array.from(document.querySelectorAll('#grid .card'));
-     let visible = 0;
-
-     items.forEach(card => {
-       const price = parseFloat(card.dataset.price);
-       const gender = card.dataset.pol;
-       const brand = card.dataset.brend;
-       const narukvica = card.dataset.narukvica;
-       const category = card.dataset.kategorija || 'novo';
-       const color = card.dataset.boja || ''; // NOVO DODATO
-       
-       // Check if item matches all selected filters
-       const matchesGender = selectedGenders.length === 0 || selectedGenders.includes(gender);
-       const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(brand);
-       const matchesNarukvica = selectedNarukvice.length === 0 || selectedNarukvice.includes(narukvica);
-       const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(category);
-       const matchesColor = selectedColors.length === 0 || selectedColors.includes(color); // NOVO DODATO
-       const matchesPrice = price >= minPrice && price <= maxPrice;
-       
-       // Show/hide based on all filters
-       const show = matchesGender && matchesBrand && matchesNarukvica && matchesCategory && matchesPrice && matchesColor; // DODATO matchesColor
-       card.style.display = show ? 'block' : 'none';
-       if (show) visible++;
-     });
-
-     const countText = document.getElementById('countText');
-     if (countText) {
-       countText.textContent = `Prikaz 1–${visible} od ${visible} rezultata`;
-     }
-     
-     // Zatvori filter panel nakon primene filtera
-     toggleFilterPanel(false);
-   }
-
-   // ====== FUNKCIJE ZA TOGGLE FILTER PANELA ======
-   function toggleFilterPanel(open) {
-     const filterToggle = document.getElementById('filterToggle');
-     const filterPanel = document.getElementById('filterPanel');
-     
-     if (!filterPanel || !filterToggle) return;
-     
-     if (open === undefined) {
-       open = !filterPanel.classList.contains('open');
-     }
-     
-     if (open) {
-       filterPanel.classList.add('open');
-       filterToggle.classList.add('open');
-       filterPanel.setAttribute('aria-hidden', 'false');
-     } else {
-       filterPanel.classList.remove('open');
-       filterToggle.classList.remove('open');
-       filterPanel.setAttribute('aria-hidden', 'true');
-     }
-   }
-
-   // ====== FUNKCIJA ZA BRISANJE SVIH FILTERA ======
-   function clearAllFilters() {
-     // Resetuj sve checkbox-ove u formi
-     document.querySelectorAll('#filterForm input[type="checkbox"]').forEach(cb => {
-       // Podrazumevano označi samo "novo" za kategoriju
-       if (cb.name === 'kategorija' && cb.value === 'novo') {
-         cb.checked = true;
-       } else if (cb.name === 'kategorija' && cb.value === 'ponuda-oglasi') {
-         cb.checked = false;
-       } else if (cb.name === 'boja') {
-         cb.checked = false; // NOVO: obriši i boje
-       } else {
-         cb.checked = false;
-       }
-     });
-     
-     // Resetuj cene
-     const minPriceEl = document.getElementById('minPrice');
-     const maxPriceEl = document.getElementById('maxPrice');
-     if (minPriceEl) minPriceEl.value = '0';
-     if (maxPriceEl) maxPriceEl.value = '999999';
-     
-     // Primeni filtere
-     applyFilters();
-   }
-
-   // ====== INICIJALIZACIJA ======
-   document.addEventListener('DOMContentLoaded', function() {
-     console.log('DOM loaded - initializing...');
-     
-     // 1. Inicijalizuj korpu
-     renderCart();
-     
-     // 2. Dodaj event listener-e za dugmad "Dodaj u korpu" na karticama
-     document.querySelectorAll('.add-to-cart').forEach(btn => {
-       btn.addEventListener('click', (e) => {
-         console.log('Kliknuto na dodaj u korpu dugme');
-         const card = e.currentTarget.closest('.card');
-         if (card) {
-           addCardToCart(card);
-         }
-       });
-     });
-     
-     // 3. Dodaj event listener-e za dugmad "Pregledaj"
-     document.querySelectorAll('.preview-btn').forEach(btn => {
-       btn.addEventListener('click', pregledaj);
-     });
-     
-     // 4. Korpa drawer event listener-i
-     const btnCart = document.getElementById('btnCart');
-     const closeCartBtn = document.getElementById('closeCart');
-     
-     if (btnCart) {
-       btnCart.addEventListener('click', () => {
-         console.log('Otvori korpu');
-         openCart();
-       });
-     }
-     
-     if (closeCartBtn) {
-       closeCartBtn.addEventListener('click', () => {
-         closeCart();
-       });
-     }
-     
-     window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.getElementById('cartDrawer')?.classList.contains('open')) {
-         closeCart();
-        }
-     });
-     
-     // 5. Checkout dugme
-     const checkoutBtn = document.getElementById('checkoutBtn');
-     if (checkoutBtn) {
-       checkoutBtn.addEventListener('click', processCheckout);
-     }
-     
-     // 6. Event listener za potvrdni modal (Cancel/No dugme)
-     const confirmNo = document.getElementById('confirmNo');
-     if (confirmNo) {
-       confirmNo.addEventListener('click', () => {
-         document.getElementById('confirmOverlay').style.display = 'none';
-       });
-     }
-     
-     // 7. Event listener za uspešni modal
-     const successOk = document.getElementById('successOk');
-     if (successOk) {
-       successOk.addEventListener('click', () => {
-         document.getElementById('successOverlay').style.display = 'none';
-       });
-     }
-     
-     // 8. Event listener za dugme "Filteri"
-     const filterToggle = document.getElementById('filterToggle');
-     if (filterToggle) {
-       filterToggle.addEventListener('click', () => {
-         toggleFilterPanel();
-       });
-     }
-     
-     // 9. Zatvaranje filter panela klikom van njega
-     document.addEventListener('click', (e) => {
-       const filterPanel = document.getElementById('filterPanel');
-       const filterToggle = document.getElementById('filterToggle');
-       
-       if (filterPanel && filterPanel.classList.contains('open') &&
-           !filterPanel.contains(e.target) && 
-           !filterToggle.contains(e.target)) {
-         toggleFilterPanel(false);
-       }
-     });
-     
-     // 10. Event listener za dugme "Primeni filter" u formi
-     const applyFiltersBtn = document.getElementById('applyFiltersBtn');
-     if (applyFiltersBtn) {
-       applyFiltersBtn.addEventListener('click', applyFilters);
-     }
-     
-     // 11. Dodaj event listener za ESC u modalu i filter panelu
-     window.addEventListener('keydown', (e) => {
-       const modal = document.getElementById('productModal');
-       const loginModal = document.getElementById('loginRequiredModal');
-       const filterPanel = document.getElementById('filterPanel');
-       
-       if (e.key === 'Escape' && modal && modal.classList.contains('open')) {
-         modal.classList.remove('open');
-         modal.setAttribute('aria-hidden', 'true');
-       }
-       
-       if (e.key === 'Escape' && loginModal && loginModal.classList.contains('open')) {
-         loginModal.style.display = 'none';
-         loginModal.classList.remove('open');
-         loginModal.setAttribute('aria-hidden', 'true');
-       }
-       
-       if (e.key === 'Escape' && filterPanel && filterPanel.classList.contains('open')) {
-         toggleFilterPanel(false);
-       }
-     });
-     
-     // 12. Podrazumevano dodeli kategorije ako nedostaju
-     document.querySelectorAll('#grid .card').forEach(card => {
-       if (!card.dataset.kategorija) {
-         // Ako je boss, garmin ili amalys - ponuda-oglasi, ostalo - novo
-         const brand = card.dataset.brend;
-         if (brand === 'boss' || brand === 'garmin' || brand === 'amalys') {
-           card.dataset.kategorija = 'ponuda-oglasi';
-         } else {
-           card.dataset.kategorija = 'novo';
-         }
-       }
-       
-       // Dodeli podrazumevane boje ako nedostaju
-       if (!card.dataset.boja) {
-         const title = card.querySelector('.title')?.textContent?.toLowerCase() || '';
-         let color = '';
-         
-         if (title.includes('crni') || title.includes('black')) color = 'crni';
-         else if (title.includes('srebrni') || title.includes('silver')) color = 'srebrni';
-         else if (title.includes('zlatni') || title.includes('gold')) color = 'zlatni';
-         else if (title.includes('roze') || title.includes('rose')) color = 'roze';
-         else if (title.includes('plavi') || title.includes('blue')) color = 'plavi';
-         else if (title.includes('crveni') || title.includes('red')) color = 'crveni';
-         else if (title.includes('braon') || title.includes('brown')) color = 'braon';
-         else color = 'crni'; // podrazumevano
-         
-         card.dataset.boja = color;
-       }
-       
-       // Generiši placeholder slike ako nedostaju data-images
-       if (!card.dataset.images) {
-         const mainImg = card.querySelector('img')?.src;
-         if (mainImg) {
-           // Kreiraj 3-4 placeholder slike
-           const images = [
-             mainImg,
-             mainImg,
-             mainImg
-           ];
-           card.dataset.images = JSON.stringify(images);
-         }
-       }
-     });
-     
-     // 13. Inicijalno primeni filtere
-     applyFilters();
-     
-     // 14. Dodaj dugme za brisanje svih filtera ako ga nema u HTML-u
-     const filterActions = document.querySelector('.filter-actions');
-     if (!filterActions) {
-       // Kreiraj div za akcije filtera
-       const filterPanel = document.getElementById('filterPanel');
-       if (filterPanel) {
-         const actionsDiv = document.createElement('div');
-         actionsDiv.className = 'filter-actions';
-         actionsDiv.style.cssText = `
-           display: flex;
-           gap: 10px;
-           justify-content: flex-end;
-           padding-top: 20px;
-           border-top: 1px solid var(--border);
-           margin-top: 20px;
-         `;
-         
-         const clearFiltersBtn = document.createElement('button');
-         clearFiltersBtn.type = 'button';
-         clearFiltersBtn.id = 'clearFilters';
-         clearFiltersBtn.textContent = 'Obriši filtere';
-         clearFiltersBtn.style.cssText = `
-           background: white;
-           color: var(--text);
-           border: 1px solid var(--border);
-           border-radius: 8px;
-           padding: 10px 20px;
-           font-weight: 600;
-           cursor: pointer;
-         `;
-         clearFiltersBtn.addEventListener('click', clearAllFilters);
-         
-         actionsDiv.appendChild(clearFiltersBtn);
-         filterPanel.querySelector('form').appendChild(actionsDiv);
-       }
-     }
-     
-     console.log('Initialization complete');
-   });
-   // MOBILE NAV TOGGLE
+// MOBILE MENU
 const menuBtn = document.getElementById("menuBtn");
 const menu = document.getElementById("menu");
 
@@ -1645,7 +787,6 @@ if(menuBtn && menu){
     menu.classList.toggle("active");
   });
 }
-
- </script>
+</script>
 </body>
 </html>

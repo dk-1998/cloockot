@@ -590,230 +590,120 @@
   </div>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+// ======== KORPA / DODAJ U KORPU ========
 
-  // ================= FILTER TOGGLE =================
-  function toggleFilterPanel(open) {
-    const filterToggle = document.getElementById('filterToggle');
-    const filterPanel = document.getElementById('filterPanel');
+document.addEventListener('DOMContentLoaded', () => {
 
-    if (!filterPanel || !filterToggle) return;
+  const cartBadge = document.getElementById('cartBadge');
+  const cartKey = 'cloockotCart';
 
-    if (open === undefined) {
-      open = !filterPanel.classList.contains('open');
-    }
+  // Učitaj korpu iz localStorage ili inicijalizuj praznu
+  let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
-    if (open) {
-      filterPanel.classList.add('open');
-      filterToggle.classList.add('open');
-      filterPanel.setAttribute('aria-hidden', 'false');
+  // Funkcija za update badge-a
+  function updateBadge() {
+    const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartBadge.textContent = total;
+    cartBadge.style.display = total > 0 ? 'inline-block' : 'none';
+  }
+
+  // Funkcija za dodavanje proizvoda u korpu
+  function addToCart(product) {
+    const existing = cart.find(item => item.id === product.id);
+    if (existing) {
+      existing.quantity += 1;
     } else {
-      filterPanel.classList.remove('open');
-      filterToggle.classList.remove('open');
-      filterPanel.setAttribute('aria-hidden', 'true');
+      cart.push({ ...product, quantity: 1 });
     }
+    localStorage.setItem(cartKey, JSON.stringify(cart));
+    updateBadge();
   }
 
+  // Poveži dugmad "Dodaj u korpu"
+  document.querySelectorAll('.add-to-cart').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const card = e.target.closest('.card');
+      const product = {
+        id: card.dataset.id,
+        title: card.querySelector('.title').textContent,
+        price: parseInt(card.dataset.price),
+        image: card.querySelector('img').src
+      };
+      addToCart(product);
+      alert(`Dodato u korpu: ${product.title}`); // opcionalno
+    });
+  });
+
+  // Badge pri učitavanju stranice
+  updateBadge();
+
+  // ======== FILTERI ========
   const filterToggle = document.getElementById('filterToggle');
-  if (filterToggle) {
-    filterToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleFilterPanel();
-    });
-  }
+  const filterPanel = document.getElementById('filterPanel');
 
-  // ================= PREVIEW =================
-  window.pregledaj = function(event) {
-    event.preventDefault();
-    event.stopPropagation();
+  filterToggle.addEventListener('click', () => {
+    filterPanel.classList.toggle('open');
+    filterToggle.querySelector('.arrow').textContent = filterPanel.classList.contains('open') ? '▲' : '▼';
+  });
 
-    const btn = event.currentTarget;
-    const card = btn.closest('.card');
-    if (!card) return;
-
-    const modal = document.getElementById('productModal');
-    if (!modal) {
-      console.error('Nema productModal u HTML-u');
-      return;
-    }
-
-    const modalBrand = document.getElementById('modalBrand');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalPrice = document.getElementById('modalPrice');
-    const modalSpecs = document.getElementById('modalSpecs');
-    const modalDesc = document.getElementById('modalDesc');
-
-    modalBrand.textContent = card.querySelector('.brand-name')?.textContent || '';
-    modalTitle.textContent = card.querySelector('.title')?.textContent || '';
-    modalPrice.textContent = card.dataset.price + ' RSD';
-
-    // SPEC
-    modalSpecs.innerHTML = '';
-    let specs = {};
-    try {
-      specs = JSON.parse(card.dataset.spec || '{}');
-    } catch {}
-
-    Object.entries(specs).forEach(([k, v]) => {
-      const div = document.createElement('div');
-      div.innerHTML = `<strong>${k}:</strong> ${v}`;
-      modalSpecs.appendChild(div);
-    });
-
-    // DESC
-    modalDesc.textContent = card.dataset.desc || '';
-
-    // SLIKE
-    let images = [];
-    try {
-      images = JSON.parse(card.dataset.images || '[]');
-    } catch {}
-
-    const modalMedia = document.querySelector('.modal__media');
-    modalMedia.innerHTML = images.map(img => `
-      <img src="${img}" style="width:100%; margin-bottom:10px;">
-    `).join('');
-
-    modal.classList.add('open');
-  };
-
-  // ================= FILTER =================
+  // Filter funkcija
   window.applyFilters = function() {
-    const selectedGenders = Array.from(document.querySelectorAll('#filterForm input[name="pol"]:checked')).map(cb => cb.value);
-    const selectedBrands = Array.from(document.querySelectorAll('#filterForm input[name="brend"]:checked')).map(cb => cb.value);
-    const selectedNarukvice = Array.from(document.querySelectorAll('#filterForm input[name="narukvica"]:checked')).map(cb => cb.value);
-    const selectedCategories = Array.from(document.querySelectorAll('#filterForm input[name="kategorija"]:checked')).map(cb => cb.value);
-    const selectedColors = Array.from(document.querySelectorAll('#filterForm input[name="boja"]:checked')).map(cb => cb.value);
+    const form = document.getElementById('filterForm');
 
-    const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
-    const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+    const selectedPol = Array.from(form.querySelectorAll('input[name="pol"]:checked')).map(i => i.value);
+    const selectedBrend = Array.from(form.querySelectorAll('input[name="brend"]:checked')).map(i => i.value);
+    const selectedNarukvica = Array.from(form.querySelectorAll('input[name="narukvica"]:checked')).map(i => i.value);
+    const selectedKategorija = Array.from(form.querySelectorAll('input[name="kategorija"]:checked')).map(i => i.value);
+    const selectedBoja = Array.from(form.querySelectorAll('input[name="boja"]:checked')).map(i => i.value);
 
-    document.querySelectorAll('#grid .card').forEach(card => {
-      const price = parseFloat(card.dataset.price);
-      const show =
-        (selectedGenders.length === 0 || selectedGenders.includes(card.dataset.pol)) &&
-        (selectedBrands.length === 0 || selectedBrands.includes(card.dataset.brend)) &&
-        (selectedNarukvice.length === 0 || selectedNarukvice.includes(card.dataset.narukvica)) &&
-        (selectedCategories.length === 0 || selectedCategories.includes(card.dataset.kategorija)) &&
-        (selectedColors.length === 0 || selectedColors.includes(card.dataset.boja)) &&
-        price >= minPrice && price <= maxPrice;
+    const minPrice = parseInt(document.getElementById('minPrice').value);
+    const maxPrice = parseInt(document.getElementById('maxPrice').value);
+
+    document.querySelectorAll('.grid .card').forEach(card => {
+      const price = parseInt(card.dataset.price);
+      const pol = card.dataset.pol;
+      const brend = card.dataset.brend;
+      const narukvica = card.dataset.narukvica;
+      const kategorija = card.dataset.kategorija;
+      const boja = card.dataset.boja;
+
+      let show = true;
+
+      if (selectedPol.length && !selectedPol.includes(pol)) show = false;
+      if (selectedBrend.length && !selectedBrend.includes(brend)) show = false;
+      if (selectedNarukvica.length && !selectedNarukvica.includes(narukvica)) show = false;
+      if (selectedKategorija.length && !selectedKategorija.includes(kategorija)) show = false;
+      if (selectedBoja.length && !selectedBoja.includes(boja)) show = false;
+      if (price < minPrice || price > maxPrice) show = false;
 
       card.style.display = show ? 'block' : 'none';
     });
-
-    toggleFilterPanel(false);
   };
 
-  // ================= KORPA =================
-  let cart = [];
-  const cartDiv = document.getElementById('cart');
-  const checkoutBtn = document.getElementById('checkout');
+  // ======== PREGLED PROIZVODA ========
+  window.pregledaj = function(e) {
+    const card = e.target.closest('.card');
+    const images = JSON.parse(card.dataset.images);
+    const specs = JSON.parse(card.dataset.spec);
+    const desc = card.dataset.desc;
 
-  function renderCart() {
-    if (cart.length === 0) {
-      cartDiv.innerHTML = "<p>Korpa je prazna.</p>";
-      checkoutBtn.style.display = "none";
-    } else {
-      cartDiv.innerHTML = "<p>U korpi imate:</p><ul>" + cart.map(item => `<li>${item}</li>`).join('') + "</ul>";
-      checkoutBtn.style.display = "inline-block";
+    let specHtml = '';
+    for (let key in specs) {
+      specHtml += `<li><strong>${key}:</strong> ${specs[key]}</li>`;
     }
-  }
 
-  function addCardToCart(card) {
-    const title = card.querySelector('.title')?.textContent || 'Nepoznat proizvod';
-    cart.push(title);
-    renderCart();
-  }
+    let previewWindow = window.open('', 'preview', 'width=500,height=600,scrollbars=yes');
+    previewWindow.document.write(`
+      <html><head><title>${card.querySelector('.title').textContent}</title></head>
+      <body>
+        <h2>${card.querySelector('.title').textContent}</h2>
+        <p>${desc}</p>
+        <ul>${specHtml}</ul>
+        ${images.map(src => `<img src="${src}" style="width:100%;margin-bottom:10px;">`).join('')}
+      </body></html>
+    `);
+  };
 
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', () => {
-      alert("Porudžbina poslata! Hvala na kupovini.");
-      cart = [];
-      renderCart();
-    });
-  }
-
-  // ================= EVENTI =================
-  document.querySelectorAll('.preview-btn').forEach(btn => {
-    btn.addEventListener('click', pregledaj);
-  });
-
-  document.querySelectorAll('.add-to-cart').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const card = e.currentTarget.closest('.card');
-      if (card) addCardToCart(card);
-    });
-  });
-
-  // Zatvaranje filtera klikom van
-  document.addEventListener('click', (e) => {
-    const panel = document.getElementById('filterPanel');
-    if (panel && panel.classList.contains('open') && !panel.contains(e.target)) {
-      toggleFilterPanel(false);
-    }
-  });
-
-  console.log("JS učitan - sve spremno");
-  renderCart();
-
-});
-
-// MOBILE MENU
-const menuBtn = document.getElementById("menuBtn");
-const menu = document.getElementById("menu");
-
-if(menuBtn && menu){
-  menuBtn.addEventListener("click", () => {
-    menu.classList.toggle("active");
-  });
-}
-const modal = document.getElementById('sliderModal');
-const openBtn = document.getElementById('openSliderModal');
-const closeBtn = modal.querySelector('.modal__close');
-
-openBtn.addEventListener('click', () => {
-  modal.classList.add('open');
-});
-
-closeBtn.addEventListener('click', () => {
-  modal.classList.remove('open');
-});
-
-modal.addEventListener('click', (e) => {
-  if(e.target === modal) {
-    modal.classList.remove('open');
-  }
-});
-
-// Slider functionality
-const track = modal.querySelector('.slider-track');
-const slides = Array.from(track.children);
-const nextBtn = modal.querySelector('.next');
-const prevBtn = modal.querySelector('.prev');
-const dots = Array.from(modal.querySelectorAll('.dot'));
-let index = 0;
-
-function updateSlider() {
-  track.style.transform = `translateX(-${index * 100}%)`;
-  dots.forEach(dot => dot.classList.remove('active'));
-  dots[index].classList.add('active');
-}
-
-nextBtn.addEventListener('click', () => {
-  index = (index + 1) % slides.length;
-  updateSlider();
-});
-
-prevBtn.addEventListener('click', () => {
-  index = (index - 1 + slides.length) % slides.length;
-  updateSlider();
-});
-
-dots.forEach((dot, i) => {
-  dot.addEventListener('click', () => {
-    index = i;
-    updateSlider();
-  });
 });
 </script>
 

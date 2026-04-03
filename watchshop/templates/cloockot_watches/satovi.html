@@ -614,6 +614,17 @@
   let swiperInstance = null;
   let currentCart = [];
 
+  // ======== DRAWER FUNKCIJE ========
+  function openCart() {
+    const cartModal = document.getElementById('cartModal');
+    cartModal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeCart() {
+    const cartModal = document.getElementById('cartModal');
+    cartModal.setAttribute('aria-hidden', 'true');
+  }
+
   // ======== FUNKCIJE ZA KORPU ========
   function loadCart() {
     const saved = localStorage.getItem('cloockotCart');
@@ -661,23 +672,22 @@
       subtotal += itemTotal;
 
       html += `
-        <div style="display:flex;gap:15px;padding:10px 0;border-bottom:1px solid #eee;">
-          
+        <div class="cart-item">
           <img src="${item.image}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;">
           
-          <div style="flex:1;">
-            <div style="font-weight:600;">${item.title}</div>
-            <div style="color:#777;font-size:13px;">${item.price.toLocaleString()} RSD</div>
+          <div class="cart-item-details">
+            <div class="cart-item-title">${item.title}</div>
+            <div class="cart-item-price">${item.price.toLocaleString()} RSD</div>
             
-            <div style="display:flex;gap:10px;margin-top:8px;align-items:center;">
+            <div class="cart-item-actions">
               <button class="btn-qty" data-index="${index}" data-delta="-1">-</button>
               <span>${item.quantity}</span>
               <button class="btn-qty" data-index="${index}" data-delta="1">+</button>
-              <button class="btn-remove" data-index="${index}">✕</button>
+              <button class="btn-remove" data-index="${index}">Obriši</button>
             </div>
           </div>
 
-          <div style="font-weight:600;">
+          <div class="cart-item-total">
             ${itemTotal.toLocaleString()} RSD
           </div>
         </div>
@@ -687,7 +697,7 @@
     cartItemsDiv.innerHTML = html;
     subtotalSpan.textContent = `${subtotal.toLocaleString()} RSD`;
 
-    // dugmad + -
+    // + -
     document.querySelectorAll('.btn-qty').forEach(btn => {
       btn.addEventListener('click', () => {
         const index = parseInt(btn.dataset.index);
@@ -731,6 +741,8 @@
 
     saveCart();
     showNotification(`Dodato: ${product.title}`);
+
+    openCart(); // 🔥 AUTOMATSKO OTVARANJE SA DESNE STRANE
   }
 
   function showNotification(message) {
@@ -841,19 +853,22 @@
     const btnCart = document.getElementById('btnCart');
     const cartModal = document.getElementById('cartModal');
 
-    // 👉 OVO SI TRAŽIO
+    // klik na korpu
     btnCart.addEventListener('click', () => {
-      cartModal.style.display = 'flex';
-      updateCartDisplay();
+      openCart();
     });
 
-    document.getElementById('closeCartModal').addEventListener('click', () => {
-      cartModal.style.display = 'none';
-    });
+    document.getElementById('closeCartModal').addEventListener('click', closeCart);
 
     cartModal.addEventListener('click', (e) => {
       if (e.target === cartModal) {
-        cartModal.style.display = 'none';
+        closeCart();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === "Escape") {
+        closeCart();
       }
     });
 
@@ -882,309 +897,335 @@
 </script>
 
   <style>
-    @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
     }
-    
-    .swiper-container {
-      width: 100%;
-      height: 400px;
+    to {
+      transform: translateX(0);
+      opacity: 1;
     }
-    
-    .swiper-slide {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .swiper-button-prev,
-    .swiper-button-next {
-      color: #333;
-      background: rgba(255,255,255,0.8);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-    }
-    
-    .swiper-button-prev:after,
-    .swiper-button-next:after {
-      font-size: 18px;
-    }
-    
-    .swiper-pagination-bullet-active {
-      background: #333;
-    }
-    
-    .cart-item {
-      display: flex;
-      gap: 15px;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-      align-items: center;
-    }
-    
-    .cart-item-details {
-      flex: 1;
-    }
-    
-    .cart-item-title {
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-    
-    .cart-item-price {
-      color: #666;
-      font-size: 12px;
-      margin-bottom: 8px;
-    }
-    
-    .cart-item-actions {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    
-    .btn-qty {
-      width: 30px;
-      height: 30px;
-      border: 1px solid #ddd;
-      background: white;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    
-    .btn-remove {
-      background: #ff4444;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 12px;
-    }
-    
-    .cart-item-total {
-      font-weight: 600;
-      min-width: 100px;
-      text-align: right;
-    }
-    
-    .drawer {
-      position: fixed;
-      top: 0;
-      right: -400px;
-      width: 400px;
-      height: 100%;
-      background: white;
-      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
-      z-index: 2001;
-      transition: right 0.3s ease;
-    }
-    
-    .drawer[aria-hidden="false"] {
-      right: 0;
-    }
-    
-    .drawer__head {
-      padding: 20px;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .drawer__body {
-      padding: 20px;
-      height: calc(100% - 120px);
-      overflow-y: auto;
-    }
-    
-    .drawer__foot {
-      padding: 20px;
-      border-top: 1px solid #eee;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      background: white;
-    }
-    
-    .sum-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
-      font-size: 18px;
-    }
-    
-    .notification {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #4CAF50;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      z-index: 10000;
-      animation: slideIn 0.3s ease;
-    }
+  }
+  
+  .swiper-container {
+    width: 100%;
+    height: 400px;
+  }
+  
+  .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: #333;
+    background: rgba(255,255,255,0.8);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .swiper-button-prev:after,
+  .swiper-button-next:after {
+    font-size: 18px;
+  }
+  
+  .swiper-pagination-bullet-active {
+    background: #333;
+  }
+  
+  /* ===== KORPA ITEM ===== */
+  .cart-item {
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+  }
+  
+  .cart-item-details {
+    flex: 1;
+  }
+  
+  .cart-item-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  .cart-item-price {
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .cart-item-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .btn-qty {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .btn-remove {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  
+  .cart-item-total {
+    font-weight: 600;
+    min-width: 100px;
+    text-align: right;
+  }
 
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-    }
+  /* ===== STARI DRAWER (ostaje ali ga ne koristiš više) ===== */
+  .drawer {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100%;
+    background: white;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    z-index: 2001;
+    transition: right 0.3s ease;
+  }
+  
+  .drawer[aria-hidden="false"] {
+    right: 0;
+  }
 
+  /* ===== NOTIFIKACIJA ===== */
+  .notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+  }
+
+  /* ===== MODALI (generalno) ===== */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal__dialog {
+    background: white;
+    max-width: 900px;
+    width: 90%;
+    max-height: 90vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .modal__media {
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+  }
+
+  .modal__body {
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  .modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .modal__title {
+    flex: 1;
+  }
+
+  .modal__brand {
+    display: block;
+    font-size: 14px;
+    color: #666;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .modal__name {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .modal__price {
+    display: block;
+    font-size: 28px;
+    font-weight: 800;
+    color: #c41e3a;
+  }
+
+  .modal__close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  .modal__section {
+    margin-bottom: 24px;
+  }
+
+  .modal__section h4 {
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .specs {
+    list-style: none;
+    padding: 0;
+  }
+
+  .specs li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+  }
+
+  .specs li strong {
+    display: inline-block;
+    width: 120px;
+    color: #666;
+  }
+
+  /* ===== NOVI CART MODAL (DESNI PANEL) ===== */
+  #cartModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 3000;
+    justify-content: flex-end;
+    align-items: stretch;
+  }
+
+  #cartModal .modal__dialog {
+    width: 380px;
+    height: 100%;
+    border-radius: 0;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #cartModal.open .modal__dialog {
+    transform: translateX(0);
+  }
+
+  #cartModal .modal__body {
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #cartItems {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .cart-footer {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+  }
+
+  .cart-footer .sum {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  /* ===== CONFIRM / SUCCESS ===== */
+  #confirmOverlay, #successOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 2002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .confirm-box {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+  }
+
+  .confirm-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
     .modal__dialog {
-      background: white;
-      max-width: 900px;
-      width: 90%;
-      max-height: 90vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border-radius: 12px;
-      overflow: hidden;
-      position: relative;
+      grid-template-columns: 1fr;
+      width: 95%;
     }
-
+    
     .modal__media {
-      background: #f5f5f5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 400px;
+      min-height: 300px;
     }
 
-    .modal__body {
-      padding: 24px;
-      overflow-y: auto;
-    }
-
-    .modal__header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 20px;
-    }
-
-    .modal__title {
-      flex: 1;
-    }
-
-    .modal__brand {
-      display: block;
-      font-size: 14px;
-      color: #666;
-      letter-spacing: 2px;
-      margin-bottom: 8px;
-    }
-
-    .modal__name {
-      display: block;
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .modal__price {
-      display: block;
-      font-size: 28px;
-      font-weight: 800;
-      color: #c41e3a;
-    }
-
-    .modal__close {
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      padding: 8px;
-      line-height: 1;
-    }
-
-    .modal__section {
-      margin-bottom: 24px;
-    }
-
-    .modal__section h4 {
-      margin-bottom: 12px;
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .specs {
-      list-style: none;
-      padding: 0;
-    }
-
-    .specs li {
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
-      font-size: 14px;
-    }
-
-    .specs li strong {
-      display: inline-block;
-      width: 120px;
-      color: #666;
-    }
-
-    #confirmOverlay, #successOverlay {
-      position: fixed;
-      top: 0;
-      left: 0;
+    #cartModal .modal__dialog {
       width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      z-index: 2002;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-
-    .confirm-box {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-    }
-
-    .confirm-actions {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    @media (max-width: 768px) {
-      .modal__dialog {
-        grid-template-columns: 1fr;
-        width: 95%;
-      }
-      
-      .modal__media {
-        min-height: 300px;
-      }
-      
-      .drawer {
-        width: 100%;
-        right: -100%;
-      }
-    }
-  </style>
+  }
+</style>
 </body>
 </html>

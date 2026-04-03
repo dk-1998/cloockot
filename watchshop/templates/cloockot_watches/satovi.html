@@ -750,6 +750,7 @@
     currentModalProduct = {
       id: card.dataset.id,
       title: card.dataset.title,
+      brand: card.dataset.brand,
       price: parseInt(card.dataset.price),
       image: images[0]
     };
@@ -841,7 +842,6 @@
     const btnCart = document.getElementById('btnCart');
     const cartModal = document.getElementById('cartModal');
 
-    // 👉 OVO SI TRAŽIO
     btnCart.addEventListener('click', () => {
       cartModal.style.display = 'flex';
       updateCartDisplay();
@@ -857,13 +857,14 @@
       }
     });
 
-    // add to cart dugmad
+    // add to cart dugmad - DODAT BREND
     document.querySelectorAll('.add-to-cart').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const card = e.target.closest('.card');
         addToCart({
           id: card.dataset.id,
           title: card.querySelector('.title').textContent,
+          brand: card.dataset.brand,  // ← DODATO
           price: parseInt(card.dataset.price),
           image: card.querySelector('img').src
         });

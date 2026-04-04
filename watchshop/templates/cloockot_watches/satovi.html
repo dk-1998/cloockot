@@ -1214,6 +1214,32 @@ document.addEventListener('DOMContentLoaded', () => {
         right: -100%;
       }
     }
+    /* Osiguraj da je modal najviši element */
+#productModal {
+    z-index: 10000 !important;
+}
+
+#productModal .modal__dialog {
+    z-index: 10001 !important;
+}
+
+/* Smanji z-index filtera i drugih elemenata */
+.filter-toggle-container,
+.filter-panel,
+.hamburger,
+.menu {
+    z-index: 100;
+}
+
+/* Header neka bude ispod modala */
+header {
+    z-index: 1000;
+}
+
+/* Kada je modal otvoren, onemogući scroll */
+body.modal-open {
+    overflow: hidden;
+}
   </style>
 </body>
 </html>

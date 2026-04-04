@@ -534,35 +534,29 @@
     </div>
   </div>
 
- <div id="cartModal" class="modal" style="display:none;">
-  <div class="modal__dialog" style="max-width:500px;grid-template-columns:1fr;">
-    
-    <div class="modal__body">
-      
-      <div class="modal__header">
-        <div class="modal__title">
-          <span class="modal__name">Korpa</span>
+  <div id="cartModal" class="modal" style="display:none;">
+    <div class="modal__dialog" style="max-width:500px;grid-template-columns:1fr;">
+      <div class="modal__body">
+        <div class="modal__header">
+          <div class="modal__title">
+            <span class="modal__name">Korpa</span>
+          </div>
+          <button class="modal__close" id="closeCartModal">✕</button>
         </div>
-        <button class="modal__close" id="closeCartModal">✕</button>
-      </div>
-
-      <div id="cartItems"></div>
-      <div id="cartEmpty" class="empty" style="display:none">Korpa je prazna.</div>
-
-      <div style="margin-top:20px;">
-        <div style="display:flex;justify-content:space-between;font-size:18px;">
-          <span>Međuzbir</span>
-          <strong id="cartSubtotal">0 RSD</strong>
+        <div id="cartItems"></div>
+        <div id="cartEmpty" class="empty" style="display:none">Korpa je prazna.</div>
+        <div style="margin-top:20px;">
+          <div style="display:flex;justify-content:space-between;font-size:18px;">
+            <span>Međuzbir</span>
+            <strong id="cartSubtotal">0 RSD</strong>
+          </div>
+          <button class="btn primary" style="width:100%;margin-top:15px;" id="checkoutBtn">
+            Checkout
+          </button>
         </div>
-
-        <button class="btn primary" style="width:100%;margin-top:15px;" id="checkoutBtn">
-          Checkout
-        </button>
       </div>
-
     </div>
   </div>
-</div>
 
   <!-- POTVRDA PORUDŽBINE -->
   <div id="confirmOverlay" style="display:none">
@@ -608,7 +602,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
- <script>
+  <script>
   // ======== GLOBALNE PROMENLJIVE ========
   let currentModalProduct = null;
   let swiperInstance = null;
@@ -662,13 +656,10 @@
 
       html += `
         <div style="display:flex;gap:15px;padding:10px 0;border-bottom:1px solid #eee;">
-          
           <img src="${item.image}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;">
-          
           <div style="flex:1;">
             <div style="font-weight:600;">${item.title}</div>
             <div style="color:#777;font-size:13px;">${item.price.toLocaleString()} RSD</div>
-            
             <div style="display:flex;gap:10px;margin-top:8px;align-items:center;">
               <button class="btn-qty" data-index="${index}" data-delta="-1">-</button>
               <span>${item.quantity}</span>
@@ -676,7 +667,6 @@
               <button class="btn-remove" data-index="${index}">✕</button>
             </div>
           </div>
-
           <div style="font-weight:600;">
             ${itemTotal.toLocaleString()} RSD
           </div>
@@ -687,23 +677,18 @@
     cartItemsDiv.innerHTML = html;
     subtotalSpan.textContent = `${subtotal.toLocaleString()} RSD`;
 
-    // dugmad + -
     document.querySelectorAll('.btn-qty').forEach(btn => {
       btn.addEventListener('click', () => {
         const index = parseInt(btn.dataset.index);
         const delta = parseInt(btn.dataset.delta);
-
         currentCart[index].quantity += delta;
-
         if (currentCart[index].quantity <= 0) {
           currentCart.splice(index, 1);
         }
-
         saveCart();
       });
     });
 
-    // ukloni
     document.querySelectorAll('.btn-remove').forEach(btn => {
       btn.addEventListener('click', () => {
         const index = parseInt(btn.dataset.index);
@@ -722,13 +707,11 @@
     }
 
     const existing = currentCart.find(item => item.id === product.id);
-
     if (existing) {
       existing.quantity++;
     } else {
       currentCart.push({ ...product, quantity: 1 });
     }
-
     saveCart();
     showNotification(`Dodato: ${product.title}`);
   }
@@ -737,13 +720,54 @@
     const div = document.createElement('div');
     div.className = 'notification';
     div.textContent = message;
-
     document.body.appendChild(div);
     setTimeout(() => div.remove(), 2500);
   }
 
+  // ======== TOGGLE FILTER PANELA ========
+  function initFilters() {
+    const filterToggle = document.getElementById('filterToggle');
+    const filterPanel = document.getElementById('filterPanel');
+    
+    if (filterToggle && filterPanel) {
+      filterToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        filterPanel.classList.toggle('active');
+        filterToggle.classList.toggle('active');
+      });
+      
+      document.addEventListener('click', (e) => {
+        if (!filterToggle.contains(e.target) && !filterPanel.contains(e.target)) {
+          filterPanel.classList.remove('active');
+          filterToggle.classList.remove('active');
+        }
+      });
+    }
+  }
+
+  // ======== ZATVARANJE MODAL PROZORA ========
+  function closeModal() {
+    const modal = document.getElementById('productModal');
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      if (swiperInstance) {
+        swiperInstance.autoplay?.stop();
+      }
+    }
+  }
+
   // ======== MODAL PROIZVODA ========
   function openProductModal(card) {
+    // Zatvori filter panel ako je otvoren
+    const filterPanel = document.getElementById('filterPanel');
+    const filterToggle = document.getElementById('filterToggle');
+    if (filterPanel && filterPanel.classList.contains('active')) {
+      filterPanel.classList.remove('active');
+      filterToggle.classList.remove('active');
+    }
+    
     const images = JSON.parse(card.dataset.images);
     const specs = JSON.parse(card.dataset.spec);
 
@@ -775,10 +799,11 @@
 
     const modal = document.getElementById('productModal');
     modal.style.display = 'flex';
+    document.body.classList.add('modal-open');
 
     setTimeout(() => {
       if (swiperInstance) swiperInstance.destroy();
-      swiperInstance = new Swiper('.swiper-container', {
+      swiperInstance = new Swiper('#modalSwiper', {
         loop: true,
         navigation: {
           nextEl: '.swiper-button-next',
@@ -815,7 +840,6 @@
 
       currentCart = [];
       saveCart();
-
       document.getElementById('successOverlay').style.display = 'flex';
     };
 
@@ -838,7 +862,8 @@
   // ======== INIT ========
   document.addEventListener('DOMContentLoaded', () => {
     loadCart();
-
+    initFilters();
+    
     const btnCart = document.getElementById('btnCart');
     const cartModal = document.getElementById('cartModal');
 
@@ -857,21 +882,19 @@
       }
     });
 
-    // add to cart dugmad - DODAT BREND
     document.querySelectorAll('.add-to-cart').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const card = e.target.closest('.card');
         addToCart({
           id: card.dataset.id,
           title: card.querySelector('.title').textContent,
-          brand: card.dataset.brand,  // ← DODATO
+          brand: card.dataset.brand,
           price: parseInt(card.dataset.price),
           image: card.querySelector('img').src
         });
       });
     });
 
-    // preview
     document.querySelectorAll('.preview-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         openProductModal(e.target.closest('.card'));
@@ -879,36 +902,29 @@
     });
 
     document.getElementById('checkoutBtn').addEventListener('click', checkout);
-  });
-  // ZATVARANJE MODAL PROZORA - DUGME X
-document.addEventListener('DOMContentLoaded', () => {
-    // Zatvaranje modal prozora klikom na X dugme
+    
     const modalCloseBtn = document.getElementById('modalClose');
     const modal = document.getElementById('productModal');
     
-    if (modalCloseBtn && modal) {
-        modalCloseBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-            // Opciono: zaustavi swiper video ako je pokrenut
-            if (swiperInstance) {
-                swiperInstance.autoplay?.stop();
-            }
-        });
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener('click', closeModal);
     }
     
-    // Opciono: Zatvaranje klikom van modal prozora (na pozadinu)
     if (modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-                if (swiperInstance) {
-                    swiperInstance.autoplay?.stop();
-                }
-            }
-        });
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
     }
-});
-</script>
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+        closeModal();
+      }
+    });
+  });
+  </script>
 
   <style>
     @keyframes slideIn {
@@ -1199,6 +1215,79 @@ document.addEventListener('DOMContentLoaded', () => {
       margin-top: 20px;
     }
 
+    /* POPRAVKA ZA FILTERE */
+    .filter-toggle-container {
+      position: relative;
+      margin-bottom: 20px;
+      z-index: 100;
+    }
+
+    .filter-toggle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 12px 16px;
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      z-index: 101;
+      position: relative;
+    }
+
+    .filter-panel {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .filter-panel.active {
+      display: block;
+    }
+
+    .filter-toggle-btn.active .arrow {
+      transform: rotate(180deg);
+    }
+
+    .arrow {
+      transition: transform 0.3s ease;
+    }
+
+    /* Osiguraj da je modal najviši element */
+    #productModal {
+      z-index: 10000 !important;
+    }
+
+    #productModal .modal__dialog {
+      z-index: 10001 !important;
+    }
+
+    /* Kada je modal otvoren, onemogući scroll i sakrij filtere */
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    body.modal-open .filter-toggle-container {
+      z-index: 1;
+    }
+
+    body.modal-open .filter-panel {
+      display: none !important;
+    }
+
     @media (max-width: 768px) {
       .modal__dialog {
         grid-template-columns: 1fr;
@@ -1214,32 +1303,6 @@ document.addEventListener('DOMContentLoaded', () => {
         right: -100%;
       }
     }
-    /* Osiguraj da je modal najviši element */
-#productModal {
-    z-index: 10000 !important;
-}
-
-#productModal .modal__dialog {
-    z-index: 10001 !important;
-}
-
-/* Smanji z-index filtera i drugih elemenata */
-.filter-toggle-container,
-.filter-panel,
-.hamburger,
-.menu {
-    z-index: 100;
-}
-
-/* Header neka bude ispod modala */
-header {
-    z-index: 1000;
-}
-
-/* Kada je modal otvoren, onemogući scroll */
-body.modal-open {
-    overflow: hidden;
-}
   </style>
 </body>
 </html>

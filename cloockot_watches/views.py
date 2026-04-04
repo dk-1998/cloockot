@@ -214,3 +214,94 @@ def checkout(request):
     except Exception as e:
         logger.error(f"Greška u checkout: {str(e)}")
         return JsonResponse({'error': f'Došlo je do greške: {str(e)}'}, status=400)
+    # Kontakt forma - slanje emaila
+@require_http_methods(["POST"])
+@ensure_csrf_cookie
+def posalji_email(request):
+    try:
+        # Ako je korisnik ulogovan, uzmi njegov email
+        if request.session.get('korisnicko_ime'):
+            korisnicko_ime = request.session['korisnicko_ime']
+            try:
+                korisnik = Korisnik.objects.get(korisnicko_ime=korisnicko_ime)
+                email_korisnika = korisnik.email
+                ime_korisnika = f"{korisnik.ime} {korisnik.prezime}"
+            except Korisnik.DoesNotExist:
+                email_korisnika = request.POST.get('email', '')
+                ime_korisnika = request.POST.get('email', 'Nepoznat korisnik')
+        else:
+            email_korisnika = request.POST.get('email', '')
+            ime_korisnika = request.POST.get('email', 'Nepoznat korisnik')
+        
+        telefon = request.POST.get('telefon', '')
+        poruka = request.POST.get('poruka', '')
+        slika = request.FILES.get('slika', None)
+        
+        # Validacija
+        if not email_korisnika:
+            return JsonResponse({'error': 'Email adresa je obavezna.'}, status=400)
+        
+        if not poruka:
+            return JsonResponse({'error': 'Poruka je obavezna.'}, status=400)
+        
+        # Kreiraj HTML email
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+            <h2 style="color: #e11d48;">📧 Nova poruka sa sajta Cloockot</h2>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background: #f5f5f5;">
+                    <td style="padding: 10px; font-weight: bold; width: 150px;">Od:</td>
+                    <td style="padding: 10px;">{ime_korisnika}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; font-weight: bold;">Email:</td>
+                    <td style="padding: 10px;"><a href="mailto:{email_korisnika}">{email_korisnika}</a></td>
+                </tr>
+                <tr style="background: #f5f5f5;">
+                    <td style="padding: 10px; font-weight: bold;">Telefon:</td>
+                    <td style="padding: 10px;">{telefon if telefon else 'Nije naveden'}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; font-weight: bold;">Datum:</td>
+                    <td style="padding: 10px;">{__import__('datetime').datetime.now().strftime('%d.%m.%Y %H:%M')}</td>
+                </tr>
+            </table>
+            
+            <div style="background: #f9f9f9; padding: 20px; border-left: 4px solid #e11d48; margin: 20px 0;">
+                <h3 style="margin-top: 0;">📝 Poruka:</h3>
+                <p style="white-space: pre-wrap; font-size: 15px;">{poruka}</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        text_content = strip_tags(html_content)
+        
+        # Kreiraj email
+        subject = f'Kontakt poruka od {ime_korisnika}'
+        
+        msg = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=['cloockot@gmail.com'],  # Tvoja email adresa
+            reply_to=[email_korisnika],
+        )
+        msg.attach_alternative(html_content, "text/html")
+        
+        # Ako ima slike, dodaj je kao prilog
+        if slika:
+            msg.attach(slika.name, slika.read(), slika.content_type)
+        
+        # Pošalji email
+        msg.send(fail_silently=False)
+        
+        logger.info(f"Kontakt email poslat od {email_korisnika}")
+        
+        return JsonResponse({'success': True, 'message': 'Poruka je uspešno poslata!'})
+        
+    except Exception as e:
+        logger.error(f"Greška pri slanju kontakt emaila: {str(e)}")
+        return JsonResponse({'error': f'Došlo je do greške: {str(e)}'}, status=500)

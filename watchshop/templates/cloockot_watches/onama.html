@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloockot – O nama</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="{% static 'cloockot_watches/css/onama.css' %}">
+
+ 
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="brand" href="{% url 'index' %}">Cloockot</a>
+
+  <button class="hamburger" id="menuBtn">☰</button>
+
+  <nav class="menu" id="menu" aria-label="Glavni meni">
+    <a href="{% url 'index' %}">POČETNA</a>
+    <a href="{% url 'onama' %}">O NAMA</a>
+    <a href="{% url 'satovi' %}">SATOVI</a>
+    <a href="{% url 'kontakt' %}">KONTAKT</a>
+
+    <div class="right">
+      {% if request.session.korisnicko_ime %}
+        <span><strong>{{ request.session.korisnicko_ime }}</strong></span>
+        <a href="{% url 'odjava' %}">Odjava</a>
+      {% else %}
+        <a href="{% url 'prijava' %}">Prijava</a>
+        <a href="{% url 'registracija' %}">Registracija</a>
+      {% endif %}
+    </div>
+  </nav>
+</header>
+
+<main class="container">
+  <h1>O nama</h1>
+
+  <div class="content">
+    <!-- TEKST – NEPROMENJEN -->
+    <div>
+      <p>Cloockot je nastao iz ljubavi prema vremenu i preciznosti. Naša ideja je bila jednostavna – učiniti vrhunske satove dostupnim svima, a pritom ponuditi jedinstveno iskustvo kupovine. Od malog tima entuzijasta, izrasli smo u prepoznatljiv brend koji okuplja najveće svetske proizvođače satova.</p>
+
+      <p><strong>Naša misija</strong><br>
+      Verujemo da sat nije samo merač vremena, već i izraz stila, ličnosti i načina života. Naš cilj je da svakom kupcu omogućimo da pronađe model koji najbolje odražava njegov karakter – bilo da se radi o klasičnom švajcarskom mehanizmu, modernom pametnom satu ili sportskom hronografu.</p>
+
+      <p><strong>Naša ponuda</strong><br>
+      U ponudi imamo pažljivo odabrane brendove koji garantuju kvalitet, dugovečnost i prestiž. Svaki sat koji pronađete kod nas prošao je proveru autentičnosti i dolazi uz garanciju. Pored satova, nudimo i aksesoare koji upotpunjuju Vaš stil i čine svaki trenutak posebnim.</p>
+
+      <p><strong>Zašto mi?</strong><br>
+      ✔️ Originalni proizvodi sa garancijom<br>
+      ✔️ Besplatna dostava na teritoriji Srbije<br>
+      ✔️ Servis i podrška kupcima na najvišem nivou<br>
+      ✔️ Tim posvećenih ljudi koji ceni Vaše vreme</p>
+
+      <p><strong>Naša filozofija</strong><br>
+      Za nas vreme nije samo broj na kazaljkama – ono je uspomena, odluka, trenutak koji menja život. Zato se trudimo da svaki kupac iz naše radnje izađe sa satom koji će ga podsećati na ono što mu je najvažnije.</p>
+    </div>
+
+    <!-- SLIKE – NEPROMENJENE -->
+    <div>
+      <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800" alt="Prodavnica">
+      <img src="https://sbg.rs/wp-content/uploads/2020/06/sat-hronograf-kozni_1_LG.png" alt="Sat">
+    </div>
+  </div>
+</main>
+
+<footer style="background:#111;color:#fff;margin-top:60px;">
+  <div style="max-width:1280px;margin:0 auto;padding:40px 20px;">
+    ©2025 Cloockot.com. Sva prava zadržana.
+  </div>
+</footer>
+
+<script>
+/* MOBILE NAV TOGGLE */
+const menuBtn = document.getElementById("menuBtn");
+const menu = document.getElementById("menu");
+
+if(menuBtn && menu){
+  menuBtn.addEventListener("click", () => {
+    menu.classList.toggle("active");
+  });
+}
+</script>
+
+</body>
+</html>

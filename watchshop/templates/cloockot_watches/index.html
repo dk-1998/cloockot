@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cloockot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'cloockot_watches/css/index.css' %}">
+
+
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="container">
+    <div class="wrap">
+      {% if request.session.korisnicko_ime %}
+        <strong>{{ request.session.korisnicko_ime }}</strong>
+        <a href="{% url 'odjava' %}">Odjava</a>
+      {% else %}
+        <a href="{% url 'prijava' %}">Prijava</a>
+        <a href="{% url 'registracija' %}">Registracija</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="container">
+    <div class="row">
+      <a href="{% url 'index' %}" class="brand">Cloockot</a>
+
+      <button class="hamburger" id="menuBtn">☰</button>
+
+      <nav class="menu" id="menu">
+        <a href="{% url 'index' %}">POČETNA</a>
+        <a href="{% url 'onama' %}">O NAMA</a>
+        <a href="{% url 'satovi' %}">SATOVI</a>
+        <a href="{% url 'kontakt' %}">KONTAKT</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- HERO SLIDER -->
+<section class="hero" id="hero">
+
+  <div class="container">
+
+    <div class="slide" data-index="0">
+      <div class="copy">
+        <h1>Ručni satovi po povoljnim cenama<br>i vrhunskom kvalitetu</h1>
+      </div>
+      <img class="watch" src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1200" alt="Sat">
+    </div>
+
+    <div class="slide" data-index="1" style="display:none">
+      <div class="copy">
+        <h1>Ikoničan dizajn<br>moderni mehanizam</h1>
+      </div>
+      <img class="watch" src="https://www.watch.rs/wp-content/uploads/2023/04/1513999.jpg" alt="Sat">
+    </div>
+
+    <div class="slide" data-index="2" style="display:none">
+      <div class="copy">
+        <h1>Veliki izbor<br>poznatih brendova</h1>
+      </div>
+      <img class="watch" src="https://automatic.rs/wp-content/uploads/2025/02/Omega-De-Ville-Prestige-Quartz-1-800x1000.jpg" alt="Sat">
+    </div>
+
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="ctrl">
+    <button id="prev">‹</button>
+    <button id="next">›</button>
+  </div>
+
+  <div class="dots" id="dots"></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container" style="padding:30px 0;font-size:14px;">
+    ©2025 Cloockot.com – Sva prava zadržana
+  </div>
+</footer>
+
+<script>
+/* MOBILE MENU */
+document.getElementById("menuBtn").onclick = function(){
+  document.getElementById("menu").classList.toggle("active");
+}
+
+/* SLIDER */
+const slides = document.querySelectorAll(".slide");
+const dots = document.getElementById("dots");
+let index = 0;
+
+function showSlide(i){
+  slides.forEach(s => s.style.display = "none");
+  slides[i].style.display = "grid";
+  dots.querySelectorAll("button").forEach((d,idx)=>{
+    d.classList.toggle("active", idx === i);
+  });
+}
+
+slides.forEach((_, i)=>{
+  const dot = document.createElement("button");
+  dot.onclick = () => {
+    index = i;
+    showSlide(index);
+  }
+  dots.appendChild(dot);
+});
+
+document.getElementById("prev").onclick = ()=>{
+  index = (index - 1 + slides.length) % slides.length;
+  showSlide(index);
+}
+document.getElementById("next").onclick = ()=>{
+  index = (index + 1) % slides.length;
+  showSlide(index);
+}
+
+showSlide(index);
+</script>
+
+</body>
+</html>

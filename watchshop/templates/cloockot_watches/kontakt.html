@@ -1,0 +1,354 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cloockot-Kontakt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'cloockot_watches/css/kontakt.css' %}">
+
+
+
+ 
+</head>
+<body>
+  <header>
+    <a class="brand" href="{% url 'index' %}">Cloockot</a>
+    
+    <button class="hamburger" id="hamburgerBtn">☰</button>
+    
+    <nav class="menu" id="mainMenu">
+      <a href="{% url 'index' %}">POČETNA</a>
+      <a href="{% url 'onama' %}">O NAMA</a>
+      <a href="{% url 'satovi' %}">SATOVI</a>
+      <a href="{% url 'kontakt' %}">KONTAKT</a>
+      
+      <div class="right">
+        {% if request.session.korisnicko_ime %}
+          <span><strong>{{ request.session.korisnicko_ime }}</strong></span>
+          <a href="{% url 'odjava' %}">Odjava</a>
+        {% else %}
+          <a href="{% url 'prijava' %}">Prijava</a>
+          <a href="{% url 'registracija' %}">Registracija</a>
+        {% endif %}
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1>Možete nas kontaktirati za dodatne modele i informacije</h1>
+
+    <div class="grid">
+      <!-- LEVO: FORMA -->
+      <section>
+        <form method="POST"
+              action="{% url 'posalji_email' %}"
+              enctype="multipart/form-data"
+              class="card card-body">
+          {% csrf_token %}
+
+          {% if not request.session.korisnicko_ime %}
+            <label for="email">Vaš email:</label><br>
+            <input type="email" id="email" name="email" required><br>
+          {% else %}
+            <input type="hidden" name="email" value="">
+          {% endif %}
+
+          <label for="telefon">Telefon (opciono):</label><br>
+          <input type="text" id="telefon" name="telefon"><br>
+
+          <label for="poruka">Poruka:</label><br>
+          <textarea id="poruka" name="poruka" rows="5" required></textarea><br>
+
+          <label for="slika">Dodajte sliku (opciono):</label><br>
+          <input type="file" id="slika" name="slika" accept="image/*" onchange="previewImage(event)"><br><br>
+
+          <img id="preview"
+               style="max-width:200px;display:none;border:1px solid #ccc;border-radius:8px;padding:4px">
+
+          <br><br>
+          <button type="submit" class="btn btn-primary">📧 Pošalji</button>
+        </form>
+      </section>
+
+      <!-- DESNO: KONTAKT PODACI -->
+      <aside class="info">
+        <div class="card-body">
+          <h3 style="margin:0 0 12px">Kontakt podaci</h3>
+
+          <div style="margin:10px 0">
+            <b>Call Centar:</b><br>
+            <a href="tel:0608382117">064 016 6411</a> •
+            
+          </div>
+
+          <div style="margin:10px 0">
+            <b>Email:</b><br>
+            <a href="mailto:cloockot@gmail.com">cloockot@gmail.com</a>
+          </div>
+
+          <div style="margin:10px 0">
+            <b>Radno vreme:</b><br>
+            Ponedeljak – subota 09:00 – 17:00h
+          </div>
+          <div class="pill" style="margin-top:14px">🚚 Besplatna dostava</div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer style="background:#111;color:#fff;margin-top:60px;">
+    <div style="max-width:1280px;margin:0 auto;padding:40px 20px;display:grid;grid-template-columns:1.5fr 1fr;gap:30px;">
+      <div>
+        <div style="font-size:26px;font-weight:800;margin-bottom:12px;">Cloockot</div>
+        <p style="color:#ccc;line-height:1.6;font-size:14px;">Koncept multibrend radnje koja spaja renomirane svetske brendove i profesionalnu uslugu – Vaše zadovoljstvo je naše merilo uspeha.</p>
+      </div>
+    </div>
+    <div style="border-top:1px solid #333;padding:15px 20px;max-width:1280px;margin:0 auto;font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;color:#bbb;">
+      <div>©2025 Cloockot.com. Sva prava zadržana.</div>
+    </div>
+  </footer>
+
+<script>
+    // Mobile menu functionality
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mainMenu = document.getElementById('mainMenu');
+    
+    hamburgerBtn.addEventListener('click', function(e) {
+      e.stopPropagation(); // Sprečava da klik propagira do document event listenera
+      
+      // Toggle (uključi/isključi) meni
+      mainMenu.classList.toggle('active');
+      
+      // Toggle ikonu hamburgera (promeni stil)
+      if (mainMenu.classList.contains('active')) {
+        document.body.style.overflow = 'hidden'; // Sprečava skrolovanje tela
+      } else {
+        document.body.style.overflow = ''; // Vraća skrolovanje
+      }
+    });
+    
+    // Zatvori meni kada se klikne na bilo koji link u meniju
+    const menuLinks = mainMenu.querySelectorAll('a');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        mainMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+    
+    // Zatvori meni kada se klikne izvan njega
+    document.addEventListener('click', function(event) {
+      if (mainMenu.classList.contains('active') && 
+          !mainMenu.contains(event.target) && 
+          event.target !== hamburgerBtn) {
+        mainMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    // Zatvori meni kada se pritisne Escape taster
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && mainMenu.classList.contains('active')) {
+        mainMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+
+    function previewImage(event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById('preview');
+      if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    }
+
+    // Kreirajte modal za potvrdu i modal za uspeh
+    const confirmationModalHTML = `
+      <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;z-index:9999;" id="confirmationModal">
+        <div style="background:white;padding:40px;border-radius:16px;max-width:450px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+          <h2 style="color:#333;margin:0 0 20px;font-size:24px;">🔔 Potvrdite slanje</h2>
+          <p style="font-size:16px;color:#555;line-height:1.5;margin-bottom:30px;">
+            Da li ste sigurni da želite da pošaljete ovu poruka?<br>
+            Proverite da li su svi podaci ispravni.
+          </p>
+          <div style="display:flex;gap:15px;justify-content:center;">
+            <button id="confirmYes" style="padding:14px 32px;background:#e11d48;color:white;border:none;border-radius:10px;font-weight:700;font-size:16px;cursor:pointer;transition:background 0.3s;">
+              Da, pošalji
+            </button>
+            <button id="confirmNo" style="padding:14px 32px;background:#6b7280;color:white;border:none;border-radius:10px;font-weight:600;font-size:16px;cursor:pointer;transition:background 0.3s;">
+              Ne, otkaži
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const successModalHTML = `
+      <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;z-index:9998;" id="successModal">
+        <div style="background:white;padding:50px;border-radius:16px;max-width:500px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+          <div style="font-size:60px;margin-bottom:20px;color:#10b981;">✓</div>
+          <h2 style="color:#10b981;margin:0 0 16px;font-size:28px;">Poruka je uspešno poslata!</h2>
+          <p style="font-size:16px;color:#555;line-height:1.6;margin-bottom:30px;">
+            Hvala vam što ste nas kontaktirali.<br>
+            Odgovorićemo vam na email u najkraćem mogućem roku.
+          </p>
+          <button id="closeModal" style="padding:14px 40px;background:#10b981;color:white;border:none;border-radius:10px;font-weight:700;font-size:16px;cursor:pointer;transition:background 0.3s;">
+            U redu
+          </button>
+        </div>
+      </div>
+    `;
+
+    // Dodajte oba modala u body
+    document.body.insertAdjacentHTML('beforeend', confirmationModalHTML);
+    document.body.insertAdjacentHTML('beforeend', successModalHTML);
+
+    // Selektujte elemente
+    const form = document.querySelector('form');
+    const confirmationModal = document.getElementById('confirmationModal');
+    const successModal = document.getElementById('successModal');
+    const confirmYesBtn = document.getElementById('confirmYes');
+    const confirmNoBtn = document.getElementById('confirmNo');
+    const closeModalBtn = document.getElementById('closeModal');
+
+    // Promenljiva za čuvanje formData
+    let pendingFormData = null;
+
+    // Kada se forma submituje
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      
+      // Sačuvaj podatke forme
+      pendingFormData = new FormData(form);
+      
+      // Prikaži modal za potvrdu
+      confirmationModal.style.display = "flex";
+    });
+
+    // Kada korisnik klikne "Da" u potvrdnom modalu
+    confirmYesBtn.addEventListener('click', function(){
+      // Sakrij modal za potvrdu
+      confirmationModal.style.display = 'none';
+      
+      // Prikaži indikator učitavanja
+      const originalBtnText = confirmYesBtn.textContent;
+      confirmYesBtn.textContent = "Slanje...";
+      confirmYesBtn.disabled = true;
+      
+      // Pošalji zahtev
+      fetch("{% url 'posalji_email' %}", {
+        method: "POST",
+        body: pendingFormData,
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+      })
+      .then(response => {
+        // Vrati dugme u prvobitno stanje
+        confirmYesBtn.textContent = originalBtnText;
+        confirmYesBtn.disabled = false;
+        
+        if(response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Greška prilikom slanja');
+        }
+      })
+      .then(data => {
+        if(data.success) {
+          // Prikaži modal za uspeh
+          successModal.style.display = "flex";
+          
+          // Resetuj formu
+          form.reset();
+          const preview = document.getElementById('preview');
+          if(preview) preview.style.display = 'none';
+          
+          // Resetuj pendingFormData
+          pendingFormData = null;
+        } else {
+          alert(data.error || "Došlo je do greške prilikom slanja. Pokušajte ponovo.");
+        }
+      })
+      .catch(error => {
+        // Vrati dugme u prvobitno stanje
+        confirmYesBtn.textContent = originalBtnText;
+        confirmYesBtn.disabled = false;
+        
+        console.error("Greška:", error);
+        alert("Došlo je do greške prilikom slanja. Pokušajte ponovo.");
+      });
+    });
+
+    // Kada korisnik klikne "Ne" u potvrdnom modalu
+    confirmNoBtn.addEventListener('click', function(){
+      confirmationModal.style.display = 'none';
+      pendingFormData = null;
+    });
+
+    // Kada korisnik klikne na zatvaranje modala za uspeh
+    closeModalBtn.addEventListener('click', function(){
+      successModal.style.display = 'none';
+    });
+
+    // Zatvori modal klikom izvan njega
+    confirmationModal.addEventListener('click', function(e){
+      if(e.target === confirmationModal) {
+        confirmationModal.style.display = 'none';
+        pendingFormData = null;
+      }
+    });
+
+    successModal.addEventListener('click', function(e){
+      if(e.target === successModal) {
+        successModal.style.display = 'none';
+      }
+    });
+
+    // Dodajte i stilove za hover efekte
+    const style = document.createElement('style');
+    style.textContent = `
+      #confirmYes:hover { background: #be123c !important; }
+      #confirmNo:hover { background: #4b5563 !important; }
+      #closeModal:hover { background: #059669 !important; }
+      
+      /* Media query za mobilne modal prozore */
+      @media (max-width: 768px) {
+        #confirmationModal > div {
+          margin: 20px;
+          padding: 30px 20px;
+          width: calc(100% - 40px);
+        }
+        
+        #confirmationModal > div div {
+          flex-direction: column;
+        }
+        
+        #confirmYes, #confirmNo {
+          width: 100%;
+          margin-bottom: 10px;
+        }
+        
+        #successModal > div {
+          margin: 20px;
+          padding: 40px 20px;
+          width: calc(100% - 40px);
+        }
+        
+        #closeModal {
+          width: 100%;
+          max-width: 200px;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

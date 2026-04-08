@@ -1,0 +1,22 @@
+<h1>Lista satova</h1>
+
+{% if request.session.korisnik_id %}
+  <p>Prijavljeni ste | <a href="{% url 'odjava' %}">Odjava</a></p>
+{% else %}
+  <p><a href="{% url 'prijava' %}">Prijavite se</a> ili <a href="{% url 'registracija' %}">registrujte</a> se</p>
+{% endif %}
+
+<ul>
+  {% for sat in satovi %}
+    <li>
+      {{ sat.naziv }} - {{ sat.cena }} RSD
+      {% if request.session.korisnik_id %}
+        <a href="{% url 'dodaj_u_korpu' sat.id %}">Dodaj u korpu</a>
+      {% else %}
+        <span>Morate biti prijavljeni da dodate u korpu</span>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+
+<a href="{% url 'pregled_korpe' %}">Pregled korpe</a>

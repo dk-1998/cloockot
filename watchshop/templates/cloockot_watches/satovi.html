@@ -1,0 +1,1506 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cloockot-Satovi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'cloockot_watches/css/satovi.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav-row">
+        <a class="brand" href="{% url 'index' %}">Cloockot</a>
+        <button class="hamburger" id="menuBtn">☰</button>
+        <nav class="menu" id="menu" aria-label="Glavni meni">
+          <a href="{% url 'index' %}">POČETNA</a>
+          <a href="{% url 'onama' %}">O NAMA</a>
+          <a href="{% url 'satovi' %}">SATOVI</a>
+          <a href="{% url 'kontakt' %}">KONTAKT</a>
+          <div class="right">
+            {% if request.session.korisnicko_ime %}
+              <span><strong>{{ request.session.korisnicko_ime }}</strong></span>
+              <a href="{% url 'odjava' %}">Odjava</a>
+            {% else %}
+              <a href="{% url 'prijava' %}">Prijava</a>
+              <a href="{% url 'registracija' %}">Registracija</a>
+            {% endif %}
+          </div>
+        </nav>
+        <div class="actions">
+          <button id="btnCart" class="icon-btn" aria-label="Korpa">
+            🛒
+            <span id="cartBadge" class="badge" style="display:none">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="breadcrumb">Početna / Satovi</div>
+    <h1 class="page-title">Satovi</h1>
+    
+    <div class="filter-toggle-container">
+     <button id="filterToggle" class="btn primary" style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
+  <span>Filteri</span>
+  <span class="arrow">▼</span>
+</button>
+      
+      <div id="filterPanel" class="filter-panel">
+        <form class="filterbar" id="filterForm" onsubmit="return false;">
+          <div>
+            <fieldset class="f-group">
+              <legend>Pol</legend>
+              <label class="chip"><input type="checkbox" name="pol" value="muski"> Muški</label>
+              <label class="chip"><input type="checkbox" name="pol" value="zenski"> Ženski</label>
+              <label class="chip"><input type="checkbox" name="pol" value="unisex"> Unisex</label>
+            </fieldset>
+
+            <fieldset class="f-group">
+              <legend>Brend</legend>
+              <label class="chip"><input type="checkbox" name="brend" value="casio"> Casio</label>
+              <label class="chip"><input type="checkbox" name="brend" value="boss"> Boss</label>
+              <label class="chip"><input type="checkbox" name="brend" value="amalys"> Amalys</label>
+              <label class="chip"><input type="checkbox" name="brend" value="anne-klein"> Anne Klein</label>
+              <label class="chip"><input type="checkbox" name="brend" value="garmin"> Garmin</label>
+              <label class="chip"><input type="checkbox" name="brend" value="naviforce"> Naviforce</label>
+            </fieldset>
+
+            <fieldset class="f-group">
+              <legend>Narukvica</legend>
+              <label class="chip"><input type="checkbox" name="narukvica" value="metalni"> Metalni</label>
+              <label class="chip"><input type="checkbox" name="narukvica" value="kozni"> Kožni</label>
+              <label class="chip"><input type="checkbox" name="narukvica" value="platneni"> Platneni</label>
+              <label class="chip"><input type="checkbox" name="narukvica" value="mesh"> Mesh</label>
+              <label class="chip"><input type="checkbox" name="narukvica" value="smola"> Smola</label>
+            </fieldset>
+
+            <fieldset class="f-group">
+              <legend>Kategorija</legend>
+              <label class="chip"><input type="checkbox" name="kategorija" value="novo"> Novo</label>
+              <label class="chip"><input type="checkbox" name="kategorija" value="ponuda-oglasi"> Polovno</label>
+            </fieldset>
+
+            <fieldset class="f-group">
+              <legend>Boja</legend>
+              <label class="chip"><input type="checkbox" name="boja" value="crni"> Crni</label>
+              <label class="chip"><input type="checkbox" name="boja" value="srebrni"> Srebrni</label>
+              <label class="chip"><input type="checkbox" name="boja" value="zlatni"> Zlatni</label>
+              <label class="chip"><input type="checkbox" name="boja" value="roze"> Roze</label>
+              <label class="chip"><input type="checkbox" name="boja" value="plavi"> Plavi</label>
+              <label class="chip"><input type="checkbox" name="boja" value="crveni"> Crveni</label>
+              <label class="chip"><input type="checkbox" name="boja" value="braon"> Braon</label>
+              <label class="chip"><input type="checkbox" name="boja" value="dvobojni"> Dvobojni</label>
+            </fieldset>
+
+            <fieldset class="f-group">
+              <legend>Cena (RSD)</legend>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <label style="display: flex; flex-direction: column; align-items: center; font-size: 12px;">
+                  Od:
+                  <select id="minPrice" style="margin-top: 4px;">
+                    <option value="0">0</option>
+                    <option value="9990">9.990</option>
+                    <option value="10000">10.000</option>
+                    <option value="12490">12.490</option>
+                    <option value="12990">12.990</option>
+                    <option value="13990">13.990</option>
+                    <option value="14990">14.990</option>
+                    <option value="15490">15.490</option>
+                    <option value="17990">17.990</option>
+                    <option value="19490">19.490</option>
+                    <option value="25990">25.990</option>
+                    <option value="28990">28.990</option>
+                    <option value="32990">32.990</option>
+                    <option value="33990">33.990</option>
+                  </select>
+                </label>
+                <label style="display: flex; flex-direction: column; align-items: center; font-size: 12px;">
+                  Do:
+                  <select id="maxPrice" style="margin-top: 4px;">
+                    <option value="999999">Sve</option>
+                    <option value="9990">9.990</option>
+                    <option value="10000">10.000</option>
+                    <option value="12490">12.490</option>
+                    <option value="12990">12.990</option>
+                    <option value="13990">13.990</option>
+                    <option value="14990">14.990</option>
+                    <option value="15490">15.490</option>
+                    <option value="17990">17.990</option>
+                    <option value="19490">19.490</option>
+                    <option value="25990">25.990</option>
+                    <option value="28990">28.990</option>
+                    <option value="32990">32.990</option>
+                    <option value="33990">33.990</option>
+                  </select>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+          <button id="applyFiltersBtn" type="button" onclick="applyFilters()" class="btn btn-danger">Primeni filter</button>
+          <button id="resetFiltersBtn" type="button" onclick="resetFilters()" class="btn" style="margin-top: 10px; background: #666; color: white;">Resetuj filtere</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="grid" id="grid">
+      <!-- 1. CASIO ZLATNI -->
+      <article class="card" data-id="casio-a700" data-boja="zlatni" data-kategorija="novo" data-pol="muski" data-brend="casio" data-narukvica="metalni" data-price="9990"
+        data-images='[
+          "https://www.watch.rs/wp-content/uploads/2022/11/A168WG-9EF-324x324.jpg",
+          "https://www.njuskalo.hr/image-w920x690/muski-satovi/casio-a168-gold-unisex-digitalni-sat-slika-142747687.jpg",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXJwy5vGDfKHXxYONLlMQ1qmEeeSP3k_noWw&s",
+          "https://d4n0y8dshd77z.cloudfront.net/listings/56124238/lg/img-1698313450-fd8a4461d646.jpeg"
+        ]'
+        data-spec='{"Model":"A700WEVG-9AEF","Mehanizam":"Kvarcni (digitalni)","Kućište":"Smeša/metal","Narukvica":"Nerđajući čelik (mesh)","Staklo":"Akrilno","Vodootpornost":"3 ATM","Funkcije":"Alarm, štoperica, pozadinsko osvetljenje","Dimenzije":"37 x 35 x 7 mm","Težina":"≈ 50 g"}'
+        data-desc="Retro digitalni Casio u zlatnoj finiš obradi – tanak i lagan."
+        data-brand="CASIO"
+        data-title="Muški digitalni – zlatni">
+        <div class="img-wrap">
+          <img src="https://www.watch.rs/wp-content/uploads/2022/11/A168WG-9EF-324x324.jpg" alt="Casio digitalni – zlatni">
+        </div>
+        <div class="meta">
+          <div class="brand-name">CASIO</div>
+          <div class="title">Muški digitalni – zlatni</div>
+          <div class="price-row">
+            <div class="price">9.990 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2. AMALYS SREBRNI KVADRATNI -->
+      <article class="card" data-id="amalys-sq" data-pol="zenski" data-boja="srebrni" data-kategorija="ponuda-oglasi" data-brend="amalys" data-narukvica="metalni" data-price="17990"
+        data-images='[
+          "https://www.torbeonline.com/wp-content/uploads/2024/08/AMW-007n.jpg",
+          "https://www.satoviberic.rs/wp-content/uploads/2025/10/Amalys-AMW-0072Cmodel-800x800.webp",
+          "https://www.satoviberic.rs/wp-content/uploads/2025/10/Amalys-AMW-0072Cprofil.webp",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbZDIUNT3QL7cf23yd8w7GqqsuFbkoCvd72w&s"
+        ]'
+        data-spec='{"Mehanizam":"Kvarcni (analogni)","Kućište":"Nerđajući čelik, kvadratno","Narukvica":"Čelik, srebrna","Staklo":"Mineralno","Vodootpornost":"3 ATM","Prečnik/Širina":"≈ 28–30 mm","Debljina":"≈ 7–8 mm"}'
+        data-desc="Elegantni kvadratni dizajn za svakodnevnu eleganciju."
+        data-brand="AMALYS"
+        data-title="Ženski sat – srebrni kvadratni">
+        <div class="img-wrap">
+          <img src="https://www.torbeonline.com/wp-content/uploads/2024/08/AMW-007n.jpg" alt="Amalys ženski sat – srebrni kvadratni">
+        </div>
+        <div class="meta">
+          <div class="brand-name">AMALYS</div>
+          <div class="title">Ženski sat – srebrni kvadratni</div>
+          <div class="price-row">
+            <div class="price">17.990 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. AMALYS ELEGANTNI ROZE -->
+      <article class="card" data-id="amalys-elegant" data-boja="roze" data-kategorija="novo" data-pol="zenski" data-brend="amalys" data-narukvica="metalni" data-price="19490"
+        data-images='[
+          "https://www.timezonecenter.rs/img/12012/AMW-001/600x600,r/AMW-001.webp?time=1722076845",
+          "https://www.timezonecenter.rs/img/12012/AMW-050/AMW-050.webp",
+          "https://www.edora-bijouterie.fr/57362-medium_default/montre-femme-amalys-emily-acier-dore.jpg",
+          "https://images.hbjo-online.com/webp/images/all/AMW-015-2-AM.jpg"
+        ]'
+        data-spec='{"Mehanizam":"Kvarcni (analogni)","Kućište":"Metalna legura, polirano","Narukvica":"Čelik","Staklo":"Mineralno","Vodootpornost":"3 ATM","Prečnik":"≈ 34 mm","Debljina":"≈ 8 mm"}'
+        data-desc="Diskretna elegancija sa čistim ciferom i tankim profilom."
+        data-brand="AMALYS"
+        data-title="Ženski elegantni sat">
+        <div class="img-wrap">
+          <img src="https://www.timezonecenter.rs/img/12012/AMW-001/600x600,r/AMW-001.webp?time=1722076845" alt="Amalys ženski elegantni sat">
+        </div>
+        <div class="meta">
+          <div class="brand-name">AMALYS</div>
+          <div class="title">Ženski elegantni sat</div>
+          <div class="price-row">
+            <div class="price">19.490 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. G-SHOCK CRNI -->
+      <article class="card" data-id="gshock-black" data-boja="crni" data-pol="unisex" data-kategorija="ponuda-oglasi" data-brend="casio" data-narukvica="smola" data-price="12490"
+        data-images='[
+          "https://poklonducan.rs/media/catalog/product/g/x/gx-56rc-1er.jpg",
+          "https://www.timer.co.rs/uploads/imagecache/medium_image/storage/products/product_gallery/2025/Dec/37728/gmw-bz5000bd-1er-or13-beautyshot1-print.jpg",
+          "https://www.timer.co.rs/uploads/imagecache/medium_image/storage/products/product_gallery/2025/Dec/37730/gmw-bz5000bd-1er-or09-bandview-print.jpg",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvY1BaXfFkKKQbLLCfdofIhn5Of4TJW1x--A&s"
+        ]'
+        data-spec='{"Serija":"G-Shock","Mehanizam":"Kvarcni (digitalni)","Kućište":"Polimer/Smola (shock resistant)","Narukvica":"Smola","Staklo":"Mineralno","Vodootpornost":"20 ATM","Funkcije":"Štoperica, odbrojavanje, alarm, automatski kalendar","Dimenzije":"Veliki kućište (GX-56 format)"}'
+        data-desc="Masivan, otporan model – dizajniran za zahtevnu upotrebu."
+        data-brand="CASIO"
+        data-title="Sportski crni digitalni">
+        <div class="img-wrap">
+          <img src="https://poklonducan.rs/media/catalog/product/g/x/gx-56rc-1er.jpg" alt="Casio sportski crni">
+        </div>
+        <div class="meta">
+          <div class="brand-name">CASIO</div>
+          <div class="title">Sportski crni digitalni</div>
+          <div class="price-row">
+            <div class="price">12.490 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. ANNE KLEIN DVOBOJNI -->
+      <article class="card" data-id="anne-duo" data-boja="dvobojni" data-pol="zenski" data-kategorija="ponuda-oglasi" data-brend="anne-klein" data-narukvica="metalni" data-price="15490"
+        data-images='[
+          "https://www.watch.rs/wp-content/uploads/2023/10/AK-3878BHRG.jpg",
+          "https://www.watch.rs/wp-content/uploads/2024/09/AK-1412IRGB_1-600x600.jpg",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxYuw9ha7Z5PL1N8W5foERfaeSu1ruLbbWhw&s",
+          "https://timeshop.com.ua/images/detailed/231/AK-1412RGWT-1.jpg"
+        ]'
+        data-spec='{"Mehanizam":"Kvarcni (analogni)","Kućište":"Metalna legura, dvobojno","Narukvica":"Čelik, dvobojna","Staklo":"Mineralno","Vodootpornost":"Prskanje (nije za plivanje)","Prečnik":"≈ 34 mm","Debljina":"≈ 8 mm"}'
+        data-desc="Elegantni dvobojni dizajn sa minimalističkim markerima."
+        data-brand="ANNE KLEIN"
+        data-title="Ženski dvobojni – elegant">
+        <div class="img-wrap">
+          <img src="https://www.watch.rs/wp-content/uploads/2023/10/AK-3878BHRG.jpg" alt="Anne Klein ženski dvobojni">
+        </div>
+        <div class="meta">
+          <div class="brand-name">ANNE KLEIN</div>
+          <div class="title">Ženski dvobojni – elegant</div>
+          <div class="price-row">
+            <div class="price">15.490 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6. ANNE KLEIN ROZE SA KAIŠEM -->
+      <article class="card" data-id="anne-rose" data-pol="zenski" data-boja="roze" data-kategorija="novo" data-brend="anne-klein" data-narukvica="kozni" data-price="14990"
+        data-images='[
+          "https://zimsonwatches.com/cdn/shop/products/ncak3750bmrg.jpg?v=1686982807&width=535",
+          "https://m.media-amazon.com/images/I/71ACn7ef8aL._AC_UY900_.jpg",
+          "https://bermorzone.com.ph/wp-content/uploads/2022/12/Anne-Klein-Womens-Genuine-Diamond-Dial-Bracelet-Watch-btz-ph.jpg"
+        ]' 
+        data-spec='{"Mehanizam":"Kvarcni (analogni)","Kućište":"Metalna legura, rose gold","Narukvica":"Kaiš (eko koža), roze","Staklo":"Mineralno","Vodootpornost":"Prskanje (nije za plivanje)","Prečnik":"≈ 34–36 mm"}'
+        data-desc="Topao rose gold akcenat sa udobnim kaišem."
+        data-brand="ANNE KLEIN"
+        data-title="Ženski roze sa kaišem">
+        <div class="img-wrap">
+          <img src="https://zimsonwatches.com/cdn/shop/products/ncak3750bmrg.jpg?v=1686982807&width=535" alt="Anne Klein ženski roze">
+        </div>
+        <div class="meta">
+          <div class="brand-name">ANNE KLEIN</div>
+          <div class="title">Ženski roze sa kaišem</div>
+          <div class="price-row">
+            <div class="price">14.990 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 7. NAVIFORCE HRONOGRAF -->
+      <article class="card" data-id="navi-chrono" data-boja="srebrni" data-pol="muski" data-kategorija="novo" data-brend="naviforce" data-narukvica="metalni" data-price="12990"
+        data-images='[
+          "https://naviforce.rs/wp-content/uploads/2022/11/1.webp",
+          "https://naviforce.rs/wp-content/uploads/2018/05/NAVIFORCE-Fashion-Casual-Man-Quartz-Watch-Business-Men-Wristwatch-Full-Steel-Clock-Luminous-Hands-Week-Display5.3.jpg",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhixVsBhzoJqvGb91a8n-q6MNuOrOYOSTR7A&s",
+          "https://naviforce.rs/wp-content/uploads/2018/05/NAVIFORCE-Fashion-Casual-Man-Quartz-Watch-Business-Men-Wristwatch-Full-Steel-Clock-Luminous-Hands-Week-Display5.4.jpg"
+        ]'
+        data-spec='{"Mehanizam":"Kvarcni (analogni + hronograf)","Kućište":"Nerđajući čelik","Narukvica":"Čelik","Staklo":"Mineralno","Vodootpornost":"3 ATM","Funkcije":"Hronograf, datum","Prečnik":"≈ 46 mm","Debljina":"≈ 13 mm"}'
+        data-desc="Robustan sportski hronograf sa izraženim tasterima."
+        data-brand="NAVIFORCE"
+        data-title="Sportski hronograf – čelik">
+        <div class="img-wrap">
+          <img src="https://naviforce.rs/wp-content/uploads/2022/11/1.webp" alt="Naviforce sportski hronograf">
+        </div>
+        <div class="meta">
+          <div class="brand-name">NAVIFORCE</div>
+          <div class="title">Sportski hronograf – čelik</div>
+          <div class="price-row">
+            <div class="price">12.990 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 8. NAVIFORCE VOJNI STIL -->
+      <article class="card" data-id="navi-military" data-boja="crni" data-pol="muski" data-kategorija="novo" data-brend="naviforce" data-narukvica="platneni" data-price="13990"
+        data-images='[
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWSUevgmec39zf26hQGczf4uKZPMvQrARZVw&s",
+          "https://naviforce.rs/wp-content/uploads/2023/10/1-20.webp",
+          "https://naviforce.rs/wp-content/uploads/2018/05/NAVIFORCE-Men-Watch-Sports-Army-Military-Luxury-Wristwatch-Waterproof-Fashion-Quartz-Relogio-Masculino-Casual-Brand-Watches-1.jpg",
+          "https://naviforce.rs/wp-content/uploads/2018/05/NAVIFORCE-Men-Watch-Sports-Army-Military-Luxury-Wristwatch-Waterproof-Fashion-Quartz-Relogio-Masculino-Casual-Brand-Watches.jpg"
+        ]'
+        data-spec='{"Mehanizam":"Kvarcni (analogni)","Kućište":"Cink legura / čelik, mat crno","Narukvica":"Najlon/koža (vojni stil)","Staklo":"Mineralno","Vodootpornost":"3 ATM","Prečnik":"≈ 45 mm"}'
+        data-desc="Vojni look sa čitljivim ciframa i robusnim kućištem."
+        data-brand="NAVIFORCE"
+        data-title="Vojni stil – crni">
+        <div class="img-wrap">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWSUevgmec39zf26hQGczf4uKZPMvQrARZVw&s" alt="Naviforce vojni stil">
+        </div>
+        <div class="meta">
+          <div class="brand-name">NAVIFORCE</div>
+          <div class="title">Vojni stil – crni</div>
+          <div class="price-row">
+            <div class="price">13.990 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 9. BOSS KOŽNI KAIŠ -->
+      <article class="card" data-id="boss-leather" data-boja="braon" data-pol="unisex" data-kategorija="ponuda-oglasi" data-brend="boss" data-narukvica="kozni" data-price="28990"
+        data-images='[
+          "https://alexshop.me/storage/Items/mens-hugo-boss-watch-1513940.html-1.jpg",
+          "https://www.watch.rs/wp-content/uploads/2024/05/1514030_1.jpg",
+          "https://www.satoviberic.rs/wp-content/uploads/2025/08/hugo-boss-classic-1513668-multiple-2_1.webp",
+          "https://images.kupujemprodajem.com/photos/oglasi/3/63/155175633/big-155175633_64ca4cf88215d9-77354046347393495_28468.webp"
+        ]'
+        data-spec='{"Mehanizam":"Kvarcni (analogni)","Kućište":"Nerđajući čelik, klasično","Narukvica":"Kožni kaiš","Staklo":"Mineralno","Vodootpornost":"3 ATM","Prečnik":"≈ 41 mm","Debljina":"≈ 9 mm"}'
+        data-desc="Minimalistički klasik na kožnom kaišu – poslovni stil."
+        data-brand="BOSS"
+        data-title="Klasik na kožnom kaišu">
+        <div class="img-wrap">
+          <img src="https://www.watch.rs/wp-content/uploads/2024/05/1514030_1.jpg" alt="Boss klasik">
+        </div>
+        <div class="meta">
+          <div class="brand-name">BOSS</div>
+          <div class="title">Klasik na kožnom kaišu</div>
+          <div class="price-row">
+            <div class="price">28.990 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 10. BOSS MODERNI HRONOGRAF -->
+      <article class="card" data-id="boss-chrono" data-boja="dvobojni" data-pol="muski" data-kategorija="ponuda-oglasi" data-brend="boss" data-narukvica="metalni" data-price="32990"
+        data-images='[
+          "https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/02/1502724_LRG_POP_Macys.jpg",
+          "https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/02/1502724_LRG_Profile_Macys.jpg",
+          "https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/02/1502724_Back_300dpi.jpg",
+          "https://img01.ztat.net/article/spp-media-p1/2e2a74c532144a9a83a9f9e1347857f6/8deca8302fbf42a2b833401e828b04cd.jpg?imwidth=762"
+        ]'
+        data-spec='{"Mehanizam":"Kvarcni (analogni + hronograf)","Kućište":"Nerđajući čelik","Narukvica":"Čelik","Staklo":"Mineralno","Vodootpornost":"5 ATM","Funkcije":"Hronograf, datum","Prečnik":"≈ 44 mm"}'
+        data-desc="Moderni hronograf sa čeličnom narukvicom i čistim brojčanikom."
+        data-brand="BOSS"
+        data-title="Moderni hronograf">
+        <div class="img-wrap">
+          <img src="https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/02/1502724_LRG_POP_Macys.jpg" alt="Boss moderni hronograf">
+        </div>
+        <div class="meta">
+          <div class="brand-name">BOSS</div>
+          <div class="title">Moderni hronograf</div>
+          <div class="price-row">
+            <div class="price">32.990 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 11. GARMIN PAMETNI SAT -->
+      <article class="card" data-id="garmin-venu" data-boja="crni" data-pol="muski" data-kategorija="novo" data-brend="garmin" data-narukvica="smola" data-price="33990"
+        data-images='[
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVZQVLu5UkFBQRNKCTKKpw5GXkrZLJ7bDGMw&s",
+          "https://images.ctshop.rs/img/products/2020-10-02/garmin-venu-sq-music-edition-crni-pametni-sat_wnllg_4.webp",
+          "https://m.media-amazon.com/images/I/61rgljE1+7L._AC_UF894,1000_QL80_.jpg",
+          "https://m.media-amazon.com/images/I/71GShUzmi4L._AC_UY1000_.jpg"
+        ]'
+        data-spec='{"Ekran":"LCD, 1.3\"","Senzori":"HR, SpO2, GPS","Povezivanje":"Bluetooth","Baterija":"Do 6 dana (tipično)","Vodootpornost":"5 ATM","Funkcije":"Notifikacije, praćenje aktivnosti, muzička kontrola"}'
+        data-desc="Pametni sat sa GPS-om i zdravstvenim metrikama za svakodnevno praćenje."
+        data-brand="GARMIN"
+        data-title="Pametni sat – crni">
+        <div class="img-wrap">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVZQVLu5UkFBQRNKCTKKpw5GXkrZLJ7bDGMw&s" alt="Garmin pametni sat – crni">
+        </div>
+        <div class="meta">
+          <div class="brand-name">GARMIN</div>
+          <div class="title">Pametni sat – crni</div>
+          <div class="price-row">
+            <div class="price">33.990 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 12. GARMIN FITNES SAT -->
+      <article class="card" data-id="garmin-fit" data-boja="crni" data-pol="zenski" data-kategorija="ponuda-oglasi" data-brend="garmin" data-narukvica="metalni" data-price="25990"
+        data-images='[
+          "https://m.media-amazon.com/images/I/71-iVjaYJIL.jpg",
+          "https://res.garmin.com/transform/image/upload/b_rgb:FFFFFF,c_pad,dpr_2.0,f_auto,h_400,q_auto,w_400/c_pad,h_400,w_400/v1/Product_Images/en/products/010-02645-00/v/pd-04-xl-10d73053-f276-4f67-bf17-083c400383ec?pgw=1",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeqVJQSkdGzfJaku2PNFIWVui10ECgaguxOg&s",
+          "https://www.hodinky-365.com/fotky/orig/f202/garmin-vivosmart-5-black-velikost-s-m_222374_300148.jpg"
+        ]'
+        data-spec='{"Ekran":"OLED/LCD (zavisno od modela), ~1.0–1.2\"","Senzori":"HR, SpO2","Povezivanje":"Bluetooth","Baterija":"Do 5 dana (tipično)","Vodootpornost":"5 ATM","Funkcije":"Praćenje aktivnosti, notifikacije, vežbe disanja"}'
+        data-desc="Fitness hibrid sa elegantnim dizajnom i osnovnim pametnim funkcijama."
+        data-brand="GARMIN"
+        data-title="Fitness pametni sat">
+        <div class="img-wrap">
+          <img src="https://m.media-amazon.com/images/I/71-iVjaYJIL.jpg" alt="Garmin fitness sat">
+        </div>
+        <div class="meta">
+          <div class="brand-name">GARMIN</div>
+          <div class="title">Fitness pametni sat</div>
+          <div class="price-row">
+            <div class="price">25.990 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 13. CASIO AGIO SREBRNI -->
+      <article class="card" data-id="casio-agio" data-boja="srebrni" data-kategorija="ponuda-oglasi" data-pol="unisex" data-brend="casio" data-narukvica="metalni" data-price="10000"
+        data-images='[
+          "https://hudaura.hr/media/mf_webp/jpg/media/catalog/product/cache/4d6a7cf999fedf6402938828587e4c37/c/a/casio_mtp-v002l-7b2hudaura.com.webp",
+          "https://drest.s3.eu-west-3.amazonaws.com/wp-content/uploads/2024/06/28125455/mtpv002l7b2udf1-640769f403944.jpeg",
+          "https://i.ebayimg.com/images/g/3dQAAOSw3edlPf9b/s-l400.jpg"
+        ]'
+        data-spec='{"Model":"MTP-V002L-7B2","Mehanizam":"Kvarcni (analogni)","Kućište":"Nerđajući čelik","Narukvica":"Kožni kaiš","Staklo":"Mineralno","Vodootpornost":"3 ATM","Dimenzije":"40 mm"}'
+        data-desc="Klasični Casio sa belim brojčanikom i kožnim kaišem."
+        data-brand="CASIO"
+        data-title="Agio srebrni sat">
+        <div class="img-wrap">
+          <img src="https://hudaura.hr/media/mf_webp/jpg/media/catalog/product/cache/4d6a7cf999fedf6402938828587e4c37/c/a/casio_mtp-v002l-7b2hudaura.com.webp" alt="Agio srebrni sat">
+        </div>
+        <div class="meta">
+          <div class="brand-name">CASIO</div>
+          <div class="title">Agio srebrni sat</div>
+          <div class="price-row">
+            <div class="price">10.000 RSD</div>
+            <button class="btn primary add-to-cart">Dodaj u korpu</button>
+            <button class="btn warning preview-btn">Pregledaj</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer style="background:#111;color:#fff;margin-top:60px;">
+    <div style="max-width:1280px;margin:0 auto;padding:40px 20px;display:grid;grid-template-columns:1.5fr 1fr;gap:30px;">
+      <div>
+        <div style="font-size:26px;font-weight:800;margin-bottom:12px;">Cloockot</div>
+        <p style="color:#ccc;line-height:1.6;font-size:14px;">Koncept multibrend radnje koja spaja renomirane svetske brendove i profesionalnu uslugu – Vaše zadovoljstvo je naše merilo uspeha.</p>
+      </div>
+    </div>
+    <div style="border-top:1px solid #333;padding:15px 20px;max-width:1280px;margin:0 auto;font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;color:#bbb;">
+      <div>©2025 Cloockot.com. Sva prava zadržana.</div>
+    </div>
+  </footer>
+
+  <!-- MODAL ZA PREGLED PROIZVODA -->
+  <div class="modal" id="productModal" aria-hidden="true">
+    <div class="modal__dialog">
+      <div class="modal__media">
+        <div class="swiper-container" id="modalSwiper">
+          <div class="swiper-wrapper" id="modalSwiperWrapper"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+      <div class="modal__body">
+        <div class="modal__header">
+          <div class="modal__title">
+            <span class="modal__brand" id="modalBrand"></span>
+            <span class="modal__name" id="modalTitle"></span>
+            <span class="modal__price" id="modalPrice"></span>
+          </div>
+          <button class="modal__close" id="modalClose" aria-label="Zatvori">✕</button>
+        </div>
+        <div class="modal__content">
+          <div class="modal__section">
+            <h4>Specifikacije</h4>
+            <div class="specs" id="modalSpecs"></div>
+          </div>
+          <div class="modal__section" id="modalDescWrap">
+            <h4>Opis</h4>
+            <p id="modalDesc"></p>
+          </div>
+          <div class="modal__section">
+            <button id="modalAdd" class="btn primary" style="width:100%">Dodaj u korpu</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cartModal" class="modal" style="display:none;">
+    <div class="modal__dialog" style="max-width:500px;grid-template-columns:1fr;">
+      <div class="modal__body">
+        <div class="modal__header">
+          <div class="modal__title">
+            <span class="modal__name">Korpa</span>
+          </div>
+          <button class="modal__close" id="closeCartModal">✕</button>
+        </div>
+        <div id="cartItems"></div>
+        <div id="cartEmpty" class="empty" style="display:none">Korpa je prazna.</div>
+        <div style="margin-top:20px;">
+          <div style="display:flex;justify-content:space-between;font-size:18px;">
+            <span>Međuzbir</span>
+            <strong id="cartSubtotal">0 RSD</strong>
+          </div>
+          <button class="btn primary" style="width:100%;margin-top:15px;" id="checkoutBtn">
+            Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POTVRDA PORUDŽBINE -->
+  <div id="confirmOverlay" style="display:none">
+    <div class="confirm-box">
+      <h3>Potvrda porudžbine</h3>
+      <p>Da li ste sigurni da želite da izvršite porudžbinu?</p>
+      <div class="confirm-actions">
+        <button id="confirmYes" class="btn primary">DA</button>
+        <button id="confirmNo" class="btn">NE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- USPEŠNA PORUDŽBINA -->
+  <div id="successOverlay" style="display:none">
+    <div class="confirm-box">
+      <h3>✅ Uspešna porudžbina</h3>
+      <p>Vaša porudžbina je uspešno poslata.</p>
+      <button id="successOk" class="btn primary">U redu</button>
+    </div>
+  </div>
+
+  <!-- MODAL ZA NEULOGOVANE -->
+  <div id="loginRequiredModal" class="modal" style="display: none;">
+    <div class="modal__dialog" style="width: 400px; height: auto; grid-template-columns: 1fr;">
+      <div class="modal__body">
+        <div class="modal__header">
+          <div class="modal__title">
+            <span class="modal__name">Potrebna prijava</span>
+          </div>
+          <button class="modal__close" id="closeLoginModal">✕</button>
+        </div>
+        <div class="modal__content">
+          <p>Da biste dodali proizvod u korpu, morate biti prijavljeni.</p>
+          <p>Izaberite opciju:</p>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+            <a href="{% url 'prijava' %}" class="btn primary">Prijavi se</a>
+            <a href="{% url 'registracija' %}" class="btn" style="text-align: center; border: 1px solid var(--border);">Registruj se</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+ <script>
+  // ======== GLOBALNE PROMENLJIVE ========
+  let currentModalProduct = null;
+  let swiperInstance = null;
+  let currentCart = [];
+
+  // ======== FUNKCIJE ZA KORPU ========
+  function loadCart() {
+    const saved = localStorage.getItem('cloockotCart');
+    currentCart = saved ? JSON.parse(saved) : [];
+    updateCartBadge();
+    updateCartDisplay();
+  }
+
+  function saveCart() {
+    localStorage.setItem('cloockotCart', JSON.stringify(currentCart));
+    updateCartBadge();
+    updateCartDisplay();
+  }
+
+  function updateCartBadge() {
+    const total = currentCart.reduce((sum, item) => sum + item.quantity, 0);
+    const badge = document.getElementById('cartBadge');
+    if (badge) {
+      badge.textContent = total;
+      badge.style.display = total > 0 ? 'inline-block' : 'none';
+    }
+  }
+
+  function updateCartDisplay() {
+    const cartItemsDiv = document.getElementById('cartItems');
+    const cartEmptyDiv = document.getElementById('cartEmpty');
+    const subtotalSpan = document.getElementById('cartSubtotal');
+
+    if (!cartItemsDiv) return;
+
+    if (currentCart.length === 0) {
+      cartItemsDiv.innerHTML = '';
+      cartEmptyDiv.style.display = 'block';
+      subtotalSpan.textContent = '0 RSD';
+      return;
+    }
+
+    cartEmptyDiv.style.display = 'none';
+
+    let subtotal = 0;
+    let html = '';
+
+    currentCart.forEach((item, index) => {
+      const itemTotal = item.price * item.quantity;
+      subtotal += itemTotal;
+
+      html += `
+        <div style="display:flex;gap:15px;padding:10px 0;border-bottom:1px solid #eee;">
+          <img src="${item.image}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;">
+          <div style="flex:1;">
+            <div style="font-weight:600;">${item.title}</div>
+            <div style="color:#777;font-size:13px;">${item.price.toLocaleString()} RSD</div>
+            <div style="display:flex;gap:10px;margin-top:8px;align-items:center;">
+              <button class="btn-qty" data-index="${index}" data-delta="-1">-</button>
+              <span>${item.quantity}</span>
+              <button class="btn-qty" data-index="${index}" data-delta="1">+</button>
+              <button class="btn-remove" data-index="${index}">✕</button>
+            </div>
+          </div>
+          <div style="font-weight:600;">
+            ${itemTotal.toLocaleString()} RSD
+          </div>
+        </div>
+      `;
+    });
+
+    cartItemsDiv.innerHTML = html;
+    subtotalSpan.textContent = `${subtotal.toLocaleString()} RSD`;
+
+    document.querySelectorAll('.btn-qty').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.dataset.index);
+        const delta = parseInt(btn.dataset.delta);
+        currentCart[index].quantity += delta;
+        if (currentCart[index].quantity <= 0) {
+          currentCart.splice(index, 1);
+        }
+        saveCart();
+      });
+    });
+
+    document.querySelectorAll('.btn-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.dataset.index);
+        currentCart.splice(index, 1);
+        saveCart();
+      });
+    });
+  }
+
+  function addToCart(product) {
+    const isLoggedIn = {% if request.session.korisnicko_ime %}true{% else %}false{% endif %};
+
+    if (!isLoggedIn) {
+      document.getElementById('loginRequiredModal').style.display = 'flex';
+      return;
+    }
+
+    const existing = currentCart.find(item => item.id === product.id);
+    if (existing) {
+      existing.quantity++;
+    } else {
+      currentCart.push({ ...product, quantity: 1 });
+    }
+    saveCart();
+    showNotification(`Dodato: ${product.title}`);
+  }
+
+  function showNotification(message) {
+    const div = document.createElement('div');
+    div.className = 'notification';
+    div.textContent = message;
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 2500);
+  }
+
+  // ======== TOGGLE FILTER PANELA ========
+  function initFilters() {
+    const filterToggle = document.getElementById('filterToggle');
+    const filterPanel = document.getElementById('filterPanel');
+    
+    console.log('Filter toggle:', filterToggle); // Provera u konzoli
+    console.log('Filter panel:', filterPanel);
+    
+    if (filterToggle && filterPanel) {
+      // Ukloni postojeće event listenere da bi izbegli dupliranje
+      const newToggle = filterToggle.cloneNode(true);
+      filterToggle.parentNode.replaceChild(newToggle, filterToggle);
+      
+      newToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        filterPanel.classList.toggle('active');
+        newToggle.classList.toggle('active');
+        console.log('Filter panel toggled:', filterPanel.classList.contains('active'));
+      });
+      
+      document.addEventListener('click', function(e) {
+        if (!newToggle.contains(e.target) && !filterPanel.contains(e.target)) {
+          filterPanel.classList.remove('active');
+          newToggle.classList.remove('active');
+        }
+      });
+    } else {
+      console.error('Filter elementi nisu pronađeni!');
+    }
+  }
+
+  // ======== ZATVARANJE MODAL PROZORA ========
+  function closeModal() {
+    const modal = document.getElementById('productModal');
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      if (swiperInstance) {
+        swiperInstance.autoplay?.stop();
+      }
+    }
+  }
+
+  // ======== MODAL PROIZVODA ========
+  function openProductModal(card) {
+    const filterPanel = document.getElementById('filterPanel');
+    const filterToggle = document.getElementById('filterToggle');
+    if (filterPanel && filterPanel.classList.contains('active')) {
+      filterPanel.classList.remove('active');
+      if(filterToggle) filterToggle.classList.remove('active');
+    }
+    
+    const images = JSON.parse(card.dataset.images);
+    const specs = JSON.parse(card.dataset.spec);
+
+    currentModalProduct = {
+      id: card.dataset.id,
+      title: card.dataset.title,
+      brand: card.dataset.brand,
+      price: parseInt(card.dataset.price),
+      image: images[0]
+    };
+
+    document.getElementById('modalBrand').textContent = card.dataset.brand;
+    document.getElementById('modalTitle').textContent = card.dataset.title;
+    document.getElementById('modalPrice').textContent = `${parseInt(card.dataset.price).toLocaleString()} RSD`;
+    document.getElementById('modalDesc').textContent = card.dataset.desc;
+
+    let specHtml = '';
+    for (let key in specs) {
+      specHtml += `<li><strong>${key}:</strong> ${specs[key]}</li>`;
+    }
+    document.getElementById('modalSpecs').innerHTML = specHtml;
+
+    const wrapper = document.getElementById('modalSwiperWrapper');
+    wrapper.innerHTML = images.map(src => `
+      <div class="swiper-slide">
+        <img src="${src}" style="width:100%;height:100%;object-fit:contain;">
+      </div>
+    `).join('');
+
+    const modal = document.getElementById('productModal');
+    modal.style.display = 'flex';
+    document.body.classList.add('modal-open');
+
+    setTimeout(() => {
+      if (swiperInstance) swiperInstance.destroy();
+      swiperInstance = new Swiper('#modalSwiper', {
+        loop: true,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+        }
+      });
+    }, 100);
+  }
+
+  // ======== FUNKCIJA ZA FILTRIRANJE ========
+  window.applyFilters = function() {
+    console.log('applyFilters pozvana');
+    
+    const selectedPol = Array.from(document.querySelectorAll('input[name="pol"]:checked')).map(cb => cb.value);
+    const selectedBrend = Array.from(document.querySelectorAll('input[name="brend"]:checked')).map(cb => cb.value);
+    const selectedNarukvica = Array.from(document.querySelectorAll('input[name="narukvica"]:checked')).map(cb => cb.value);
+    const selectedKategorija = Array.from(document.querySelectorAll('input[name="kategorija"]:checked')).map(cb => cb.value);
+    const selectedBoja = Array.from(document.querySelectorAll('input[name="boja"]:checked')).map(cb => cb.value);
+    
+    const minPrice = parseInt(document.getElementById('minPrice').value);
+    const maxPrice = parseInt(document.getElementById('maxPrice').value);
+    
+    const cards = document.querySelectorAll('.card');
+    let visibleCount = 0;
+    
+    cards.forEach(card => {
+      let show = true;
+      
+      if (selectedPol.length > 0) {
+        const cardPol = card.dataset.pol;
+        if (!selectedPol.includes(cardPol)) show = false;
+      }
+      
+      if (show && selectedBrend.length > 0) {
+        const cardBrend = card.dataset.brend;
+        if (!selectedBrend.includes(cardBrend)) show = false;
+      }
+      
+      if (show && selectedNarukvica.length > 0) {
+        const cardNarukvica = card.dataset.narukvica;
+        if (!selectedNarukvica.includes(cardNarukvica)) show = false;
+      }
+      
+      if (show && selectedKategorija.length > 0) {
+        const cardKategorija = card.dataset.kategorija;
+        if (!selectedKategorija.includes(cardKategorija)) show = false;
+      }
+      
+      if (show && selectedBoja.length > 0) {
+        const cardBoja = card.dataset.boja;
+        if (!selectedBoja.includes(cardBoja)) show = false;
+      }
+      
+      if (show) {
+        const cardPrice = parseInt(card.dataset.price);
+        if (cardPrice < minPrice || cardPrice > maxPrice) show = false;
+      }
+      
+      if (show) {
+        card.style.display = '';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    
+    const grid = document.getElementById('grid');
+    let noResultsMsg = document.getElementById('noResultsMsg');
+    
+    if (visibleCount === 0) {
+      if (!noResultsMsg) {
+        noResultsMsg = document.createElement('div');
+        noResultsMsg.id = 'noResultsMsg';
+        noResultsMsg.style.textAlign = 'center';
+        noResultsMsg.style.padding = '40px';
+        noResultsMsg.style.fontSize = '18px';
+        noResultsMsg.style.color = '#666';
+        noResultsMsg.innerHTML = '❌ Nema proizvoda koji odgovaraju izabranim filterima.';
+        grid.appendChild(noResultsMsg);
+      }
+    } else {
+      if (noResultsMsg) noResultsMsg.remove();
+    }
+    
+    const filterPanel = document.getElementById('filterPanel');
+    const filterToggle = document.getElementById('filterToggle');
+    if (filterPanel) {
+      filterPanel.classList.remove('active');
+      if(filterToggle) filterToggle.classList.remove('active');
+    }
+    
+    showNotification(`Prikazano ${visibleCount} od ${cards.length} proizvoda`);
+  };
+
+  // ======== FUNKCIJA ZA RESETOVANJE FILTERA ========
+  window.resetFilters = function() {
+    console.log('resetFilters pozvana');
+    
+    document.querySelectorAll('.filter-panel input[type="checkbox"]').forEach(cb => {
+      cb.checked = false;
+    });
+    
+    document.getElementById('minPrice').value = '0';
+    document.getElementById('maxPrice').value = '999999';
+    
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+      card.style.display = '';
+    });
+    
+    const noResultsMsg = document.getElementById('noResultsMsg');
+    if (noResultsMsg) noResultsMsg.remove();
+    
+    showNotification('Svi filteri su resetovani');
+  };
+
+  // ======== CHECKOUT ========
+  async function checkout() {
+    if (currentCart.length === 0) {
+      showNotification('Korpa je prazna!');
+      return;
+    }
+
+    document.getElementById('confirmOverlay').style.display = 'flex';
+
+    document.getElementById('confirmYes').onclick = async () => {
+      document.getElementById('confirmOverlay').style.display = 'none';
+
+      await fetch('/checkout/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ cart: currentCart })
+      });
+
+      currentCart = [];
+      saveCart();
+      document.getElementById('successOverlay').style.display = 'flex';
+    };
+
+    document.getElementById('confirmNo').onclick = () => {
+      document.getElementById('confirmOverlay').style.display = 'none';
+    };
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    document.cookie.split(';').forEach(cookie => {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+      }
+    });
+    return cookieValue;
+  }
+
+  // ======== INIT ========
+  document.addEventListener('DOMContentLoaded', () => {
+    loadCart();
+    initFilters();
+    
+    const btnCart = document.getElementById('btnCart');
+    const cartModal = document.getElementById('cartModal');
+
+    if(btnCart) {
+      btnCart.addEventListener('click', () => {
+        cartModal.style.display = 'flex';
+        updateCartDisplay();
+      });
+    }
+
+    const closeCartModal = document.getElementById('closeCartModal');
+    if(closeCartModal) {
+      closeCartModal.addEventListener('click', () => {
+        cartModal.style.display = 'none';
+      });
+    }
+
+    if(cartModal) {
+      cartModal.addEventListener('click', (e) => {
+        if (e.target === cartModal) {
+          cartModal.style.display = 'none';
+        }
+      });
+    }
+
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const card = e.target.closest('.card');
+        addToCart({
+          id: card.dataset.id,
+          title: card.querySelector('.title').textContent,
+          brand: card.dataset.brand,
+          price: parseInt(card.dataset.price),
+          image: card.querySelector('img').src
+        });
+      });
+    });
+
+    document.querySelectorAll('.preview-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        openProductModal(e.target.closest('.card'));
+      });
+    });
+
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    if(checkoutBtn) {
+      checkoutBtn.addEventListener('click', checkout);
+    }
+    
+    const modalCloseBtn = document.getElementById('modalClose');
+    const modal = document.getElementById('productModal');
+    
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener('click', closeModal);
+    }
+    
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+    }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+        closeModal();
+      }
+    });
+
+    const closeLoginModal = document.getElementById('closeLoginModal');
+    if(closeLoginModal) {
+      closeLoginModal.addEventListener('click', () => {
+        document.getElementById('loginRequiredModal').style.display = 'none';
+      });
+    }
+
+    const successOk = document.getElementById('successOk');
+    if(successOk) {
+      successOk.addEventListener('click', () => {
+        document.getElementById('successOverlay').style.display = 'none';
+      });
+    }
+  });
+</script>
+
+  <style>
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    .swiper-container {
+      width: 100%;
+      height: 400px;
+    }
+    
+    .swiper-slide {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .swiper-button-prev,
+    .swiper-button-next {
+      color: #333;
+      background: rgba(255,255,255,0.8);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+    
+    .swiper-button-prev:after,
+    .swiper-button-next:after {
+      font-size: 18px;
+    }
+    
+    .swiper-pagination-bullet-active {
+      background: #333;
+    }
+    
+    .cart-item {
+      display: flex;
+      gap: 15px;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      align-items: center;
+    }
+    
+    .cart-item-details {
+      flex: 1;
+    }
+    
+    .cart-item-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .cart-item-price {
+      color: #666;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    
+    .cart-item-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .btn-qty {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    
+    .btn-remove {
+      background: #ff4444;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .cart-item-total {
+      font-weight: 600;
+      min-width: 100px;
+      text-align: right;
+    }
+    
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 400px;
+      height: 100%;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+      z-index: 2001;
+      transition: right 0.3s ease;
+    }
+    
+    .drawer[aria-hidden="false"] {
+      right: 0;
+    }
+    
+    .drawer__head {
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .drawer__body {
+      padding: 20px;
+      height: calc(100% - 120px);
+      overflow-y: auto;
+    }
+    
+    .drawer__foot {
+      padding: 20px;
+      border-top: 1px solid #eee;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: white;
+    }
+    
+    .sum-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      z-index: 10000;
+      animation: slideIn 0.3s ease;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal__dialog {
+      background: white;
+      max-width: 900px;
+      width: 90%;
+      max-height: 90vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .modal__media {
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+    }
+
+    .modal__body {
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    .modal__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .modal__title {
+      flex: 1;
+    }
+
+    .modal__brand {
+      display: block;
+      font-size: 14px;
+      color: #666;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .modal__name {
+      display: block;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .modal__price {
+      display: block;
+      font-size: 28px;
+      font-weight: 800;
+      color: #c41e3a;
+    }
+
+    .modal__close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 8px;
+      line-height: 1;
+    }
+
+    .modal__section {
+      margin-bottom: 24px;
+    }
+
+    .modal__section h4 {
+      margin-bottom: 12px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .specs {
+      list-style: none;
+      padding: 0;
+    }
+
+    .specs li {
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    .specs li strong {
+      display: inline-block;
+      width: 120px;
+      color: #666;
+    }
+
+    #confirmOverlay, #successOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 2002;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .confirm-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    /* ========== DUGME FILTERI (ISPRAVLJENO) ========== */
+    #filterToggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 12px 24px;
+      background: #c41e3a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+      font-family: inherit;
+      z-index: 101;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    #filterToggle:hover {
+      background: #a01830;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+    }
+
+    #filterToggle .arrow {
+      transition: transform 0.3s ease;
+      display: inline-block;
+    }
+
+    #filterToggle.active .arrow {
+      transform: rotate(180deg);
+    }
+
+    /* Kontejner za filtere */
+    .filter-toggle-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    /* Filter panel */
+    .filter-panel {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .filter-panel.active {
+      display: block;
+    }
+
+    /* Osiguraj da je modal najviši element */
+    #productModal {
+      z-index: 10000 !important;
+    }
+
+    #productModal .modal__dialog {
+      z-index: 10001 !important;
+    }
+
+    /* Kada je modal otvoren, onemogući scroll i sakrij filtere */
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    body.modal-open .filter-toggle-container {
+      z-index: 1;
+    }
+
+    body.modal-open .filter-panel {
+      display: none !important;
+    }
+
+    /* ========== MOBILNI RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      .modal__dialog {
+        grid-template-columns: 1fr;
+        width: 95%;
+      }
+      
+      .modal__media {
+        min-height: 300px;
+      }
+      
+      .drawer {
+        width: 100%;
+        right: -100%;
+      }
+
+      /* Filter panel na mobilnom - pojavljuje se odozdo */
+      .filter-panel {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin-top: 0;
+        border-radius: 20px 20px 0 0;
+        max-height: 80vh;
+        z-index: 2000;
+      }
+
+      /* Dugme filtera na mobilnom - fiksirano na vrhu pri skrolovanju */
+      #filterToggle {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        width: 100%;
+      }
+
+      /* Da filteri ne bi smetali pri otvorenom modalu */
+      body.modal-open .filter-panel {
+        display: none !important;
+      }
+    }
+
+    /* Dodatno za manje telefone */
+    @media (max-width: 480px) {
+      .filter-panel {
+        padding: 15px;
+        max-height: 85vh;
+      }
+
+      #filterToggle {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+
+      .chip {
+        font-size: 12px;
+        padding: 6px 12px;
+      }
+    }
+</style>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <title>Cloockot-Registracija</title>
+  <style>
+    body {
+      background-color: #ff4c4c; /* crvena pozadina */
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 16px rgba(0,0,0,0.25);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 24px;
+      color: #1b263b;
+      font-size: 24px;
+    }
+
+    form p {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    button[type="submit"] {
+      background-color: #1b263b; /* teget */
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #0d1b2a;
+    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:26px;letter-spacing:.5px}
+    .brand .tick{
+      width:18px;height:18px;border:3px solid var(--text);border-left-color:transparent;border-bottom-color:transparent;border-radius:50%;position:relative;transform:rotate(45deg)
+    }
+    .brand .tick:after{
+      content:"";position:absolute;right:-6px;top:6px;width:3px;height:12px;background:var(--accent);border-radius:2px
+    }
+#new{
+  background-color:#1b263b;
+}
+
+  </style>
+</head>
+<body>
+  
+  <div class="form-container">
+  
+    <h2>Registracija</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Registruj se</button>
+    </form>
+  </div>
+</body>
+</html>

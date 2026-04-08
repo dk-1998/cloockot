@@ -1,0 +1,200 @@
+:root{
+  --bg-dark:#0d1b2a;
+  --bg-nav:#1b263b;
+  --accent:#e52b2b;
+  --text:#ffffff;
+  --muted:#d8cfcf;
+  --max:1280px;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Inter,sans-serif;
+  background:#fff0f0;
+  color:#111;
+}
+
+.container{
+  max-width:var(--max);
+  margin:auto;
+  padding:0 16px;
+}
+
+/* TOP BAR */
+.topbar{
+  background:var(--bg-dark);
+  color:#fff;
+}
+.topbar .wrap{
+  display:flex;
+  justify-content:flex-end;
+  gap:16px;
+  padding:8px 0;
+}
+.topbar a{color:#ddd;font-size:14px}
+
+/* NAV */
+.nav{
+  background:var(--bg-nav);
+  color:#fff;
+  position:relative;
+  z-index:1000;   /* ⬅⬅ OVO JE KLJUČNO */
+}
+
+.nav .row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 0;
+}
+.brand{
+  font-size:26px;
+  font-weight:800;
+  color:#fff;
+  text-decoration:none;
+}
+
+/* MENU */
+.menu{
+  display:flex;
+  gap:22px;
+}
+.menu a{
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+}
+
+/* HAMBURGER */
+.hamburger{
+  display:none;
+  font-size:28px;
+  background:none;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+}
+
+/* HERO / SLIDER */
+.hero{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg,#7a1414,#3b0f10);
+  color:#fff;
+}
+
+.slide{
+  min-height:80vh;
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  align-items:center;
+  gap:30px;
+  padding:50px 0;
+}
+
+.copy h1{
+  font-size:54px;
+  line-height:1.05;
+  margin:0;
+}
+
+.watch{
+  max-width:100%;
+  height:auto;
+  display:block;
+  margin:auto;
+}
+
+/* CONTROLS */
+.ctrl{
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  pointer-events:none;
+  padding:0 10px;
+}
+
+.ctrl button{
+  pointer-events:auto;
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  border:1px solid #fff;
+  background:#00000055;
+  color:#fff;
+  font-size:22px;
+  cursor:pointer;
+}
+
+/* DOTS */
+.dots{
+  position:absolute;
+  bottom:16px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:8px;
+}
+.dots button{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  border:none;
+  background:#ffffff66;
+  cursor:pointer;
+}
+.dots button.active{
+  background:#fff;
+}
+
+/* FOOTER */
+footer{
+  background:#111;
+  color:#fff;
+  margin-top:60px;
+  text-align:center;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 900px){
+
+  .menu{
+    display:none;
+    flex-direction:column;
+    background:var(--bg-nav);
+    position:absolute;
+    top:64px;
+    left:0;
+    width:100%;
+    padding:20px;
+  }
+
+  .menu.active{
+    display:flex;
+  }
+
+  .hamburger{
+    display:block;
+  }
+
+  .slide{
+    grid-template-columns:1fr;
+    text-align:center;
+    min-height:auto;
+    padding:30px 0;
+  }
+
+  .copy h1{
+    font-size:30px;
+  }
+
+  .ctrl button{
+    width:36px;
+    height:36px;
+    font-size:18px;
+  }
+}

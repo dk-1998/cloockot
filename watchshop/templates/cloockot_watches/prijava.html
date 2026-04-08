@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <title>Cloockot-Prijava</title>
+  <style>
+    body {
+      background-color: #ff4c4c;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #1b263b;
+      text-align: center;
+    }
+
+    button[type="submit"] {
+      background-color: #1b263b;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #0d1b2a;
+    }
+
+    .messages {
+      margin-bottom: 15px;
+    }
+
+    .messages li {
+      list-style: none;
+      padding: 8px;
+      background: #ffe0e0;
+      border-left: 4px solid #e52b2b;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    /* Stil za formu - labela IZNAD polja */
+    form {
+      margin-top: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #1b263b;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #ff4c4c;
+      box-shadow: 0 0 5px rgba(255, 76, 76, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Prijava</h2>
+
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+
+      {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+      {% endif %}
+
+      <!-- Ručno kreiranje forme umesto {{ form.as_p }} -->
+      <div class="form-group">
+        <label for="id_korisnicko_ime">Korisničko ime:</label>
+        <input type="text" name="korisnicko_ime" id="id_korisnicko_ime" required>
+      </div>
+
+      <div class="form-group">
+        <label for="id_lozinka">Lozinka:</label>
+        <input type="password" name="lozinka" id="id_lozinka" required>
+      </div>
+
+      <button type="submit">Prijavi se</button>
+    </form>
+  </div>
+</body>
+</html>

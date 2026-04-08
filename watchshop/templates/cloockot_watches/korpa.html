@@ -1,0 +1,70 @@
+<!-- templates/clockot_watches/korpa.html -->
+{% extends 'clockot_watches/base.html' %}
+
+{% block title %}Korpa - Clockot{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Dodatni stilovi specifični za korpu */
+    .cart-container {
+        padding: 20px 0;
+    }
+    
+    .cart-total {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+    
+    @media (max-width: 768px) {
+        .cart-container {
+            padding: 10px;
+        }
+        
+        .cart-item {
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+        
+        .cart-item-details {
+            width: 100%;
+        }
+        
+        .cart-buttons {
+            flex-direction: column;
+        }
+        
+        .cart-buttons button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cart-container">
+    <h2>Vaša korpa</h2>
+    
+    <div class="table-responsive">
+        <table class="cart-table">
+            <!-- Tabelarni prikaz za desktop -->
+        </table>
+    </div>
+    
+    <!-- Mobilni prikaz korpe -->
+    <div class="mobile-cart">
+        {% for item in cart_items %}
+        <div class="cart-item">
+            <img src="{{ item.sat.slika.url }}" class="cart-item-image">
+            <div class="cart-item-details">
+                <h4>{{ item.sat.naziv }}</h4>
+                <p>Cena: {{ item.sat.cena }} RSD</p>
+                <p>Količina: {{ item.kolicina }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -663,7 +663,7 @@
   <!-- OVERLAY ZA FILTER NA MOBILNOM -->
   <div id="filterOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:998;"></div>
 
- <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
     // ======== GLOBALNE PROMENLJIVE ========
     let currentModalProduct = null;
@@ -855,14 +855,12 @@
         
         if (!filterToggle) return;
         
-        // Otvaranje drawer-a
         filterToggle.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             openFilterDrawer();
         });
         
-        // Zatvaranje drawer-a
         if (closeDrawerBtn) {
             closeDrawerBtn.addEventListener('click', closeFilterDrawer);
         }
@@ -871,7 +869,6 @@
             overlay.addEventListener('click', closeFilterDrawer);
         }
         
-        // Accordion funkcionalnost za sekcije
         const sectionHeaders = document.querySelectorAll('.filter-section-header');
         sectionHeaders.forEach(header => {
             header.addEventListener('click', () => {
@@ -882,7 +879,6 @@
             });
         });
         
-        // Praćenje promena na checkbox-ovima za badge
         const checkboxes = document.querySelectorAll('.filter-drawer input[type="checkbox"]');
         checkboxes.forEach(cb => {
             cb.addEventListener('change', () => {
@@ -900,7 +896,6 @@
             maxPrice.addEventListener('change', countActiveFilters);
         }
         
-        // Primeri filtera
         if (applyBtn) {
             applyBtn.addEventListener('click', () => {
                 applyFilters();
@@ -915,11 +910,9 @@
             });
         }
         
-        // Inicijalno prebrojavanje aktivnih filtera
         countActiveFilters();
     }
 
-    // ======== FUNKCIJA ZA FILTRIRANJE ========
     window.applyFilters = function() {
         const selectedPol = Array.from(document.querySelectorAll('input[name="pol"]:checked')).map(cb => cb.value);
         const selectedBrend = Array.from(document.querySelectorAll('input[name="brend"]:checked')).map(cb => cb.value);
@@ -970,7 +963,6 @@
         showNotification(`Prikazano ${visibleCount} od ${cards.length} proizvoda`);
     };
 
-    // ======== FUNKCIJA ZA RESETOVANJE FILTERA ========
     window.resetFilters = function() {
         document.querySelectorAll('.filter-drawer input[type="checkbox"]').forEach(cb => {
             cb.checked = false;
@@ -993,7 +985,7 @@
         showNotification('Svi filteri su resetovani');
     };
 
-    // ======== ZATVARANJE MODAL PROZORA ========
+    // ======== FUNKCIJE ZA MODAL PROIZVODA (ISPRAVLJENE) ========
     function closeModal() {
         const modal = document.getElementById('productModal');
         if (modal) {
@@ -1003,13 +995,24 @@
                 swiperInstance.autoplay?.stop();
             }
         }
+        
+        // Vrati filter drawer i overlay ako su bili sakriveni
+        const filterDrawer = document.getElementById('filterDrawer');
+        const filterOverlay = document.getElementById('filterOverlay');
+        if (filterDrawer) filterDrawer.style.display = '';
+        if (filterOverlay) filterOverlay.style.display = '';
     }
 
-    // ======== MODAL PROIZVODA ========
     function openProductModal(card) {
         // Zatvori filter drawer pre otvaranja modala
         closeFilterDrawer();
-
+        
+        // Dodatno ukloni sve filter elemente iz DOM-a (privremeno)
+        const filterDrawer = document.getElementById('filterDrawer');
+        const filterOverlay = document.getElementById('filterOverlay');
+        if (filterDrawer) filterDrawer.style.display = 'none';
+        if (filterOverlay) filterOverlay.style.display = 'none';
+        
         const images = JSON.parse(card.dataset.images);
         const specs = JSON.parse(card.dataset.spec);
 
@@ -1890,6 +1893,39 @@
     .filter-drawer-content::-webkit-scrollbar-thumb:hover {
         background: #a01830;
     }
+    /* Osiguravanje da modal bude iznad svega */
+.modal {
+    z-index: 10000 !important;
+}
+
+.modal__dialog {
+    z-index: 10001 !important;
+}
+
+/* Kada je modal otvoren, sakrij filter dugme i drawer */
+body.modal-open .filter-toggle-container {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+body.modal-open .filter-drawer,
+body.modal-open .filter-overlay,
+body.modal-open #filterOverlay {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Dodatno osiguranje za mobilne uređaje */
+@media (max-width: 768px) {
+    body.modal-open .filter-btn {
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(0.9);
+    }
+}
 </style>
 </body>
 </html>

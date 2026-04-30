@@ -1131,7 +1131,38 @@ function openProductModal(card) {
         }
         return cookieValue;
     }
-
+// ======== FUNKCIJE ZA HAMBURGER MENI ========
+function initMobileMenu() {
+    const menuBtn = document.getElementById('menuBtn');
+    const menu = document.getElementById('menu');
+    
+    if (!menuBtn || !menu) return;
+    
+    menuBtn.addEventListener('click', function() {
+        menu.classList.toggle('open');
+        menuBtn.classList.toggle('active');
+        
+        // Promena ikone iz ☰ u ✕
+        if (menu.classList.contains('open')) {
+            menuBtn.textContent = '✕';
+            document.body.style.overflow = 'hidden';
+        } else {
+            menuBtn.textContent = '☰';
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Zatvaranje menija klikom na link
+    const menuLinks = menu.querySelectorAll('a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            menu.classList.remove('open');
+            menuBtn.classList.remove('active');
+            menuBtn.textContent = '☰';
+            document.body.style.overflow = '';
+        });
+    });
+}
     // ======== INIT ========
     document.addEventListener('DOMContentLoaded', () => {
         loadCart();
@@ -1218,6 +1249,8 @@ function openProductModal(card) {
             });
         }
     });
+    // Pozovi funkciju za meni
+initMobileMenu();
 </script>
 
   <style>
@@ -1981,6 +2014,80 @@ body.modal-open #filterOverlay,
     z-index: 10001 !important;
     position: relative;
     background: white;
+}
+/* ======== HAMBURGER MENI ZA MOBILNE ======== */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #333;
+    padding: 8px;
+    z-index: 1001;
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+    
+    .menu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        padding: 80px 20px 20px;
+        transition: left 0.3s ease;
+        z-index: 1000;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    
+    .menu.open {
+        left: 0;
+    }
+    
+    .menu a {
+        display: block;
+        padding: 15px 0;
+        font-size: 18px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .menu .right {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .menu .right span {
+        padding: 10px 0;
+    }
+    
+    body.menu-open {
+        overflow: hidden;
+    }
+}
+
+@media (min-width: 769px) {
+    .hamburger {
+        display: none;
+    }
+    
+    .menu {
+        display: flex;
+        position: static;
+        flex-direction: row;
+        padding: 0;
+        box-shadow: none;
+    }
 }
 </style>
 </body>

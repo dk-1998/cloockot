@@ -985,82 +985,106 @@
         showNotification('Svi filteri su resetovani');
     };
 
-    // ======== FUNKCIJE ZA MODAL PROIZVODA (ISPRAVLJENE) ========
-    function closeModal() {
-        const modal = document.getElementById('productModal');
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.classList.remove('modal-open');
-            if (swiperInstance) {
-                swiperInstance.autoplay?.stop();
+   // ======== FUNKCIJE ZA MODAL PROIZVODA (ISPRAVLJENE) ========
+function closeModal() {
+    const modal = document.getElementById('productModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        if (swiperInstance) {
+            swiperInstance.autoplay?.stop();
+        }
+    }
+    
+    // Vrati filter dugme i drawer - ukloni 'data-modal-hidden' atribut
+    const filterToggle = document.getElementById('filterToggle');
+    const filterDrawer = document.getElementById('filterDrawer');
+    const filterOverlay = document.getElementById('filterOverlay');
+    
+    if (filterToggle) {
+        filterToggle.removeAttribute('data-modal-hidden');
+        filterToggle.style.display = '';
+    }
+    if (filterDrawer) {
+        filterDrawer.removeAttribute('data-modal-hidden');
+        filterDrawer.style.display = '';
+    }
+    if (filterOverlay) {
+        filterOverlay.removeAttribute('data-modal-hidden');
+        filterOverlay.style.display = '';
+    }
+}
+
+function openProductModal(card) {
+    // Prvo zatvori filter drawer ako je otvoren
+    closeFilterDrawer();
+    
+    // POTPUNO SAKRIJ filter dugme i drawer - postavi display: none i dodaj atribut
+    const filterToggle = document.getElementById('filterToggle');
+    const filterDrawer = document.getElementById('filterDrawer');
+    const filterOverlay = document.getElementById('filterOverlay');
+    
+    if (filterToggle) {
+        filterToggle.setAttribute('data-modal-hidden', 'true');
+        filterToggle.style.display = 'none';
+    }
+    if (filterDrawer) {
+        filterDrawer.setAttribute('data-modal-hidden', 'true');
+        filterDrawer.style.display = 'none';
+    }
+    if (filterOverlay) {
+        filterOverlay.setAttribute('data-modal-hidden', 'true');
+        filterOverlay.style.display = 'none';
+    }
+    
+    const images = JSON.parse(card.dataset.images);
+    const specs = JSON.parse(card.dataset.spec);
+
+    currentModalProduct = {
+        id: card.dataset.id,
+        title: card.dataset.title,
+        brand: card.dataset.brand,
+        price: parseInt(card.dataset.price),
+        image: images[0]
+    };
+
+    document.getElementById('modalBrand').textContent = card.dataset.brand;
+    document.getElementById('modalTitle').textContent = card.dataset.title;
+    document.getElementById('modalPrice').textContent = `${parseInt(card.dataset.price).toLocaleString()} RSD`;
+    document.getElementById('modalDesc').textContent = card.dataset.desc;
+
+    let specHtml = '';
+    for (let key in specs) {
+        specHtml += `<li><strong>${key}:</strong> ${specs[key]}</li>`;
+    }
+    document.getElementById('modalSpecs').innerHTML = specHtml;
+
+    const wrapper = document.getElementById('modalSwiperWrapper');
+    wrapper.innerHTML = images.map(src => `
+        <div class="swiper-slide">
+            <img src="${src}" style="width:100%;height:100%;object-fit:contain;">
+        </div>
+    `).join('');
+
+    const modal = document.getElementById('productModal');
+    modal.style.display = 'flex';
+    document.body.classList.add('modal-open');
+
+    setTimeout(() => {
+        if (swiperInstance) swiperInstance.destroy();
+        swiperInstance = new Swiper('#modalSwiper', {
+            loop: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
             }
-        }
-        
-        // Vrati filter drawer i overlay ako su bili sakriveni
-        const filterDrawer = document.getElementById('filterDrawer');
-        const filterOverlay = document.getElementById('filterOverlay');
-        if (filterDrawer) filterDrawer.style.display = '';
-        if (filterOverlay) filterOverlay.style.display = '';
-    }
-
-    function openProductModal(card) {
-        // Zatvori filter drawer pre otvaranja modala
-        closeFilterDrawer();
-        
-        // Dodatno ukloni sve filter elemente iz DOM-a (privremeno)
-        const filterDrawer = document.getElementById('filterDrawer');
-        const filterOverlay = document.getElementById('filterOverlay');
-        if (filterDrawer) filterDrawer.style.display = 'none';
-        if (filterOverlay) filterOverlay.style.display = 'none';
-        
-        const images = JSON.parse(card.dataset.images);
-        const specs = JSON.parse(card.dataset.spec);
-
-        currentModalProduct = {
-            id: card.dataset.id,
-            title: card.dataset.title,
-            brand: card.dataset.brand,
-            price: parseInt(card.dataset.price),
-            image: images[0]
-        };
-
-        document.getElementById('modalBrand').textContent = card.dataset.brand;
-        document.getElementById('modalTitle').textContent = card.dataset.title;
-        document.getElementById('modalPrice').textContent = `${parseInt(card.dataset.price).toLocaleString()} RSD`;
-        document.getElementById('modalDesc').textContent = card.dataset.desc;
-
-        let specHtml = '';
-        for (let key in specs) {
-            specHtml += `<li><strong>${key}:</strong> ${specs[key]}</li>`;
-        }
-        document.getElementById('modalSpecs').innerHTML = specHtml;
-
-        const wrapper = document.getElementById('modalSwiperWrapper');
-        wrapper.innerHTML = images.map(src => `
-            <div class="swiper-slide">
-                <img src="${src}" style="width:100%;height:100%;object-fit:contain;">
-            </div>
-        `).join('');
-
-        const modal = document.getElementById('productModal');
-        modal.style.display = 'flex';
-        document.body.classList.add('modal-open');
-
-        setTimeout(() => {
-            if (swiperInstance) swiperInstance.destroy();
-            swiperInstance = new Swiper('#modalSwiper', {
-                loop: true,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                }
-            });
-        }, 100);
-    }
+        });
+    }, 100);
+}
 
     // ======== CHECKOUT ========
     async function checkout() {
@@ -1925,6 +1949,38 @@ body.modal-open #filterOverlay {
         pointer-events: none;
         transform: scale(0.9);
     }
+}
+/* POTPUNO SAKRIJ FILTER ELEMENTE KAD JE MODAL OTVOREN - NAJJAČI PRIORITET */
+body.modal-open .filter-toggle-container,
+body.modal-open .filter-btn,
+body.modal-open .filter-drawer,
+body.modal-open .filter-overlay,
+body.modal-open #filterToggle,
+body.modal-open #filterDrawer,
+body.modal-open #filterOverlay,
+.filter-toggle-container[data-modal-hidden="true"],
+.filter-btn[data-modal-hidden="true"],
+.filter-drawer[data-modal-hidden="true"],
+.filter-overlay[data-modal-hidden="true"],
+#filterToggle[data-modal-hidden="true"],
+#filterDrawer[data-modal-hidden="true"],
+#filterOverlay[data-modal-hidden="true"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    z-index: -9999 !important;
+}
+
+/* Osiguravanje da modal bude na vrhu */
+.modal {
+    z-index: 10000 !important;
+}
+
+.modal__dialog {
+    z-index: 10001 !important;
+    position: relative;
+    background: white;
 }
 </style>
 </body>

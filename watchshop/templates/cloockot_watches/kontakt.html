@@ -7,11 +7,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Cloockot-Kontakt</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="{% static 'cloockot_watches/css/kontakt.css' %}">
-
-
-
- 
+  <link rel="stylesheet" href="{% static 'cloockot_watches/css/kontakt.css' %}">
 </head>
 <body>
   <header>
@@ -44,16 +40,22 @@
       <!-- LEVO: FORMA -->
       <section>
         <form method="POST"
-              action="{% url 'posalji_email' %}"
+              action="https://api.web3forms.com/submit"
               enctype="multipart/form-data"
-              class="card card-body">
+              class="card card-body"
+              id="kontaktForma">
+          
+          <!-- Web3Forms Access Key -->
+          <input type="hidden" name="access_key" value="b3435e6d-f199-4047-bcad-ca7e0d7f19f1">
+          <input type="hidden" name="subject" value="Nova kontakt poruka - Cloockot">
+          
           {% csrf_token %}
 
           {% if not request.session.korisnicko_ime %}
             <label for="email">Vaš email:</label><br>
             <input type="email" id="email" name="email" required><br>
           {% else %}
-            <input type="hidden" name="email" value="">
+            <input type="hidden" name="email" value="{{ request.session.korisnicko_ime }}@cloockot.com">
           {% endif %}
 
           <label for="telefon">Telefon (opciono):</label><br>
@@ -69,7 +71,7 @@
                style="max-width:200px;display:none;border:1px solid #ccc;border-radius:8px;padding:4px">
 
           <br><br>
-          <button type="submit" class="btn btn-primary">📧 Pošalji</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">📧 Pošalji</button>
         </form>
       </section>
 
@@ -80,8 +82,7 @@
 
           <div style="margin:10px 0">
             <b>Call Centar:</b><br>
-            <a href="tel:0608382117">064 016 6411</a> •
-            
+            <a href="tel:0640166411">064 016 6411</a>
           </div>
 
           <div style="margin:10px 0">
@@ -111,35 +112,41 @@
     </div>
   </footer>
 
-<script>
-    // Mobile menu functionality
+  <!-- SUCCESS MESSAGE OVERLAY -->
+  <div id="successOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:white; padding:50px; border-radius:16px; max-width:500px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+      <div style="font-size:60px; margin-bottom:20px; color:#10b981;">✓</div>
+      <h2 style="color:#10b981; margin:0 0 16px; font-size:28px;">Poruka je uspešno poslata!</h2>
+      <p style="font-size:16px; color:#555; line-height:1.6; margin-bottom:30px;">
+        Hvala vam što ste nas kontaktirali.<br>
+        Odgovorićemo vam u najkraćem mogućem roku.
+      </p>
+      <button id="closeSuccessBtn" style="padding:14px 40px; background:#10b981; color:white; border:none; border-radius:10px; font-weight:700; font-size:16px; cursor:pointer;">
+        U redu
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ======== MOBILE MENU ========
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mainMenu = document.getElementById('mainMenu');
     
     hamburgerBtn.addEventListener('click', function(e) {
-      e.stopPropagation(); // Sprečava da klik propagira do document event listenera
-      
-      // Toggle (uključi/isključi) meni
+      e.stopPropagation();
       mainMenu.classList.toggle('active');
-      
-      // Toggle ikonu hamburgera (promeni stil)
-      if (mainMenu.classList.contains('active')) {
-        document.body.style.overflow = 'hidden'; // Sprečava skrolovanje tela
-      } else {
-        document.body.style.overflow = ''; // Vraća skrolovanje
-      }
+      document.body.style.overflow = mainMenu.classList.contains('active') ? 'hidden' : '';
     });
     
-    // Zatvori meni kada se klikne na bilo koji link u meniju
-    const menuLinks = mainMenu.querySelectorAll('a');
-    menuLinks.forEach(link => {
+    // Zatvori meni kada se klikne na link
+    mainMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', function() {
         mainMenu.classList.remove('active');
         document.body.style.overflow = '';
       });
     });
     
-    // Zatvori meni kada se klikne izvan njega
+    // Zatvori meni klikom izvan
     document.addEventListener('click', function(event) {
       if (mainMenu.classList.contains('active') && 
           !mainMenu.contains(event.target) && 
@@ -149,7 +156,7 @@
       }
     });
     
-    // Zatvori meni kada se pritisne Escape taster
+    // Zatvori meni na Escape
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape' && mainMenu.classList.contains('active')) {
         mainMenu.classList.remove('active');
@@ -157,6 +164,7 @@
       }
     });
 
+    // ======== PREVIEW SLIKE ========
     function previewImage(event) {
       const file = event.target.files[0];
       const preview = document.getElementById('preview');
@@ -168,187 +176,86 @@
       }
     }
 
-    // Kreirajte modal za potvrdu i modal za uspeh
-    const confirmationModalHTML = `
-      <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;z-index:9999;" id="confirmationModal">
-        <div style="background:white;padding:40px;border-radius:16px;max-width:450px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);">
-          <h2 style="color:#333;margin:0 0 20px;font-size:24px;">🔔 Potvrdite slanje</h2>
-          <p style="font-size:16px;color:#555;line-height:1.5;margin-bottom:30px;">
-            Da li ste sigurni da želite da pošaljete ovu poruka?<br>
-            Proverite da li su svi podaci ispravni.
-          </p>
-          <div style="display:flex;gap:15px;justify-content:center;">
-            <button id="confirmYes" style="padding:14px 32px;background:#e11d48;color:white;border:none;border-radius:10px;font-weight:700;font-size:16px;cursor:pointer;transition:background 0.3s;">
-              Da, pošalji
-            </button>
-            <button id="confirmNo" style="padding:14px 32px;background:#6b7280;color:white;border:none;border-radius:10px;font-weight:600;font-size:16px;cursor:pointer;transition:background 0.3s;">
-              Ne, otkaži
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    const successModalHTML = `
-      <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;z-index:9998;" id="successModal">
-        <div style="background:white;padding:50px;border-radius:16px;max-width:500px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);">
-          <div style="font-size:60px;margin-bottom:20px;color:#10b981;">✓</div>
-          <h2 style="color:#10b981;margin:0 0 16px;font-size:28px;">Poruka je uspešno poslata!</h2>
-          <p style="font-size:16px;color:#555;line-height:1.6;margin-bottom:30px;">
-            Hvala vam što ste nas kontaktirali.<br>
-            Odgovorićemo vam na email u najkraćem mogućem roku.
-          </p>
-          <button id="closeModal" style="padding:14px 40px;background:#10b981;color:white;border:none;border-radius:10px;font-weight:700;font-size:16px;cursor:pointer;transition:background 0.3s;">
-            U redu
-          </button>
-        </div>
-      </div>
-    `;
-
-    // Dodajte oba modala u body
-    document.body.insertAdjacentHTML('beforeend', confirmationModalHTML);
-    document.body.insertAdjacentHTML('beforeend', successModalHTML);
-
-    // Selektujte elemente
-    const form = document.querySelector('form');
-    const confirmationModal = document.getElementById('confirmationModal');
-    const successModal = document.getElementById('successModal');
-    const confirmYesBtn = document.getElementById('confirmYes');
-    const confirmNoBtn = document.getElementById('confirmNo');
-    const closeModalBtn = document.getElementById('closeModal');
-
-    // Promenljiva za čuvanje formData
-    let pendingFormData = null;
-
-    // Kada se forma submituje
-    form.addEventListener('submit', function(e){
+    // ======== WEB3FORMS SUBMIT HANDLER ========
+    const form = document.getElementById('kontaktForma');
+    const successOverlay = document.getElementById('successOverlay');
+    const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+    
+    form.addEventListener('submit', function(e) {
+      // Validacija pre slanja
+      const emailField = document.getElementById('email');
+      const poruka = document.getElementById('poruka');
+      
+      // Ako korisnik nije ulogovan, email je obavezan
+      if (emailField && !emailField.value.trim()) {
+        e.preventDefault();
+        alert('Molimo unesite vašu email adresu.');
+        emailField.focus();
+        return;
+      }
+      
+      if (!poruka.value.trim()) {
+        e.preventDefault();
+        alert('Molimo unesite poruku.');
+        poruka.focus();
+        return;
+      }
+      
+      // Prikaži loading na dugmetu
+      const submitBtn = document.getElementById('submitBtn');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = '⏳ Slanje...';
+      submitBtn.disabled = true;
+      
+      // Web3Forms će automatski obraditi submit
+      // Koristimo fetch da imamo kontrolu nad odgovorom
       e.preventDefault();
       
-      // Sačuvaj podatke forme
-      pendingFormData = new FormData(form);
+      const formData = new FormData(form);
       
-      // Prikaži modal za potvrdu
-      confirmationModal.style.display = "flex";
-    });
-
-    // Kada korisnik klikne "Da" u potvrdnom modalu
-    confirmYesBtn.addEventListener('click', function(){
-      // Sakrij modal za potvrdu
-      confirmationModal.style.display = 'none';
-      
-      // Prikaži indikator učitavanja
-      const originalBtnText = confirmYesBtn.textContent;
-      confirmYesBtn.textContent = "Slanje...";
-      confirmYesBtn.disabled = true;
-      
-      // Pošalji zahtev
-      fetch("{% url 'posalji_email' %}", {
-        method: "POST",
-        body: pendingFormData,
-        headers: {
-          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-          'X-Requested-With': 'XMLHttpRequest'
-        },
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
       })
-      .then(response => {
-        // Vrati dugme u prvobitno stanje
-        confirmYesBtn.textContent = originalBtnText;
-        confirmYesBtn.disabled = false;
-        
-        if(response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Greška prilikom slanja');
-        }
-      })
+      .then(response => response.json())
       .then(data => {
-        if(data.success) {
-          // Prikaži modal za uspeh
-          successModal.style.display = "flex";
+        // Vrati dugme u originalno stanje
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        
+        if (data.success) {
+          // Prikaži success overlay
+          successOverlay.style.display = 'flex';
           
           // Resetuj formu
           form.reset();
           const preview = document.getElementById('preview');
-          if(preview) preview.style.display = 'none';
-          
-          // Resetuj pendingFormData
-          pendingFormData = null;
+          if (preview) preview.style.display = 'none';
         } else {
-          alert(data.error || "Došlo je do greške prilikom slanja. Pokušajte ponovo.");
+          alert('Došlo je do greške: ' + (data.message || 'Pokušajte ponovo.'));
         }
       })
       .catch(error => {
-        // Vrati dugme u prvobitno stanje
-        confirmYesBtn.textContent = originalBtnText;
-        confirmYesBtn.disabled = false;
+        // Vrati dugme u originalno stanje
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
         
-        console.error("Greška:", error);
-        alert("Došlo je do greške prilikom slanja. Pokušajte ponovo.");
+        console.error('Greška:', error);
+        alert('Došlo je do greške prilikom slanja. Pokušajte ponovo.');
       });
     });
-
-    // Kada korisnik klikne "Ne" u potvrdnom modalu
-    confirmNoBtn.addEventListener('click', function(){
-      confirmationModal.style.display = 'none';
-      pendingFormData = null;
+    
+    // Zatvori success overlay
+    closeSuccessBtn.addEventListener('click', function() {
+      successOverlay.style.display = 'none';
     });
-
-    // Kada korisnik klikne na zatvaranje modala za uspeh
-    closeModalBtn.addEventListener('click', function(){
-      successModal.style.display = 'none';
-    });
-
-    // Zatvori modal klikom izvan njega
-    confirmationModal.addEventListener('click', function(e){
-      if(e.target === confirmationModal) {
-        confirmationModal.style.display = 'none';
-        pendingFormData = null;
+    
+    // Zatvori success overlay klikom izvan
+    successOverlay.addEventListener('click', function(e) {
+      if (e.target === successOverlay) {
+        successOverlay.style.display = 'none';
       }
     });
-
-    successModal.addEventListener('click', function(e){
-      if(e.target === successModal) {
-        successModal.style.display = 'none';
-      }
-    });
-
-    // Dodajte i stilove za hover efekte
-    const style = document.createElement('style');
-    style.textContent = `
-      #confirmYes:hover { background: #be123c !important; }
-      #confirmNo:hover { background: #4b5563 !important; }
-      #closeModal:hover { background: #059669 !important; }
-      
-      /* Media query za mobilne modal prozore */
-      @media (max-width: 768px) {
-        #confirmationModal > div {
-          margin: 20px;
-          padding: 30px 20px;
-          width: calc(100% - 40px);
-        }
-        
-        #confirmationModal > div div {
-          flex-direction: column;
-        }
-        
-        #confirmYes, #confirmNo {
-          width: 100%;
-          margin-bottom: 10px;
-        }
-        
-        #successModal > div {
-          margin: 20px;
-          padding: 40px 20px;
-          width: calc(100% - 40px);
-        }
-        
-        #closeModal {
-          width: 100%;
-          max-width: 200px;
-        }
-      }
-    `;
-    document.head.appendChild(style);
   </script>
 </body>
 </html>

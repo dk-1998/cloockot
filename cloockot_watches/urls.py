@@ -11,5 +11,5 @@ urlpatterns = [
     path('prijava/', views.prijava, name='prijava'),
     path('odjava/', views.odjava, name='odjava'),
     path('checkout/', views.checkout, name='checkout'),
-    # path('posalji-email/', views.posalji_email, name='posalji_email'),  ← OBRiŠI OVU LINIJU
+    path('posalji-kontakt/', views.posalji_kontakt, name='posalji_kontakt')
 ]

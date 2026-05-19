@@ -34,19 +34,11 @@
 
     <div class="grid">
       <section>
-        <!-- Web3Forms - ISPRAVLJEN action URL -->
+        <!-- Forma šalje na Django backend (Resend) -->
         <form method="POST" 
-              action="https://api.web3forms.com/submit" 
+              action="{% url 'posalji_kontakt' %}"
               enctype="multipart/form-data"
               id="kontaktForma">
-          
-          <!-- TVOJ ACCESS KEY (zameni sa svojim) -->
-          <input type="hidden" name="access_key" value="b3435e6d-f199-4047-bca0-c47e9d7f19f1">
-          
-          <!-- Opcionalne postavke -->
-          <input type="hidden" name="subject" value="Nova kontakt poruka - Cloockot">
-          <input type="hidden" name="from_name" value="Cloockot Website">
-          <input type="checkbox" name="botcheck" style="display: none;">
           
           {% csrf_token %}
 
@@ -67,7 +59,7 @@
           <textarea id="poruka" name="poruka" rows="5" required></textarea><br>
 
           <label for="slika">Dodajte sliku (opciono):</label><br>
-          <input type="file" id="slika" name="attachment" accept="image/*" onchange="previewImage(event)"><br><br>
+          <input type="file" id="slika" name="slika" accept="image/*" onchange="previewImage(event)"><br><br>
 
           <img id="preview" style="max-width:200px;display:none;border:1px solid #ccc;border-radius:8px;padding:4px">
 
@@ -80,7 +72,7 @@
         <div class="card-body">
           <h3 style="margin:0 0 12px">Kontakt podaci</h3>
           <div style="margin:10px 0"><b>Call Centar:</b><br><a href="tel:0640166411">064 016 6411</a></div>
-          <div style="margin:10px 0"><b>Email:</b><br><a href="mailto:cloockot@gmail.com">cloockot@gmail.com</a></div>
+          <div style="margin:10px 0"><b>Email:</b><br><a href="mailto:cloockot2026@gmail.com">cloockot2026@gmail.com</a></div>
           <div style="margin:10px 0"><b>Radno vreme:</b><br>Ponedeljak – subota 09:00 – 17:00h</div>
           <div class="pill" style="margin-top:14px">🚚 Besplatna dostava</div>
         </div>
@@ -148,7 +140,7 @@
       }
     }
 
-    // Web3Forms submit handler
+    // Submit forma na Django backend
     const form = document.getElementById('kontaktForma');
     const successOverlay = document.getElementById('successOverlay');
     const errorOverlay = document.getElementById('errorOverlay');
@@ -161,7 +153,6 @@
       const emailField = document.getElementById('email');
       const poruka = document.getElementById('poruka');
       
-      // Validacija
       if (emailField && !emailField.value.trim()) {
         alert('Molimo unesite vašu email adresu.');
         emailField.focus();
@@ -182,11 +173,12 @@
       const formData = new FormData(form);
       
       try {
-        // Šaljemo direktno na Web3Forms API [citation:3]
-        const response = await fetch('https://api.web3forms.com/submit', {
+        const response = await fetch("{% url 'posalji_kontakt' %}", {
           method: 'POST',
-          body: formData
-          // NE dodavati 'headers' ili 'content-type' - browser automatski postavlja za multipart/form-data [citation:3]
+          body: formData,
+          headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          }
         });
         
         const data = await response.json();
@@ -200,7 +192,7 @@
           const preview = document.getElementById('preview');
           if (preview) preview.style.display = 'none';
         } else {
-          document.getElementById('errorMessage').textContent = data.message || 'Došlo je do greške. Pokušajte ponovo.';
+          document.getElementById('errorMessage').textContent = data.error || 'Došlo je do greške. Pokušajte ponovo.';
           errorOverlay.style.display = 'flex';
         }
       } catch (error) {

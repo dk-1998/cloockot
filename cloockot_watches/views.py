@@ -135,3 +135,56 @@ def checkout(request):
     except Exception as e:
         logger.error(f"Greška u checkout: {str(e)}")
         return JsonResponse({'error': f'Došlo je do greške: {str(e)}'}, status=400)
+
+
+# ======== KONTAKT FORMA – SLANJE EMAIL (RESEND) ========
+@require_http_methods(["POST"])
+@ensure_csrf_cookie
+def posalji_kontakt(request):
+    """Šalje email iz kontakt forme preko Resend SMTP"""
+    try:
+        email_korisnika = request.POST.get('email', '').strip()
+        ime = request.POST.get('ime', '').strip()
+        telefon = request.POST.get('telefon', '').strip()
+        poruka = request.POST.get('poruka', '').strip()
+        
+        if not email_korisnika:
+            return JsonResponse({'success': False, 'error': 'Email adresa je obavezna.'})
+        if not poruka:
+            return JsonResponse({'success': False, 'error': 'Poruka je obavezna.'})
+        
+        subject = f"Kontakt poruka sa Cloockot sajta - od {email_korisnika}"
+        
+        body = f"""
+Nova poruka sa kontakt forme:
+
+Ime: {ime if ime else 'Nije navedeno'}
+Email: {email_korisnika}
+Telefon: {telefon if telefon else 'Nije naveden'}
+
+Poruka:
+{poruka}
+        """
+        
+        email = EmailMessage(
+            subject=subject,
+            body=body,
+            from_email='kontakt@cloockot.com',     # Sa tvog verifikovanog domena
+            to=['cloockot2026@gmail.com'],          # Gde stiže poruka (tvoj Gmail)
+            reply_to=[email_korisnika]              # Kada odgovoriš, ide korisniku
+        )
+        
+        # Dodaj sliku ako postoji
+        if request.FILES.get('slika'):
+            slika = request.FILES['slika']
+            email.attach(slika.name, slika.read(), slika.content_type)
+        
+        email.send(fail_silently=False)
+        
+        logger.info(f"Kontakt email poslat od {email_korisnika} na cloockot2026@gmail.com")
+        
+        return JsonResponse({'success': True, 'message': 'Poruka je uspešno poslata.'})
+        
+    except Exception as e:
+        logger.error(f"Greška pri slanju kontakt emaila: {str(e)}")
+        return JsonResponse({'success': False, 'error': f'Greška: {str(e)}'})

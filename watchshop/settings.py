@@ -19,14 +19,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# ======== Email konfiguracija ========
+# ======== Email konfiguracija za RESEND ========
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp-relay.brevo.com'
+EMAIL_HOST = 'smtp.resend.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = 'cloockot2026@gmail.com'
+EMAIL_HOST_USER = 'resend'  # FIKSNO - Resend zahteva 'resend'
+EMAIL_HOST_PASSWORD = os.environ.get('RESEND_API_KEY', '')
+DEFAULT_FROM_EMAIL = 'kontakt@cloockot.com'  # Sa verifikovanog domena
 EMAIL_TIMEOUT = 30
 
 # ======== Bezbednost ========

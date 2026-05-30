@@ -7,6 +7,8 @@
   <title>Cloockot-Kontakt</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'cloockot_watches/css/kontakt.css' %}">
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
   <header>
@@ -34,29 +36,26 @@
 
     <div class="grid">
       <section>
-        <!-- Forma šalje na Django backend (Resend) -->
-        <form method="POST" 
-              action="{% url 'posalji_kontakt' %}"
-              enctype="multipart/form-data"
-              id="kontaktForma">
-          
+        <!-- FORMA VISE NE SALJE NA DJANGO NEGO PREKO EmailJS -->
+        <form id="kontaktForma">
           {% csrf_token %}
 
           {% if not request.session.korisnicko_ime %}
-            <label for="email">Vaš email:</label><br>
-            <input type="email" id="email" name="email" required><br>
+            <label for="from_email">Vaš email:</label><br>
+            <input type="email" id="from_email" name="from_email" required><br>
           {% else %}
-            <input type="hidden" name="email" value="{{ request.session.korisnicko_ime }}@cloockot.com">
+            <input type="hidden" name="from_email" value="{{ request.session.korisnicko_ime }}@cloockot.com">
+            <input type="hidden" name="from_name" value="{{ request.session.korisnicko_ime }}">
           {% endif %}
 
-          <label for="ime">Ime i prezime (opciono):</label><br>
-          <input type="text" id="ime" name="ime"><br>
+          <label for="from_name">Ime i prezime (opciono):</label><br>
+          <input type="text" id="from_name" name="from_name"><br>
 
           <label for="telefon">Telefon (opciono):</label><br>
           <input type="text" id="telefon" name="telefon"><br>
 
-          <label for="poruka">Poruka:</label><br>
-          <textarea id="poruka" name="poruka" rows="5" required></textarea><br>
+          <label for="message">Poruka:</label><br>
+          <textarea id="message" name="message" rows="5" required></textarea><br>
 
           <label for="slika">Dodajte sliku (opciono):</label><br>
           <input type="file" id="slika" name="slika" accept="image/*" onchange="previewImage(event)"><br><br>
@@ -111,6 +110,29 @@
   </div>
 
   <script>
+    // ======== ZAMENI OVO SA TVOJIM PODACIMA SA EMAILJS DASHBOARD-A ========
+    const EMAILJS_PUBLIC_KEY = "wZ5vvYGbd74KPKRyf";     // Sa EmailJS dashboard-a
+    const EMAILJS_SERVICE_ID = "service_by8vye2";     // Npr: "service_xxx"
+    const EMAILJS_TEMPLATE_ID = "template_twioqxo";   // Npr: "template_xxx"
+    // ======================================================================
+
+    // Inicijalizacija EmailJS
+    emailjs.init({
+      publicKey: EMAILJS_PUBLIC_KEY,
+    });
+
+    // Preview slike
+    function previewImage(event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById('preview');
+      if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    }
+
     // Mobile menu
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mainMenu = document.getElementById('mainMenu');
@@ -127,20 +149,8 @@
         document.body.style.overflow = '';
       });
     });
-    
-    // Preview slike
-    function previewImage(event) {
-      const file = event.target.files[0];
-      const preview = document.getElementById('preview');
-      if (file) {
-        preview.src = URL.createObjectURL(file);
-        preview.style.display = 'block';
-      } else {
-        preview.style.display = 'none';
-      }
-    }
 
-    // Submit forma na Django backend
+    // Submit forma preko EmailJS
     const form = document.getElementById('kontaktForma');
     const successOverlay = document.getElementById('successOverlay');
     const errorOverlay = document.getElementById('errorOverlay');
@@ -150,8 +160,8 @@
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
       
-      const emailField = document.getElementById('email');
-      const poruka = document.getElementById('poruka');
+      const emailField = document.getElementById('from_email');
+      const poruka = document.getElementById('message');
       
       if (emailField && !emailField.value.trim()) {
         alert('Molimo unesite vašu email adresu.');
@@ -170,35 +180,40 @@
       submitBtn.textContent = '⏳ Slanje...';
       submitBtn.disabled = true;
       
-      const formData = new FormData(form);
+      // Prikupljanje podataka za slanje
+      const templateParams = {
+        from_name: document.getElementById('from_name')?.value || '',
+        from_email: document.getElementById('from_email')?.value || '',
+        telefon: document.getElementById('telefon')?.value || '',
+        message: document.getElementById('message').value,
+      };
+      
+      // Ako je ulogovan korisnik, imamo hidden polja
+      if (!document.getElementById('from_email')) {
+        templateParams.from_email = document.querySelector('input[name="from_email"]')?.value || '';
+        templateParams.from_name = document.querySelector('input[name="from_name"]')?.value || '';
+      }
       
       try {
-        const response = await fetch("{% url 'posalji_kontakt' %}", {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-          }
-        });
+        const response = await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          templateParams
+        );
         
-        const data = await response.json();
-        
+        console.log("Uspešno poslato:", response);
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
+        successOverlay.style.display = 'flex';
+        form.reset();
+        const preview = document.getElementById('preview');
+        if (preview) preview.style.display = 'none';
         
-        if (data.success) {
-          successOverlay.style.display = 'flex';
-          form.reset();
-          const preview = document.getElementById('preview');
-          if (preview) preview.style.display = 'none';
-        } else {
-          document.getElementById('errorMessage').textContent = data.error || 'Došlo je do greške. Pokušajte ponovo.';
-          errorOverlay.style.display = 'flex';
-        }
       } catch (error) {
+        console.error("Greška:", error);
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
-        document.getElementById('errorMessage').textContent = 'Mrežna greška. Pokušajte ponovo.';
+        document.getElementById('errorMessage').textContent = error.text || 'Došlo je do greške. Pokušajte ponovo.';
         errorOverlay.style.display = 'flex';
       }
     });

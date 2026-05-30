@@ -11,7 +11,24 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
+import cloudinary
+import cloudinary.uploader
 
+# Cloudinary konfiguracija (REGISTRUJ SE NA cloudinary.com)
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'tvoj_cloud_name',  # Zameni sa svojim
+    'API_KEY': 'tvoja_api_key',        # Zameni sa svojim
+    'API_SECRET': 'tvoja_api_secret'   # Zameni sa svojim
+}
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+    api_key=CLOUDINARY_STORAGE['API_KEY'],
+    api_secret=CLOUDINARY_STORAGE['API_SECRET']
+)
+
+# Media fajlovi idu na Cloudinary (ne na Render!)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

@@ -14,27 +14,73 @@ from django.core.files.base import ContentFile
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
+# DODAJ OVAJ IMPORT NA VRH FAJLA (ako već ne postoji)
+from django.core.mail import send_mail
+import cloudinary.uploader
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+import json
 
 logger = logging.getLogger(__name__)
 
+
+
 @csrf_exempt
-def upload_slika_api(request):
-    """Privremeno prima sliku i vraća URL"""
-    if request.method == 'POST' and request.FILES.get('slika'):
-        slika = request.FILES['slika']
+@require_http_methods(["POST"])
+def kontakt_api(request):
+    """API za kontakt formu - upload slike na Cloudinary i slanje email-a"""
+    try:
+        # Prikupljanje podataka
+        ime = request.POST.get('ime', '')
+        email = request.POST.get('email', '')
+        telefon = request.POST.get('telefon', '')
+        poruka = request.POST.get('poruka', '')
         
-        # Sačuvaj sliku u media/temp_uploads/
-        file_path = default_storage.save(f'temp_uploads/{slika.name}', ContentFile(slika.read()))
-        file_url = request.build_absolute_uri(default_storage.url(file_path))
+        # Provera obaveznih polja
+        if not email or not poruka:
+            return JsonResponse({'success': False, 'error': 'Email i poruka su obavezni'})
         
-        return JsonResponse({
-            'success': True, 
-            'url': file_url,
-            'message': 'Slika je sačuvana'
-        })
-    
-    return JsonResponse({'success': False, 'error': 'Nema slike'}, status=400)
-# ======== OSNOVNE STRANICE ========
+        # Upload slike na Cloudinary (ako postoji)
+        image_url = ''
+        if request.FILES.get('slika'):
+            slika = request.FILES['slika']
+            # Provera veličine (max 5MB)
+            if slika.size > 5 * 1024 * 1024:
+                return JsonResponse({'success': False, 'error': 'Slika je prevelika (max 5MB)'})
+            upload_result = cloudinary.uploader.upload(slika)
+            image_url = upload_result['secure_url']
+        
+        # Pravljenje email sadržaja
+        email_subject = f"Nova poruka sa Cloockot sajta"
+        email_body = f"""
+Nova poruka sa Cloockot sajta:
+
+Ime: {ime if ime else 'Nije navedeno'}
+Email: {email}
+Telefon: {telefon if telefon else 'Nije naveden'}
+
+Poruka:
+{poruka}
+
+{'Link do slike: ' + image_url if image_url else ''}
+
+--- 
+Poslato preko kontakt forme na Cloockot sajtu.
+        """
+        
+        # Slanje email-a
+        send_mail(
+            subject=email_subject,
+            message=email_body,
+            from_email='cloockot2026@gmail.com',
+            recipient_list=['cloockot2026@gmail.com'],
+            fail_silently=False,
+        )
+        
+        return JsonResponse({'success': True, 'message': 'Poruka je uspešno poslata'})
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
 def index(request): 
     return render(request, 'cloockot_watches/index.html')
 

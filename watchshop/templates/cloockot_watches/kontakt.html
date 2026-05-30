@@ -108,7 +108,6 @@
       <button id="closeErrorBtn" style="padding:14px 40px; background:#e74c3c; color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">U redu</button>
     </div>
   </div>
-
 <script>
     // Preview slike
     function previewImage(event) {
@@ -143,81 +142,22 @@
       });
     }
 
-    // Submit forma
+    // JEDNOSTAVNIJA FORMA - BEZ FETCH, DIREKTNO SUBMIT
     const form = document.getElementById('kontaktForma');
-    const successOverlay = document.getElementById('successOverlay');
-    const errorOverlay = document.getElementById('errorOverlay');
-    const closeSuccessBtn = document.getElementById('closeSuccessBtn');
-    const closeErrorBtn = document.getElementById('closeErrorBtn');
     
     if (form) {
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const emailField = document.getElementById('email');
-        const poruka = document.getElementById('poruka');
-        
-        if (emailField && !emailField.value.trim()) {
-          alert('Molimo unesite vašu email adresu.');
-          emailField.focus();
-          return;
-        }
-        
-        if (!poruka.value.trim()) {
-          alert('Molimo unesite poruku.');
-          poruka.focus();
-          return;
-        }
-        
-        const submitBtn = document.getElementById('submitBtn');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = '⏳ Slanje...';
-        submitBtn.disabled = true;
-        
-        const formData = new FormData(form);
-        
-        try {
-          const response = await fetch('/api/kontakt/', {
-            method: 'POST',
-            headers: {
-              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: formData
-          });
-          
-          const data = await response.json();
-          
-          if (data.success) {
-            successOverlay.style.display = 'flex';
-            form.reset();
-            const preview = document.getElementById('preview');
-            if (preview) preview.style.display = 'none';
-          } else {
-            document.getElementById('errorMessage').textContent = data.error || 'Došlo je do greške.';
-            errorOverlay.style.display = 'flex';
-          }
-        } catch (error) {
-          console.error("Greška:", error);
-          document.getElementById('errorMessage').textContent = 'Došlo je do greške. Pokušajte ponovo.';
-          errorOverlay.style.display = 'flex';
-        } finally {
-          submitBtn.textContent = originalText;
-          submitBtn.disabled = false;
-        }
-      });
-    }
-    
-    if (closeSuccessBtn) {
-      closeSuccessBtn.addEventListener('click', () => successOverlay.style.display = 'none');
-    }
-    if (closeErrorBtn) {
-      closeErrorBtn.addEventListener('click', () => errorOverlay.style.display = 'none');
-    }
-    if (successOverlay) {
-      successOverlay.addEventListener('click', (e) => { if (e.target === successOverlay) successOverlay.style.display = 'none'; });
-    }
-    if (errorOverlay) {
-      errorOverlay.addEventListener('click', (e) => { if (e.target === errorOverlay) errorOverlay.style.display = 'none'; });
+      // Uklanjamo event listener ako postoji i dodajemo novi
+      form.removeEventListener('submit', form.submitHandler);
+      
+      form.submitHandler = function(e) {
+        // Dozvoljavamo normalno slanje forme (bez preventDefault)
+        console.log("Forma se šalje...");
+        // Ne radimo e.preventDefault() jer želimo da se forma pošalje
+      };
+      
+      form.addEventListener('submit', form.submitHandler);
+    } else {
+      console.error("Forma sa id='kontaktForma' nije pronađena!");
     }
 </script>
 </body>

@@ -9,9 +9,31 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 import logging
 from django.core.mail import EmailMessage
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import os
 
 logger = logging.getLogger(__name__)
 
+@csrf_exempt
+def upload_slika_api(request):
+    """Privremeno prima sliku i vraća URL"""
+    if request.method == 'POST' and request.FILES.get('slika'):
+        slika = request.FILES['slika']
+        
+        # Sačuvaj sliku u media/temp_uploads/
+        file_path = default_storage.save(f'temp_uploads/{slika.name}', ContentFile(slika.read()))
+        file_url = request.build_absolute_uri(default_storage.url(file_path))
+        
+        return JsonResponse({
+            'success': True, 
+            'url': file_url,
+            'message': 'Slika je sačuvana'
+        })
+    
+    return JsonResponse({'success': False, 'error': 'Nema slike'}, status=400)
 # ======== OSNOVNE STRANICE ========
 def index(request): 
     return render(request, 'cloockot_watches/index.html')

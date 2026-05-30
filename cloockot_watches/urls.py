@@ -11,5 +11,6 @@ urlpatterns = [
     path('prijava/', views.prijava, name='prijava'),
     path('odjava/', views.odjava, name='odjava'),
     path('checkout/', views.checkout, name='checkout'),
-    path('posalji-kontakt/', views.posalji_kontakt, name='posalji_kontakt')
+    path('posalji-kontakt/', views.posalji_kontakt, name='posalji_kontakt'),
+    path('api/upload-slike/', views.upload_slika_api, name='upload_slika_api'),
 ]

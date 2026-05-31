@@ -11,39 +11,28 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
-import cloudinary
-import cloudinary.uploader
 
-# Cloudinary konfiguracija (REGISTRUJ SE NA cloudinary.com)
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'tvoj_cloud_name',  # Zameni sa svojim
-    'API_KEY': 'tvoja_api_key',        # Zameni sa svojim
-    'API_SECRET': 'tvoja_api_secret'   # Zameni sa svojim
-}
-
-cloudinary.config(
-    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
-    api_key=CLOUDINARY_STORAGE['API_KEY'],
-    api_secret=CLOUDINARY_STORAGE['API_SECRET']
-)
-
-# Media fajlovi idu na Cloudinary (ne na Render!)
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Static files
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# ======== Email konfiguracija za RESEND ========
+# ======== MEDIA FILES (Slike koje korisnici otpremaju) ========
+# Ovo je za PythonAnywhere - čuvamo slike lokalno
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+# ======== Email konfiguracija za PythonAnywhere (Gmail SMTP) ========
+# PythonAnywhere dozvoljava samo Gmail SMTP na besplatnom nivou
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.resend.com'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'resend'  # FIKSNO - Resend zahteva 'resend'
-EMAIL_HOST_PASSWORD = os.environ.get('RESEND_API_KEY', '')
-DEFAULT_FROM_EMAIL = 'kontakt@cloockot.com'  # Sa verifikovanog domena
+EMAIL_HOST_USER = 'cloockot2026@gmail.com'  # Tvoj Gmail
+EMAIL_HOST_PASSWORD = os.environ.get('GMAIL_APP_PASSWORD', '')  # App lozinka (ne sifra!)
+DEFAULT_FROM_EMAIL = 'cloockot2026@gmail.com'
 EMAIL_TIMEOUT = 30
 
 # ======== Bezbednost ========
@@ -88,10 +77,11 @@ SECRET_KEY = 'django-insecure-^4$6&iyc#l(f!vwr0fp^25kytr-9ay%g&f6g*@&q#s8rh3st9#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+# PythonAnywhere zahteva svoj domen u ALLOWED_HOSTS
 ALLOWED_HOSTS = [
     'cloockot.com',
     'www.cloockot.com',
-    'clookot-watches.onrender.com',
+    'YOUR_USERNAME.pythonanywhere.com',  # 🔴 ZAMENI sa tvojim korisničkim imenom!
     'localhost',
     '127.0.0.1',
 ]
@@ -172,4 +162,5 @@ USE_TZ = True
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Static files storage
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

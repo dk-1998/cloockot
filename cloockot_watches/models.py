@@ -24,8 +24,6 @@ class Porudzbina(models.Model):
     datum = models.DateTimeField(auto_now_add=True)
     artikli = models.JSONField(help_text="Lista artikala u JSON formatu")
     ukupno = models.IntegerField(help_text="Ukupna cena u RSD")
-    
-    # DODATO: naziv naručenog sata (prvi sat iz porudžbine ili posebno)
     naziv = models.CharField(max_length=200, blank=True, null=True, help_text="Naziv naručenog sata")
 
     def __str__(self):
@@ -36,7 +34,7 @@ class Porudzbina(models.Model):
         if not self.naziv and self.artikli:
             first_item = self.artikli[0] if self.artikli else None
             if first_item:
-                self.naziv = first_item.get('naziv', '')
+                self.naziv = f"{first_item.get('brend', '')} - {first_item.get('naziv', '')}"
         super().save(*args, **kwargs)
     
     def formatirani_artikli(self):

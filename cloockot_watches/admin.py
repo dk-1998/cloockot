@@ -16,13 +16,21 @@ class KorisnikAdmin(admin.ModelAdmin):
     broj_porudzbina.short_description = 'Broj porudžbina'
 
 class PorudzbinaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'naziv', 'korisnik_info', 'korisnik_email', 'datum', 'ukupno_display', 'broj_artikala')
+    list_display = ('id', 'naziv', 'korisnik_ime_prezime', 'korisnik_email', 'datum', 'ukupno_display', 'broj_artikala')
     search_fields = ('naziv', 'korisnik__korisnicko_ime', 'korisnik__ime', 'korisnik__prezime', 'korisnik__email')
     list_filter = ('datum',)
     readonly_fields = ('datum', 'artikli_display')
     fields = ('korisnik', 'naziv', 'datum', 'artikli_display', 'ukupno')
     list_per_page = 20
     ordering = ('-datum',)
+    
+    def korisnik_ime_prezime(self, obj):
+        try:
+            return f"{obj.korisnik.ime} {obj.korisnik.prezime}"
+        except Exception:
+            return "Nepoznat"
+    korisnik_ime_prezime.short_description = 'Ime i prezime'
+    korisnik_ime_prezime.admin_order_field = 'korisnik__ime'
     
     def korisnik_info(self, obj):
         try:

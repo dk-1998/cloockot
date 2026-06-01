@@ -11,7 +11,5 @@ urlpatterns = [
     path('prijava/', views.prijava, name='prijava'),
     path('odjava/', views.odjava, name='odjava'),
     path('checkout/', views.checkout, name='checkout'),
-    path('posalji-kontakt/', views.posalji_kontakt, name='posalji_kontakt'),
-    # DODAJ OVAJ RED:
-    path('api/kontakt/', views.kontakt_api, name='kontakt_api'),
+ 
 ]

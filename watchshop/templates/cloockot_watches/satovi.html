@@ -43,167 +43,137 @@
   <main class="container">
     <div class="breadcrumb">Početna / Satovi</div>
     <h1 class="page-title">Satovi</h1>
-    
-   <div class="filter-toggle-container">
-  <button id="filterToggle" class="btn filter-btn" type="button">
-    <svg class="filter-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polygon points="22 3 2 3 10 13 10 21 14 18 14 13 22 3"></polygon>
-    </svg>
-    <span>Filteri</span>
-    <span class="badge-count" id="filterBadge" style="display: none;">0</span>
-  </button>
-  
-  <!-- Mobilni drawer za filtere -->
-  <div id="filterDrawer" class="filter-drawer">
-    <div class="filter-drawer-header">
-      <h3>Filteri</h3>
-      <button id="closeDrawerBtn" class="close-drawer-btn">✕</button>
-    </div>
-    <div class="filter-drawer-content">
-      <form class="filterbar" id="filterForm" onsubmit="return false;">
-        <div class="filter-sections">
-          <div class="filter-section">
-            <div class="filter-section-header" data-section="pol">
-              <span>Pol</span>
-              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div class="filter-section-content" id="section-pol">
-              <label class="chip"><input type="checkbox" name="pol" value="muski"> Muški</label>
-              <label class="chip"><input type="checkbox" name="pol" value="zenski"> Ženski</label>
-              <label class="chip"><input type="checkbox" name="pol" value="unisex"> Unisex</label>
-            </div>
-          </div>
 
-          <div class="filter-section">
-            <div class="filter-section-header" data-section="brend">
-              <span>Brend</span>
-              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div class="filter-section-content" id="section-brend">
-              <label class="chip"><input type="checkbox" name="brend" value="casio"> Casio</label>
-              <label class="chip"><input type="checkbox" name="brend" value="boss"> Boss</label>
-              <label class="chip"><input type="checkbox" name="brend" value="amalys"> Amalys</label>
-              <label class="chip"><input type="checkbox" name="brend" value="anne-klein"> Anne Klein</label>
-              <label class="chip"><input type="checkbox" name="brend" value="garmin"> Garmin</label>
-              <label class="chip"><input type="checkbox" name="brend" value="naviforce"> Naviforce</label>
-            </div>
-          </div>
+    <!-- ======== PILL FILTER ROW ======== -->
+    <div class="filter-pills-row" id="filterPillsRow">
+      <button class="filter-pill" data-filter="pol">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="5"/><line x1="16" y1="6" x2="20" y2="2"/><line x1="20" y1="2" x2="17" y2="2"/><line x1="20" y1="2" x2="20" y2="5"/><circle cx="8" cy="17" r="5"/><line x1="8" y1="12" x2="8" y2="22"/><line x1="5" y1="19" x2="11" y2="19"/></svg>
+        <span>Pol</span>
+        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
 
-          <div class="filter-section">
-            <div class="filter-section-header" data-section="narukvica">
-              <span>Narukvica</span>
-              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div class="filter-section-content" id="section-narukvica">
-              <label class="chip"><input type="checkbox" name="narukvica" value="metalni"> Metalni</label>
-              <label class="chip"><input type="checkbox" name="narukvica" value="kozni"> Kožni</label>
-              <label class="chip"><input type="checkbox" name="narukvica" value="platneni"> Platneni</label>
-              <label class="chip"><input type="checkbox" name="narukvica" value="mesh"> Mesh</label>
-              <label class="chip"><input type="checkbox" name="narukvica" value="smola"> Smola</label>
-            </div>
-          </div>
+      <button class="filter-pill" data-filter="brend">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+        <span>Brend</span>
+        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
 
-          <div class="filter-section">
-            <div class="filter-section-header" data-section="kategorija">
-              <span>Kategorija</span>
-              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div class="filter-section-content" id="section-kategorija">
-              <label class="chip"><input type="checkbox" name="kategorija" value="novo"> Novo</label>
-              <label class="chip"><input type="checkbox" name="kategorija" value="ponuda-oglasi"> Polovno</label>
-            </div>
-          </div>
+      <button class="filter-pill" data-filter="narukvica">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>Narukvica</span>
+        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
 
-          <div class="filter-section">
-            <div class="filter-section-header" data-section="boja">
-              <span>Boja</span>
-              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div class="filter-section-content" id="section-boja">
-              <label class="chip"><input type="checkbox" name="boja" value="crni"> Crni</label>
-              <label class="chip"><input type="checkbox" name="boja" value="srebrni"> Srebrni</label>
-              <label class="chip"><input type="checkbox" name="boja" value="zlatni"> Zlatni</label>
-              <label class="chip"><input type="checkbox" name="boja" value="roze"> Roze</label>
-              <label class="chip"><input type="checkbox" name="boja" value="plavi"> Plavi</label>
-              <label class="chip"><input type="checkbox" name="boja" value="crveni"> Crveni</label>
-              <label class="chip"><input type="checkbox" name="boja" value="braon"> Braon</label>
-              <label class="chip"><input type="checkbox" name="boja" value="dvobojni"> Dvobojni</label>
-            </div>
-          </div>
+      <button class="filter-pill" data-filter="kategorija">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Kategorija</span>
+        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
 
-          <div class="filter-section">
-            <div class="filter-section-header" data-section="cena">
-              <span>Cena (RSD)</span>
-              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div class="filter-section-content" id="section-cena">
-              <div class="price-range">
-                <div class="price-inputs">
-                  <label>
-                    <span>Od:</span>
-                    <select id="minPrice">
-                      <option value="0">0</option>
-                      <option value="9990">9.990</option>
-                      <option value="10000">10.000</option>
-                      <option value="12490">12.490</option>
-                      <option value="12990">12.990</option>
-                      <option value="13990">13.990</option>
-                      <option value="14990">14.990</option>
-                      <option value="15490">15.490</option>
-                      <option value="17990">17.990</option>
-                      <option value="19490">19.490</option>
-                      <option value="25990">25.990</option>
-                      <option value="28990">28.990</option>
-                      <option value="32990">32.990</option>
-                      <option value="33990">33.990</option>
-                    </select>
-                  </label>
-                  <label>
-                    <span>Do:</span>
-                    <select id="maxPrice">
-                      <option value="999999">Sve</option>
-                      <option value="9990">9.990</option>
-                      <option value="10000">10.000</option>
-                      <option value="12490">12.490</option>
-                      <option value="12990">12.990</option>
-                      <option value="13990">13.990</option>
-                      <option value="14990">14.990</option>
-                      <option value="15490">15.490</option>
-                      <option value="17990">17.990</option>
-                      <option value="19490">19.490</option>
-                      <option value="25990">25.990</option>
-                      <option value="28990">28.990</option>
-                      <option value="32990">32.990</option>
-                      <option value="33990">33.990</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
+      <button class="filter-pill" data-filter="boja">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg>
+        <span>Boja</span>
+        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <button class="filter-pill" data-filter="cena">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        <span>Cena</span>
+        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <button class="filter-pill reset-pill" id="resetAllPills" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <span>Resetuj</span>
+      </button>
+
+      <!-- ======== DROPDOWN PANELI ======== -->
+      <div class="pill-dropdown" id="drop-pol">
+        <label class="chip"><input type="checkbox" name="pol" value="muski"> Muški</label>
+        <label class="chip"><input type="checkbox" name="pol" value="zenski"> Ženski</label>
+        <label class="chip"><input type="checkbox" name="pol" value="unisex"> Unisex</label>
+      </div>
+
+      <div class="pill-dropdown" id="drop-brend">
+        <label class="chip"><input type="checkbox" name="brend" value="casio"> Casio</label>
+        <label class="chip"><input type="checkbox" name="brend" value="boss"> Boss</label>
+        <label class="chip"><input type="checkbox" name="brend" value="amalys"> Amalys</label>
+        <label class="chip"><input type="checkbox" name="brend" value="anne-klein"> Anne Klein</label>
+        <label class="chip"><input type="checkbox" name="brend" value="garmin"> Garmin</label>
+        <label class="chip"><input type="checkbox" name="brend" value="naviforce"> Naviforce</label>
+      </div>
+
+      <div class="pill-dropdown" id="drop-narukvica">
+        <label class="chip"><input type="checkbox" name="narukvica" value="metalni"> Metalni</label>
+        <label class="chip"><input type="checkbox" name="narukvica" value="kozni"> Kožni</label>
+        <label class="chip"><input type="checkbox" name="narukvica" value="platneni"> Platneni</label>
+        <label class="chip"><input type="checkbox" name="narukvica" value="mesh"> Mesh</label>
+        <label class="chip"><input type="checkbox" name="narukvica" value="smola"> Smola</label>
+      </div>
+
+      <div class="pill-dropdown" id="drop-kategorija">
+        <label class="chip"><input type="checkbox" name="kategorija" value="novo"> Novo</label>
+        <label class="chip"><input type="checkbox" name="kategorija" value="ponuda-oglasi"> Polovno</label>
+      </div>
+
+      <div class="pill-dropdown" id="drop-boja">
+        <label class="chip"><input type="checkbox" name="boja" value="crni"> Crni</label>
+        <label class="chip"><input type="checkbox" name="boja" value="srebrni"> Srebrni</label>
+        <label class="chip"><input type="checkbox" name="boja" value="zlatni"> Zlatni</label>
+        <label class="chip"><input type="checkbox" name="boja" value="roze"> Roze</label>
+        <label class="chip"><input type="checkbox" name="boja" value="plavi"> Plavi</label>
+        <label class="chip"><input type="checkbox" name="boja" value="crveni"> Crveni</label>
+        <label class="chip"><input type="checkbox" name="boja" value="braon"> Braon</label>
+        <label class="chip"><input type="checkbox" name="boja" value="dvobojni"> Dvobojni</label>
+      </div>
+
+      <div class="pill-dropdown" id="drop-cena">
+        <div class="price-inputs">
+          <label>
+            <span>Od:</span>
+            <select id="minPrice">
+              <option value="0">0</option>
+              <option value="9990">9.990</option>
+              <option value="10000">10.000</option>
+              <option value="12490">12.490</option>
+              <option value="12990">12.990</option>
+              <option value="13990">13.990</option>
+              <option value="14990">14.990</option>
+              <option value="15490">15.490</option>
+              <option value="17990">17.990</option>
+              <option value="19490">19.490</option>
+              <option value="25990">25.990</option>
+              <option value="28990">28.990</option>
+              <option value="32990">32.990</option>
+              <option value="33990">33.990</option>
+            </select>
+          </label>
+          <label>
+            <span>Do:</span>
+            <select id="maxPrice">
+              <option value="999999">Sve</option>
+              <option value="9990">9.990</option>
+              <option value="10000">10.000</option>
+              <option value="12490">12.490</option>
+              <option value="12990">12.990</option>
+              <option value="13990">13.990</option>
+              <option value="14990">14.990</option>
+              <option value="15490">15.490</option>
+              <option value="17990">17.990</option>
+              <option value="19490">19.490</option>
+              <option value="25990">25.990</option>
+              <option value="28990">28.990</option>
+              <option value="32990">32.990</option>
+              <option value="33990">33.990</option>
+            </select>
+          </label>
         </div>
+        <button type="button" class="btn primary" id="applyCenaBtn" style="margin-top:12px;width:100%;">Primeni</button>
+      </div>
 
-        <div class="filter-actions">
-          <button id="resetFiltersBtn" type="button" class="btn reset-btn">Resetuj</button>
-          <button id="applyFiltersBtn" type="button" class="btn primary apply-btn">Primeni filter</button>
-        </div>
-      </form>
+      <div id="pillOverlay" class="pill-overlay"></div>
     </div>
-  </div>
-  <div id="filterOverlay" class="filter-overlay" style="display: none;"></div>
-</div>
+    <!-- ======== KRAJ PILL FILTER ROW ======== -->
 
     <div class="grid" id="grid">
       <!-- 1. CASIO ZLATNI -->
@@ -342,7 +312,7 @@
           "https://zimsonwatches.com/cdn/shop/products/ncak3750bmrg.jpg?v=1686982807&width=535",
           "https://m.media-amazon.com/images/I/71ACn7ef8aL._AC_UY900_.jpg",
           "https://bermorzone.com.ph/wp-content/uploads/2022/12/Anne-Klein-Womens-Genuine-Diamond-Dial-Bracelet-Watch-btz-ph.jpg"
-        ]' 
+        ]'
         data-spec='{"Mehanizam":"Kvarcni (analogni)","Kućište":"Metalna legura, rose gold","Narukvica":"Kaiš (eko koža), roze","Staklo":"Mineralno","Vodootpornost":"Prskanje (nije za plivanje)","Prečnik":"≈ 34–36 mm"}'
         data-desc="Topao rose gold akcenat sa udobnim kaišem."
         data-brand="ANNE KLEIN"
@@ -593,6 +563,7 @@
     </div>
   </div>
 
+  <!-- MODAL ZA KORPU -->
   <div id="cartModal" class="modal" style="display:none;">
     <div class="modal__dialog" style="max-width:500px;grid-template-columns:1fr;">
       <div class="modal__body">
@@ -609,9 +580,7 @@
             <span>Međuzbir</span>
             <strong id="cartSubtotal">0 RSD</strong>
           </div>
-          <button class="btn primary" style="width:100%;margin-top:15px;" id="checkoutBtn">
-            Checkout
-          </button>
+          <button class="btn primary" style="width:100%;margin-top:15px;" id="checkoutBtn">Checkout</button>
         </div>
       </div>
     </div>
@@ -660,1435 +629,588 @@
     </div>
   </div>
 
-  <!-- OVERLAY ZA FILTER NA MOBILNOM -->
-  <div id="filterOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:998;"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
     // ======== GLOBALNE PROMENLJIVE ========
     let currentModalProduct = null;
     let swiperInstance = null;
     let currentCart = [];
-    let activeFiltersCount = 0;
 
     // ======== FUNKCIJE ZA KORPU ========
     function loadCart() {
-        const saved = localStorage.getItem('cloockotCart');
-        currentCart = saved ? JSON.parse(saved) : [];
-        updateCartBadge();
-        updateCartDisplay();
+      const saved = localStorage.getItem('cloockotCart');
+      currentCart = saved ? JSON.parse(saved) : [];
+      updateCartBadge();
+      updateCartDisplay();
     }
 
     function saveCart() {
-        localStorage.setItem('cloockotCart', JSON.stringify(currentCart));
-        updateCartBadge();
-        updateCartDisplay();
+      localStorage.setItem('cloockotCart', JSON.stringify(currentCart));
+      updateCartBadge();
+      updateCartDisplay();
     }
 
     function updateCartBadge() {
-        const total = currentCart.reduce((sum, item) => sum + item.quantity, 0);
-        const badge = document.getElementById('cartBadge');
-        if (badge) {
-            badge.textContent = total;
-            badge.style.display = total > 0 ? 'inline-block' : 'none';
-        }
+      const total = currentCart.reduce((sum, item) => sum + item.quantity, 0);
+      const badge = document.getElementById('cartBadge');
+      if (badge) {
+        badge.textContent = total;
+        badge.style.display = total > 0 ? 'inline-block' : 'none';
+      }
     }
 
     function updateCartDisplay() {
-        const cartItemsDiv = document.getElementById('cartItems');
-        const cartEmptyDiv = document.getElementById('cartEmpty');
-        const subtotalSpan = document.getElementById('cartSubtotal');
-
-        if (!cartItemsDiv) return;
-
-        if (currentCart.length === 0) {
-            cartItemsDiv.innerHTML = '';
-            cartEmptyDiv.style.display = 'block';
-            subtotalSpan.textContent = '0 RSD';
-            return;
-        }
-
-        cartEmptyDiv.style.display = 'none';
-
-        let subtotal = 0;
-        let html = '';
-
-        currentCart.forEach((item, index) => {
-            const itemTotal = item.price * item.quantity;
-            subtotal += itemTotal;
-
-            html += `
-                <div style="display:flex;gap:15px;padding:10px 0;border-bottom:1px solid #eee;">
-                    <img src="${item.image}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;">
-                    <div style="flex:1;">
-                        <div style="font-weight:600;">${item.title}</div>
-                        <div style="color:#777;font-size:13px;">${item.price.toLocaleString()} RSD</div>
-                        <div style="display:flex;gap:10px;margin-top:8px;align-items:center;">
-                            <button class="btn-qty" data-index="${index}" data-delta="-1">-</button>
-                            <span>${item.quantity}</span>
-                            <button class="btn-qty" data-index="${index}" data-delta="1">+</button>
-                            <button class="btn-remove" data-index="${index}">✕</button>
-                        </div>
-                    </div>
-                    <div style="font-weight:600;">
-                        ${itemTotal.toLocaleString()} RSD
-                    </div>
-                </div>
-            `;
+      const cartItemsDiv = document.getElementById('cartItems');
+      const cartEmptyDiv = document.getElementById('cartEmpty');
+      const subtotalSpan = document.getElementById('cartSubtotal');
+      if (!cartItemsDiv) return;
+      if (currentCart.length === 0) {
+        cartItemsDiv.innerHTML = '';
+        cartEmptyDiv.style.display = 'block';
+        subtotalSpan.textContent = '0 RSD';
+        return;
+      }
+      cartEmptyDiv.style.display = 'none';
+      let subtotal = 0;
+      let html = '';
+      currentCart.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+        html += `
+          <div style="display:flex;gap:15px;padding:10px 0;border-bottom:1px solid #eee;">
+            <img src="${item.image}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;">
+            <div style="flex:1;">
+              <div style="font-weight:600;">${item.title}</div>
+              <div style="color:#777;font-size:13px;">${item.price.toLocaleString()} RSD</div>
+              <div style="display:flex;gap:10px;margin-top:8px;align-items:center;">
+                <button class="btn-qty" data-index="${index}" data-delta="-1">-</button>
+                <span>${item.quantity}</span>
+                <button class="btn-qty" data-index="${index}" data-delta="1">+</button>
+                <button class="btn-remove" data-index="${index}">✕</button>
+              </div>
+            </div>
+            <div style="font-weight:600;">${itemTotal.toLocaleString()} RSD</div>
+          </div>
+        `;
+      });
+      cartItemsDiv.innerHTML = html;
+      subtotalSpan.textContent = `${subtotal.toLocaleString()} RSD`;
+      document.querySelectorAll('.btn-qty').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const index = parseInt(btn.dataset.index);
+          const delta = parseInt(btn.dataset.delta);
+          currentCart[index].quantity += delta;
+          if (currentCart[index].quantity <= 0) currentCart.splice(index, 1);
+          saveCart();
         });
-
-        cartItemsDiv.innerHTML = html;
-        subtotalSpan.textContent = `${subtotal.toLocaleString()} RSD`;
-
-        document.querySelectorAll('.btn-qty').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const index = parseInt(btn.dataset.index);
-                const delta = parseInt(btn.dataset.delta);
-                currentCart[index].quantity += delta;
-                if (currentCart[index].quantity <= 0) {
-                    currentCart.splice(index, 1);
-                }
-                saveCart();
-            });
+      });
+      document.querySelectorAll('.btn-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentCart.splice(parseInt(btn.dataset.index), 1);
+          saveCart();
         });
-
-        document.querySelectorAll('.btn-remove').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const index = parseInt(btn.dataset.index);
-                currentCart.splice(index, 1);
-                saveCart();
-            });
-        });
+      });
     }
 
     function addToCart(product) {
-        const isLoggedIn = {% if request.session.korisnicko_ime %}true{% else %}false{% endif %};
-
-        if (!isLoggedIn) {
-            document.getElementById('loginRequiredModal').style.display = 'flex';
-            return;
-        }
-
-        const existing = currentCart.find(item => item.id === product.id);
-        if (existing) {
-            existing.quantity++;
-        } else {
-            currentCart.push({ ...product, quantity: 1 });
-        }
-        saveCart();
-        showNotification(`Dodato: ${product.title}`);
+      const isLoggedIn = {% if request.session.korisnicko_ime %}true{% else %}false{% endif %};
+      if (!isLoggedIn) {
+        document.getElementById('loginRequiredModal').style.display = 'flex';
+        return;
+      }
+      const existing = currentCart.find(item => item.id === product.id);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        currentCart.push({ ...product, quantity: 1 });
+      }
+      saveCart();
+      showNotification(`Dodato: ${product.title}`);
     }
 
     function showNotification(message) {
-        const div = document.createElement('div');
-        div.className = 'notification';
-        div.textContent = message;
-        document.body.appendChild(div);
-        setTimeout(() => div.remove(), 2500);
+      const div = document.createElement('div');
+      div.className = 'notification';
+      div.textContent = message;
+      document.body.appendChild(div);
+      setTimeout(() => div.remove(), 2500);
     }
 
-    // ======== FUNKCIJE ZA FILTERE (MOBILNI DRAWER) ========
-    function updateFilterBadge() {
-        const badge = document.getElementById('filterBadge');
-        if (badge) {
-            if (activeFiltersCount > 0) {
-                badge.textContent = activeFiltersCount;
-                badge.style.display = 'inline-flex';
-            } else {
-                badge.style.display = 'none';
-            }
-        }
-    }
-
-    function countActiveFilters() {
-        const checkboxes = document.querySelectorAll('.filter-drawer input[type="checkbox"]');
-        let count = 0;
-        checkboxes.forEach(cb => {
-            if (cb.checked) count++;
-        });
-        
-        const minPrice = document.getElementById('minPrice');
-        const maxPrice = document.getElementById('maxPrice');
-        
-        if (minPrice && minPrice.value !== '0') count++;
-        if (maxPrice && maxPrice.value !== '999999') count++;
-        
-        activeFiltersCount = count;
-        updateFilterBadge();
-        return count;
-    }
-
-    function openFilterDrawer() {
-        const drawer = document.getElementById('filterDrawer');
-        const overlay = document.getElementById('filterOverlay');
-        
-        if (drawer) {
-            drawer.classList.add('open');
-        }
-        if (overlay) {
-            overlay.style.display = 'block';
-        }
-        document.body.style.overflow = 'hidden';
-        
-        countActiveFilters();
-    }
-
-    function closeFilterDrawer() {
-        const drawer = document.getElementById('filterDrawer');
-        const overlay = document.getElementById('filterOverlay');
-        
-        if (drawer) {
-            drawer.classList.remove('open');
-        }
-        if (overlay) {
-            overlay.style.display = 'none';
-        }
-        document.body.style.overflow = '';
-    }
-
+    // ======== PILL FILTERI ========
     function initFilters() {
-        const filterToggle = document.getElementById('filterToggle');
-        const closeDrawerBtn = document.getElementById('closeDrawerBtn');
-        const overlay = document.getElementById('filterOverlay');
-        const applyBtn = document.getElementById('applyFiltersBtn');
-        const resetBtn = document.getElementById('resetFiltersBtn');
-        
-        if (!filterToggle) return;
-        
-        filterToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            openFilterDrawer();
+      const pills = document.querySelectorAll('.filter-pill[data-filter]');
+      const overlay = document.getElementById('pillOverlay');
+      const resetBtn = document.getElementById('resetAllPills');
+
+      function openDrop(filterKey, pill) {
+        closeAllDrops();
+        const drop = document.getElementById('drop-' + filterKey);
+        if (!drop) return;
+        const pillRect = pill.getBoundingClientRect();
+        const rowRect = pill.closest('.filter-pills-row').getBoundingClientRect();
+        let leftPos = pillRect.left - rowRect.left;
+        const dropWidth = 240;
+        const rowWidth = rowRect.width;
+        if (leftPos + dropWidth > rowWidth) {
+          leftPos = rowWidth - dropWidth;
+        }
+        if (leftPos < 0) leftPos = 0;
+        drop.style.left = leftPos + 'px';
+        drop.classList.add('open');
+        pill.classList.add('active');
+        overlay.classList.add('active');
+      }
+
+      function closeAllDrops() {
+        document.querySelectorAll('.pill-dropdown.open').forEach(d => d.classList.remove('open'));
+        document.querySelectorAll('.filter-pill.active').forEach(p => p.classList.remove('active'));
+        overlay.classList.remove('active');
+      }
+
+      pills.forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const key = pill.dataset.filter;
+          const drop = document.getElementById('drop-' + key);
+          if (drop && drop.classList.contains('open')) {
+            closeAllDrops();
+          } else {
+            openDrop(key, pill);
+          }
         });
-        
-        if (closeDrawerBtn) {
-            closeDrawerBtn.addEventListener('click', closeFilterDrawer);
+      });
+
+      overlay.addEventListener('click', () => {
+        closeAllDrops();
+        applyFilters();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeAllDrops();
+          const modal = document.getElementById('productModal');
+          if (modal && modal.style.display === 'flex') closeModal();
         }
-        
-        if (overlay) {
-            overlay.addEventListener('click', closeFilterDrawer);
-        }
-        
-        const sectionHeaders = document.querySelectorAll('.filter-section-header');
-        sectionHeaders.forEach(header => {
-            header.addEventListener('click', () => {
-                const section = header.closest('.filter-section');
-                if (section) {
-                    section.classList.toggle('expanded');
-                }
-            });
+      });
+
+      const applyCenaBtn = document.getElementById('applyCenaBtn');
+      if (applyCenaBtn) {
+        applyCenaBtn.addEventListener('click', () => {
+          closeAllDrops();
+          applyFilters();
         });
-        
-        const checkboxes = document.querySelectorAll('.filter-drawer input[type="checkbox"]');
-        checkboxes.forEach(cb => {
-            cb.addEventListener('change', () => {
-                countActiveFilters();
-            });
+      }
+
+      document.querySelectorAll('.pill-dropdown input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', () => {
+          updatePillBadges();
+          applyFilters();
         });
-        
-        const minPrice = document.getElementById('minPrice');
-        const maxPrice = document.getElementById('maxPrice');
-        
-        if (minPrice) {
-            minPrice.addEventListener('change', countActiveFilters);
-        }
-        if (maxPrice) {
-            maxPrice.addEventListener('change', countActiveFilters);
-        }
-        
-        if (applyBtn) {
-            applyBtn.addEventListener('click', () => {
-                applyFilters();
-                closeFilterDrawer();
-            });
-        }
-        
-        if (resetBtn) {
-            resetBtn.addEventListener('click', () => {
-                resetFilters();
-                countActiveFilters();
-            });
-        }
-        
-        countActiveFilters();
+      });
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          resetFilters();
+        });
+      }
+
+      updatePillBadges();
     }
 
-    window.applyFilters = function() {
-        const selectedPol = Array.from(document.querySelectorAll('input[name="pol"]:checked')).map(cb => cb.value);
-        const selectedBrend = Array.from(document.querySelectorAll('input[name="brend"]:checked')).map(cb => cb.value);
-        const selectedNarukvica = Array.from(document.querySelectorAll('input[name="narukvica"]:checked')).map(cb => cb.value);
-        const selectedKategorija = Array.from(document.querySelectorAll('input[name="kategorija"]:checked')).map(cb => cb.value);
-        const selectedBoja = Array.from(document.querySelectorAll('input[name="boja"]:checked')).map(cb => cb.value);
-
-        const minPrice = parseInt(document.getElementById('minPrice').value);
-        const maxPrice = parseInt(document.getElementById('maxPrice').value);
-
-        const cards = document.querySelectorAll('.card');
-        let visibleCount = 0;
-
-        cards.forEach(card => {
-            let show = true;
-
-            if (selectedPol.length > 0 && !selectedPol.includes(card.dataset.pol)) show = false;
-            if (show && selectedBrend.length > 0 && !selectedBrend.includes(card.dataset.brend)) show = false;
-            if (show && selectedNarukvica.length > 0 && !selectedNarukvica.includes(card.dataset.narukvica)) show = false;
-            if (show && selectedKategorija.length > 0 && !selectedKategorija.includes(card.dataset.kategorija)) show = false;
-            if (show && selectedBoja.length > 0 && !selectedBoja.includes(card.dataset.boja)) show = false;
-
-            if (show) {
-                const cardPrice = parseInt(card.dataset.price);
-                if (cardPrice < minPrice || cardPrice > maxPrice) show = false;
-            }
-
-            card.style.display = show ? '' : 'none';
-            if (show) visibleCount++;
-        });
-
-        const grid = document.getElementById('grid');
-        let noResultsMsg = document.getElementById('noResultsMsg');
-
-        if (visibleCount === 0) {
-            if (!noResultsMsg) {
-                noResultsMsg = document.createElement('div');
-                noResultsMsg.id = 'noResultsMsg';
-                noResultsMsg.style.cssText = 'text-align:center;padding:40px;font-size:18px;color:#666;';
-                noResultsMsg.innerHTML = '❌ Nema proizvoda koji odgovaraju izabranim filterima.';
-                grid.appendChild(noResultsMsg);
-            }
+    function updatePillBadges() {
+      let anyActive = false;
+      document.querySelectorAll('.filter-pill[data-filter]').forEach(pill => {
+        const key = pill.dataset.filter;
+        let count = 0;
+        if (key === 'cena') {
+          const min = document.getElementById('minPrice');
+          const max = document.getElementById('maxPrice');
+          if (min && min.value !== '0') count++;
+          if (max && max.value !== '999999') count++;
         } else {
-            if (noResultsMsg) noResultsMsg.remove();
+          count = document.querySelectorAll(`input[name="${key}"]:checked`).length;
         }
+        const existing = pill.querySelector('.pill-badge');
+        if (existing) existing.remove();
+        if (count > 0) {
+          const badge = document.createElement('span');
+          badge.className = 'pill-badge';
+          badge.textContent = count;
+          const chevron = pill.querySelector('.pill-chevron');
+          pill.insertBefore(badge, chevron);
+          anyActive = true;
+        }
+      });
+      const resetBtn = document.getElementById('resetAllPills');
+      if (resetBtn) resetBtn.style.display = anyActive ? 'inline-flex' : 'none';
+    }
 
-        countActiveFilters();
-        showNotification(`Prikazano ${visibleCount} od ${cards.length} proizvoda`);
-    };
+    window.applyFilters = function () {
+      const selectedPol = Array.from(document.querySelectorAll('input[name="pol"]:checked')).map(cb => cb.value);
+      const selectedBrend = Array.from(document.querySelectorAll('input[name="brend"]:checked')).map(cb => cb.value);
+      const selectedNarukvica = Array.from(document.querySelectorAll('input[name="narukvica"]:checked')).map(cb => cb.value);
+      const selectedKategorija = Array.from(document.querySelectorAll('input[name="kategorija"]:checked')).map(cb => cb.value);
+      const selectedBoja = Array.from(document.querySelectorAll('input[name="boja"]:checked')).map(cb => cb.value);
+      const minPrice = parseInt(document.getElementById('minPrice').value);
+      const maxPrice = parseInt(document.getElementById('maxPrice').value);
 
-    window.resetFilters = function() {
-        document.querySelectorAll('.filter-drawer input[type="checkbox"]').forEach(cb => {
-            cb.checked = false;
-        });
-        
-        const minPrice = document.getElementById('minPrice');
-        const maxPrice = document.getElementById('maxPrice');
-        
-        if (minPrice) minPrice.value = '0';
-        if (maxPrice) maxPrice.value = '999999';
+      const cards = document.querySelectorAll('.card');
+      let visibleCount = 0;
 
-        document.querySelectorAll('.card').forEach(card => {
-            card.style.display = '';
-        });
+      cards.forEach(card => {
+        let show = true;
+        if (selectedPol.length > 0 && !selectedPol.includes(card.dataset.pol)) show = false;
+        if (show && selectedBrend.length > 0 && !selectedBrend.includes(card.dataset.brend)) show = false;
+        if (show && selectedNarukvica.length > 0 && !selectedNarukvica.includes(card.dataset.narukvica)) show = false;
+        if (show && selectedKategorija.length > 0 && !selectedKategorija.includes(card.dataset.kategorija)) show = false;
+        if (show && selectedBoja.length > 0 && !selectedBoja.includes(card.dataset.boja)) show = false;
+        if (show) {
+          const cardPrice = parseInt(card.dataset.price);
+          if (cardPrice < minPrice || cardPrice > maxPrice) show = false;
+        }
+        card.style.display = show ? '' : 'none';
+        if (show) visibleCount++;
+      });
 
-        const noResultsMsg = document.getElementById('noResultsMsg');
+      const grid = document.getElementById('grid');
+      let noResultsMsg = document.getElementById('noResultsMsg');
+      if (visibleCount === 0) {
+        if (!noResultsMsg) {
+          noResultsMsg = document.createElement('div');
+          noResultsMsg.id = 'noResultsMsg';
+          noResultsMsg.style.cssText = 'text-align:center;padding:40px;font-size:18px;color:#666;';
+          noResultsMsg.innerHTML = '❌ Nema proizvoda koji odgovaraju izabranim filterima.';
+          grid.appendChild(noResultsMsg);
+        }
+      } else {
         if (noResultsMsg) noResultsMsg.remove();
+      }
 
-        countActiveFilters();
-        showNotification('Svi filteri su resetovani');
+      updatePillBadges();
+      showNotification(`Prikazano ${visibleCount} od ${cards.length} proizvoda`);
     };
 
-   // ======== FUNKCIJE ZA MODAL PROIZVODA (ISPRAVLJENE) ========
-function closeModal() {
-    const modal = document.getElementById('productModal');
-    if (modal) {
+    window.resetFilters = function () {
+      document.querySelectorAll('.pill-dropdown input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+      });
+      const minPrice = document.getElementById('minPrice');
+      const maxPrice = document.getElementById('maxPrice');
+      if (minPrice) minPrice.value = '0';
+      if (maxPrice) maxPrice.value = '999999';
+      document.querySelectorAll('.card').forEach(card => {
+        card.style.display = '';
+      });
+      const noResultsMsg = document.getElementById('noResultsMsg');
+      if (noResultsMsg) noResultsMsg.remove();
+      updatePillBadges();
+      showNotification('Svi filteri su resetovani');
+    };
+
+    // ======== MODAL ZA PROIZVODE ========
+    function closeModal() {
+      const modal = document.getElementById('productModal');
+      if (modal) {
         modal.style.display = 'none';
         document.body.classList.remove('modal-open');
-        if (swiperInstance) {
-            swiperInstance.autoplay?.stop();
-        }
+        if (swiperInstance) swiperInstance.autoplay?.stop();
+      }
     }
-    
-    // Vrati filter dugme i drawer - ukloni 'data-modal-hidden' atribut
-    const filterToggle = document.getElementById('filterToggle');
-    const filterDrawer = document.getElementById('filterDrawer');
-    const filterOverlay = document.getElementById('filterOverlay');
-    
-    if (filterToggle) {
-        filterToggle.removeAttribute('data-modal-hidden');
-        filterToggle.style.display = '';
-    }
-    if (filterDrawer) {
-        filterDrawer.removeAttribute('data-modal-hidden');
-        filterDrawer.style.display = '';
-    }
-    if (filterOverlay) {
-        filterOverlay.removeAttribute('data-modal-hidden');
-        filterOverlay.style.display = '';
-    }
-}
 
-function openProductModal(card) {
-    // Prvo zatvori filter drawer ako je otvoren
-    closeFilterDrawer();
-    
-    // POTPUNO SAKRIJ filter dugme i drawer - postavi display: none i dodaj atribut
-    const filterToggle = document.getElementById('filterToggle');
-    const filterDrawer = document.getElementById('filterDrawer');
-    const filterOverlay = document.getElementById('filterOverlay');
-    
-    if (filterToggle) {
-        filterToggle.setAttribute('data-modal-hidden', 'true');
-        filterToggle.style.display = 'none';
-    }
-    if (filterDrawer) {
-        filterDrawer.setAttribute('data-modal-hidden', 'true');
-        filterDrawer.style.display = 'none';
-    }
-    if (filterOverlay) {
-        filterOverlay.setAttribute('data-modal-hidden', 'true');
-        filterOverlay.style.display = 'none';
-    }
-    
-    const images = JSON.parse(card.dataset.images);
-    const specs = JSON.parse(card.dataset.spec);
+    function openProductModal(card) {
+      const images = JSON.parse(card.dataset.images);
+      const specs = JSON.parse(card.dataset.spec);
 
-    currentModalProduct = {
+      currentModalProduct = {
         id: card.dataset.id,
         title: card.dataset.title,
         brand: card.dataset.brand,
         price: parseInt(card.dataset.price),
         image: images[0]
-    };
+      };
 
-    document.getElementById('modalBrand').textContent = card.dataset.brand;
-    document.getElementById('modalTitle').textContent = card.dataset.title;
-    document.getElementById('modalPrice').textContent = `${parseInt(card.dataset.price).toLocaleString()} RSD`;
-    document.getElementById('modalDesc').textContent = card.dataset.desc;
+      document.getElementById('modalBrand').textContent = card.dataset.brand;
+      document.getElementById('modalTitle').textContent = card.dataset.title;
+      document.getElementById('modalPrice').textContent = `${parseInt(card.dataset.price).toLocaleString()} RSD`;
+      document.getElementById('modalDesc').textContent = card.dataset.desc;
 
-    let specHtml = '';
-    for (let key in specs) {
+      let specHtml = '';
+      for (let key in specs) {
         specHtml += `<li><strong>${key}:</strong> ${specs[key]}</li>`;
-    }
-    document.getElementById('modalSpecs').innerHTML = specHtml;
+      }
+      document.getElementById('modalSpecs').innerHTML = specHtml;
 
-    const wrapper = document.getElementById('modalSwiperWrapper');
-    wrapper.innerHTML = images.map(src => `
+      const wrapper = document.getElementById('modalSwiperWrapper');
+      wrapper.innerHTML = images.map(src => `
         <div class="swiper-slide">
-            <img src="${src}" style="width:100%;height:100%;object-fit:contain;">
+          <img src="${src}" style="width:100%;height:100%;object-fit:contain;">
         </div>
-    `).join('');
+      `).join('');
 
-    const modal = document.getElementById('productModal');
-    modal.style.display = 'flex';
-    document.body.classList.add('modal-open');
+      const modal = document.getElementById('productModal');
+      modal.style.display = 'flex';
+      document.body.classList.add('modal-open');
 
-    setTimeout(() => {
+      setTimeout(() => {
         if (swiperInstance) swiperInstance.destroy();
         swiperInstance = new Swiper('#modalSwiper', {
-            loop: true,
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            }
+          loop: true,
+          navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+          pagination: { el: '.swiper-pagination', clickable: true }
         });
-    }, 100);
-}
+      }, 100);
+    }
 
     // ======== CHECKOUT ========
     async function checkout() {
-        if (currentCart.length === 0) {
-            showNotification('Korpa je prazna!');
-            return;
-        }
-
-        document.getElementById('confirmOverlay').style.display = 'flex';
-
-        document.getElementById('confirmYes').onclick = async () => {
-            document.getElementById('confirmOverlay').style.display = 'none';
-
-            await fetch('/checkout/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ cart: currentCart })
-            });
-
-            currentCart = [];
-            saveCart();
-            document.getElementById('successOverlay').style.display = 'flex';
-        };
-
-        document.getElementById('confirmNo').onclick = () => {
-            document.getElementById('confirmOverlay').style.display = 'none';
-        };
+      if (currentCart.length === 0) {
+        showNotification('Korpa je prazna!');
+        return;
+      }
+      document.getElementById('confirmOverlay').style.display = 'flex';
+      document.getElementById('confirmYes').onclick = async () => {
+        document.getElementById('confirmOverlay').style.display = 'none';
+        await fetch('/checkout/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+          body: JSON.stringify({ cart: currentCart })
+        });
+        currentCart = [];
+        saveCart();
+        document.getElementById('successOverlay').style.display = 'flex';
+      };
+      document.getElementById('confirmNo').onclick = () => {
+        document.getElementById('confirmOverlay').style.display = 'none';
+      };
     }
 
     function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
         }
-        return cookieValue;
+      }
+      return cookieValue;
     }
-// ======== FUNKCIJE ZA HAMBURGER MENI ========
-function initMobileMenu() {
-    const menuBtn = document.getElementById('menuBtn');
-    const menu = document.getElementById('menu');
-    
-    if (!menuBtn || !menu) return;
-    
-    menuBtn.addEventListener('click', function() {
+
+    // ======== HAMBURGER MENI ========
+    function initMobileMenu() {
+      const menuBtn = document.getElementById('menuBtn');
+      const menu = document.getElementById('menu');
+      if (!menuBtn || !menu) return;
+      menuBtn.addEventListener('click', function () {
         menu.classList.toggle('open');
         menuBtn.classList.toggle('active');
-        
-        // Promena ikone iz ☰ u ✕
         if (menu.classList.contains('open')) {
-            menuBtn.textContent = '✕';
-            document.body.style.overflow = 'hidden';
+          menuBtn.textContent = '✕';
+          document.body.style.overflow = 'hidden';
         } else {
-            menuBtn.textContent = '☰';
-            document.body.style.overflow = '';
+          menuBtn.textContent = '☰';
+          document.body.style.overflow = '';
         }
-    });
-    
-    // Zatvaranje menija klikom na link
-    const menuLinks = menu.querySelectorAll('a');
-    menuLinks.forEach(link => {
+      });
+      const menuLinks = menu.querySelectorAll('a');
+      menuLinks.forEach(link => {
         link.addEventListener('click', () => {
-            menu.classList.remove('open');
-            menuBtn.classList.remove('active');
-            menuBtn.textContent = '☰';
-            document.body.style.overflow = '';
+          menu.classList.remove('open');
+          menuBtn.classList.remove('active');
+          menuBtn.textContent = '☰';
+          document.body.style.overflow = '';
         });
-    });
-}
+      });
+    }
+
     // ======== INIT ========
     document.addEventListener('DOMContentLoaded', () => {
-        loadCart();
-        initFilters();
+      loadCart();
+      initFilters();
+      initMobileMenu();
 
-        const btnCart = document.getElementById('btnCart');
-        const cartModal = document.getElementById('cartModal');
+      const btnCart = document.getElementById('btnCart');
+      const cartModal = document.getElementById('cartModal');
 
-        if (btnCart) {
-            btnCart.addEventListener('click', () => {
-                cartModal.style.display = 'flex';
-                updateCartDisplay();
-            });
-        }
-
-        const closeCartModal = document.getElementById('closeCartModal');
-        if (closeCartModal) {
-            closeCartModal.addEventListener('click', () => {
-                cartModal.style.display = 'none';
-            });
-        }
-
-        if (cartModal) {
-            cartModal.addEventListener('click', (e) => {
-                if (e.target === cartModal) cartModal.style.display = 'none';
-            });
-        }
-
-        document.querySelectorAll('.add-to-cart').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const card = e.target.closest('.card');
-                addToCart({
-                    id: card.dataset.id,
-                    title: card.querySelector('.title').textContent,
-                    brand: card.dataset.brand,
-                    price: parseInt(card.dataset.price),
-                    image: card.querySelector('img').src
-                });
-            });
+      if (btnCart) {
+        btnCart.addEventListener('click', () => {
+          cartModal.style.display = 'flex';
+          updateCartDisplay();
         });
+      }
 
-        document.querySelectorAll('.preview-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                openProductModal(e.target.closest('.card'));
-            });
+      const closeCartModal = document.getElementById('closeCartModal');
+      if (closeCartModal) {
+        closeCartModal.addEventListener('click', () => { cartModal.style.display = 'none'; });
+      }
+
+      if (cartModal) {
+        cartModal.addEventListener('click', (e) => {
+          if (e.target === cartModal) cartModal.style.display = 'none';
         });
+      }
 
-        const checkoutBtn = document.getElementById('checkoutBtn');
-        if (checkoutBtn) {
-            checkoutBtn.addEventListener('click', checkout);
-        }
-
-        const modalCloseBtn = document.getElementById('modalClose');
-        const modal = document.getElementById('productModal');
-
-        if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', closeModal);
-        }
-
-        if (modal) {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) closeModal();
-            });
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (modal && modal.style.display === 'flex') closeModal();
-                closeFilterDrawer();
-            }
+      document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const card = e.target.closest('.card');
+          addToCart({
+            id: card.dataset.id,
+            title: card.querySelector('.title').textContent,
+            brand: card.dataset.brand,
+            price: parseInt(card.dataset.price),
+            image: card.querySelector('img').src
+          });
         });
+      });
 
-        const closeLoginModal = document.getElementById('closeLoginModal');
-        if (closeLoginModal) {
-            closeLoginModal.addEventListener('click', () => {
-                document.getElementById('loginRequiredModal').style.display = 'none';
-            });
-        }
+      document.querySelectorAll('.preview-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          openProductModal(e.target.closest('.card'));
+        });
+      });
 
-        const successOk = document.getElementById('successOk');
-        if (successOk) {
-            successOk.addEventListener('click', () => {
-                document.getElementById('successOverlay').style.display = 'none';
-            });
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      if (checkoutBtn) { checkoutBtn.addEventListener('click', checkout); }
+
+      const modalCloseBtn = document.getElementById('modalClose');
+      const modal = document.getElementById('productModal');
+
+      if (modalCloseBtn) { modalCloseBtn.addEventListener('click', closeModal); }
+
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeModal();
+        });
+      }
+
+      const closeLoginModal = document.getElementById('closeLoginModal');
+      if (closeLoginModal) {
+        closeLoginModal.addEventListener('click', () => {
+          document.getElementById('loginRequiredModal').style.display = 'none';
+        });
+      }
+
+      const successOk = document.getElementById('successOk');
+      if (successOk) {
+        successOk.addEventListener('click', () => {
+          document.getElementById('successOverlay').style.display = 'none';
+        });
+      }
+
+      document.getElementById('modalAdd') && document.getElementById('modalAdd').addEventListener('click', () => {
+        if (currentModalProduct) {
+          addToCart(currentModalProduct);
+          closeModal();
         }
+      });
     });
-    // Pozovi funkciju za meni
-initMobileMenu();
-</script>
+  </script>
 
   <style>
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
-    }
-
-    /* ======== OSNOVNI STILOVI ======== */
     .swiper-container { width: 100%; height: 400px; }
     .swiper-slide { display: flex; align-items: center; justify-content: center; }
-    .swiper-button-prev, .swiper-button-next {
-        color: #333;
-        background: rgba(255,255,255,0.8);
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-    }
+    .swiper-button-prev, .swiper-button-next { color: #333; background: rgba(255,255,255,0.8); width: 40px; height: 40px; border-radius: 50%; }
     .swiper-button-prev:after, .swiper-button-next:after { font-size: 18px; }
     .swiper-pagination-bullet-active { background: #333; }
 
-    /* ======== KORPA STILOVI ======== */
-    .btn-qty {
-        width: 30px; height: 30px;
-        border: 1px solid #ddd;
-        background: white;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: all 0.2s;
-    }
-    .btn-qty:hover {
-        background: #f0f0f0;
-        transform: scale(1.05);
-    }
-    
-    .btn-remove {
-        background: #ff4444; 
-        color: white;
-        border: none; 
-        padding: 5px 10px;
-        cursor: pointer; 
-        border-radius: 4px; 
-        font-size: 12px;
-        transition: all 0.2s;
-    }
-    .btn-remove:hover {
-        background: #cc0000;
-        transform: scale(1.05);
-    }
+    .btn-qty { width: 30px; height: 30px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 4px; transition: all 0.2s; }
+    .btn-qty:hover { background: #f0f0f0; }
+    .btn-remove { background: #ff4444; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 12px; transition: all 0.2s; }
+    .btn-remove:hover { background: #cc0000; }
 
-    /* ======== NOTIFIKACIJE ======== */
-    .notification {
-        position: fixed;
-        bottom: 20px; 
-        right: 20px;
-        background: #4CAF50; 
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        z-index: 10000;
-        animation: slideIn 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
+    .notification { position: fixed; bottom: 20px; right: 20px; background: #4CAF50; color: white; padding: 12px 20px; border-radius: 8px; z-index: 10000; animation: slideIn 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
-    /* ======== MODAL ZA PROIZVODE ======== */
-    .modal {
-        display: none;
-        position: fixed; 
-        top: 0; 
-        left: 0;
-        width: 100%; 
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        z-index: 2000;
-        align-items: center; 
-        justify-content: center;
-    }
-    
-    .modal__dialog {
-        background: white;
-        max-width: 900px; 
-        width: 90%;
-        max-height: 90vh;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        border-radius: 12px;
-        overflow: hidden;
-        position: relative;
-        animation: fadeIn 0.3s ease;
-    }
-    
-    .modal__media {
-        background: #f5f5f5;
-        display: flex; 
-        align-items: center; 
-        justify-content: center;
-        min-height: 400px;
-    }
-    
-    .modal__body { 
-        padding: 24px; 
-        overflow-y: auto; 
-    }
-    
-    .modal__header {
-        display: flex; 
-        justify-content: space-between;
-        align-items: flex-start; 
-        margin-bottom: 20px;
-    }
-    
+    /* ======== MODAL ======== */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; }
+    .modal__dialog { background: white; max-width: 900px; width: 90%; max-height: 90vh; display: grid; grid-template-columns: 1fr 1fr; border-radius: 12px; overflow: hidden; position: relative; animation: fadeIn 0.3s ease; }
+    .modal__media { background: #f5f5f5; display: flex; align-items: center; justify-content: center; min-height: 400px; }
+    .modal__body { padding: 24px; overflow-y: auto; }
+    .modal__header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
     .modal__title { flex: 1; }
-    .modal__brand { 
-        display: block; 
-        font-size: 14px; 
-        color: #666; 
-        letter-spacing: 2px; 
-        margin-bottom: 8px; 
-    }
-    .modal__name { 
-        display: block; 
-        font-size: 24px; 
-        font-weight: 700; 
-        margin-bottom: 8px; 
-    }
-    .modal__price { 
-        display: block; 
-        font-size: 28px; 
-        font-weight: 800; 
-        color: #c41e3a; 
-    }
-    .modal__close { 
-        background: none; 
-        border: none; 
-        font-size: 24px; 
-        cursor: pointer; 
-        padding: 8px; 
-        line-height: 1;
-        transition: transform 0.2s;
-    }
-    .modal__close:hover {
-        transform: scale(1.1);
-    }
-    
+    .modal__brand { display: block; font-size: 14px; color: #666; letter-spacing: 2px; margin-bottom: 8px; }
+    .modal__name { display: block; font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .modal__price { display: block; font-size: 28px; font-weight: 800; color: #c41e3a; }
+    .modal__close { background: none; border: none; font-size: 24px; cursor: pointer; padding: 8px; line-height: 1; transition: transform 0.2s; }
+    .modal__close:hover { transform: scale(1.1); }
     .modal__section { margin-bottom: 24px; }
-    .modal__section h4 { 
-        margin-bottom: 12px; 
-        font-size: 16px; 
-        font-weight: 600; 
-    }
-    
-    .specs { 
-        list-style: none; 
-        padding: 0; 
-    }
-    .specs li { 
-        padding: 8px 0; 
-        border-bottom: 1px solid #eee; 
-        font-size: 14px; 
-    }
-    .specs li strong { 
-        display: inline-block; 
-        width: 120px; 
-        color: #666; 
-    }
+    .modal__section h4 { margin-bottom: 12px; font-size: 16px; font-weight: 600; }
+    .specs { list-style: none; padding: 0; }
+    .specs li { padding: 8px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+    .specs li strong { display: inline-block; width: 120px; color: #666; }
 
-    /* ======== POTVRDA PORUDŽBINE ======== */
-    #confirmOverlay, #successOverlay {
-        position: fixed; 
-        top: 0; 
-        left: 0;
-        width: 100%; 
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        z-index: 2002;
-        display: flex; 
-        align-items: center; 
-        justify-content: center;
-    }
-    
-    .confirm-box {
-        background: white; 
-        padding: 30px; 
-        border-radius: 12px;
-        max-width: 400px; 
-        width: 90%; 
-        text-align: center;
-        animation: fadeIn 0.3s ease;
-    }
-    
-    .confirm-actions {
-        display: flex; 
-        gap: 15px; 
-        justify-content: center; 
-        margin-top: 20px;
-    }
+    /* Kad je modal otvoren sakrij pill row */
+    body.modal-open .filter-pills-row { opacity: 0; pointer-events: none; visibility: hidden; }
 
-    /* ======== NOVI FILTER DUGME I DRAWER STILOVI ======== */
-    .filter-toggle-container {
-        position: relative;
-        margin-bottom: 20px;
-        z-index: 500;
-    }
+    /* ======== POTVRDA ======== */
+    #confirmOverlay, #successOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10002; display: flex; align-items: center; justify-content: center; }
+    .confirm-box { background: white; padding: 30px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; animation: fadeIn 0.3s ease; }
+    .confirm-actions { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
 
-    .filter-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        width: 100%;
-        padding: 14px 24px;
-        background: #c41e3a;
-        color: white;
-        border: none;
-        border-radius: 50px;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 16px;
-        font-family: inherit;
-        transition: all 0.3s ease;
-        position: relative;
-    }
+    /* ======== PILL FILTERI ======== */
+    .filter-pills-row { position: relative; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; z-index: 500; transition: opacity 0.2s, visibility 0.2s; }
 
-    .filter-btn:hover {
-        background: #a01830;
-        transform: scale(1.02);
-    }
+    .filter-pill { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; background: #c41e3a; color: white; border: none; border-radius: 50px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; transition: background 0.2s, transform 0.15s; white-space: nowrap; }
+    .filter-pill:hover { background: #a01830; }
+    .filter-pill.active { background: #7d1226; box-shadow: inset 0 2px 6px rgba(0,0,0,0.25); }
 
-    .filter-btn:active {
-        transform: scale(0.98);
-    }
+    .filter-pill .pill-chevron { transition: transform 0.2s; }
+    .filter-pill.active .pill-chevron { transform: rotate(180deg); }
 
-    .filter-btn .filter-icon {
-        stroke: white;
-        transition: transform 0.3s ease;
-    }
+    .filter-pill .pill-badge { background: white; color: #c41e3a; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
 
-    .filter-btn:hover .filter-icon {
-        transform: rotate(15deg);
-    }
+    .reset-pill { background: #555; }
+    .reset-pill:hover { background: #333; }
 
-    .filter-btn .badge-count {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background: #ff4444;
-        color: white;
-        border-radius: 50%;
-        width: 22px;
-        height: 22px;
-        font-size: 12px;
-        font-weight: bold;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border: 2px solid white;
-        animation: fadeIn 0.3s ease;
-    }
+    /* Chip stilovi */
+    .chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: #f5f5f5; border-radius: 30px; font-size: 14px; cursor: pointer; transition: all 0.2s; user-select: none; }
+    .chip:hover { background: #e0e0e0; }
+    .chip input { margin: 0; cursor: pointer; }
+    .chip:has(input:checked) { background: #c41e3a; color: white; }
 
-    /* Filter Drawer - Mobilni stil */
-    .filter-drawer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        border-radius: 24px 24px 0 0;
-        transform: translateY(100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1000;
-        max-height: 85vh;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-    }
+    /* Dropdown panel */
+    .pill-dropdown { display: none; position: absolute; top: calc(100% + 8px); left: 0; background: white; border: 1px solid #ddd; border-radius: 14px; padding: 16px; z-index: 1001; min-width: 220px; max-width: 300px; flex-wrap: wrap; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); animation: fadeIn 0.2s ease; }
+    .pill-dropdown.open { display: flex; }
 
-    .filter-drawer.open {
-        transform: translateY(0);
-    }
+    .pill-dropdown .price-inputs { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+    .pill-dropdown .price-inputs label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #666; font-weight: 500; }
+    .pill-dropdown .price-inputs select { padding: 8px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+    .pill-dropdown .price-inputs select:focus { outline: none; border-color: #c41e3a; }
 
-    .filter-drawer-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px;
-        border-bottom: 1px solid #eee;
-        background: white;
-        border-radius: 24px 24px 0 0;
-    }
+    .pill-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; }
+    .pill-overlay.active { display: block; }
 
-    .filter-drawer-header h3 {
-        margin: 0;
-        font-size: 20px;
-        font-weight: 600;
-        color: #333;
-    }
+    /* ======== HAMBURGER MENI ======== */
+    .hamburger { display: none; background: none; border: none; font-size: 28px; cursor: pointer; color: #333; padding: 8px; z-index: 1001; }
 
-    .close-drawer-btn {
-        background: none;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        padding: 8px;
-        line-height: 1;
-        color: #666;
-        transition: all 0.2s;
-    }
-
-    .close-drawer-btn:hover {
-        transform: scale(1.1);
-        color: #c41e3a;
-    }
-
-    .filter-drawer-content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .filter-sections {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .filter-section {
-        border: 1px solid #eee;
-        border-radius: 12px;
-        overflow: hidden;
-        transition: all 0.2s;
-    }
-
-    .filter-section:hover {
-        border-color: #ddd;
-    }
-
-    .filter-section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px;
-        background: #f9f9f9;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s;
-        user-select: none;
-    }
-
-    .filter-section-header:hover {
-        background: #f0f0f0;
-    }
-
-    .filter-section-header:active {
-        background: #e8e8e8;
-    }
-
-    .filter-section-header .chevron {
-        transition: transform 0.3s ease;
-    }
-
-    .filter-section.expanded .filter-section-header .chevron {
-        transform: rotate(180deg);
-    }
-
-    .filter-section-content {
-        display: none;
-        padding: 16px;
-        background: white;
-        flex-wrap: wrap;
-        gap: 10px;
-        animation: fadeIn 0.3s ease;
-    }
-
-    .filter-section.expanded .filter-section-content {
-        display: flex;
-    }
-
-    /* Chip stilovi za filtere */
-    .chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        background: #f5f5f5;
-        border-radius: 30px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.2s;
-        user-select: none;
-    }
-
-    .chip:hover {
-        background: #e0e0e0;
-        transform: translateY(-1px);
-    }
-
-    .chip:active {
-        transform: translateY(0);
-    }
-
-    .chip input {
-        margin: 0;
-        cursor: pointer;
-    }
-
-    .chip:has(input:checked) {
-        background: #c41e3a;
-        color: white;
-    }
-
-    /* Price range stilovi */
-    .price-range {
-        width: 100%;
-    }
-
-    .price-inputs {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
-
-    .price-inputs label {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        font-size: 13px;
-        color: #666;
-        font-weight: 500;
-    }
-
-    .price-inputs select {
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .price-inputs select:hover {
-        border-color: #c41e3a;
-    }
-
-    .price-inputs select:focus {
-        outline: none;
-        border-color: #c41e3a;
-        box-shadow: 0 0 0 2px rgba(196,30,58,0.1);
-    }
-
-    /* Filter akcije dugmad */
-    .filter-actions {
-        display: flex;
-        gap: 12px;
-        margin-top: 24px;
-        padding-top: 20px;
-        border-top: 1px solid #eee;
-    }
-
-    .filter-actions .btn {
-        flex: 1;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-align: center;
-    }
-
-    .filter-actions .apply-btn {
-        background: #c41e3a;
-        color: white;
-        border: none;
-    }
-
-    .filter-actions .apply-btn:hover {
-        background: #a01830;
-        transform: translateY(-2px);
-    }
-
-    .filter-actions .apply-btn:active {
-        transform: translateY(0);
-    }
-
-    .filter-actions .reset-btn {
-        background: #f5f5f5;
-        color: #333;
-        border: 1px solid #ddd;
-    }
-
-    .filter-actions .reset-btn:hover {
-        background: #e0e0e0;
-        transform: translateY(-2px);
-    }
-
-    .filter-actions .reset-btn:active {
-        transform: translateY(0);
-    }
-
-    /* Overlay za zatvaranje drawer-a */
-    .filter-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.5);
-        z-index: 999;
-        animation: fadeIn 0.3s ease;
-    }
-
-    /* ======== RESPONSIVE STILOVI ======== */
-    
-    /* Desktop prikaz filtera (opciono) */
-    @media (min-width: 769px) {
-        .filter-drawer {
-            max-width: 500px;
-            right: auto;
-            left: 50%;
-            transform: translate(-50%, 100%);
-            border-radius: 24px;
-            bottom: auto;
-            top: 50%;
-            max-height: 85vh;
-        }
-        
-        .filter-drawer.open {
-            transform: translate(-50%, -50%);
-        }
-        
-        .filter-drawer-header {
-            border-radius: 24px 24px 0 0;
-        }
-    }
-
-    /* Tablet i mobilni responsiv */
     @media (max-width: 768px) {
-        .modal__dialog {
-            grid-template-columns: 1fr;
-            width: 95%;
-        }
-        
-        .modal__media { 
-            min-height: 300px; 
-        }
-        
-        .filter-btn {
-            padding: 12px 20px;
-            font-size: 15px;
-        }
-        
-        .filter-drawer {
-            max-height: 80vh;
-        }
-        
-        .filter-drawer-content {
-            padding: 16px;
-        }
-        
-        .filter-section-header {
-            padding: 14px;
-            font-size: 15px;
-        }
-        
-        .filter-section-content {
-            padding: 14px;
-        }
+      .hamburger { display: block; }
+      .menu { position: fixed; top: 0; left: -100%; width: 80%; max-width: 300px; height: 100vh; background: white; flex-direction: column; padding: 80px 20px 20px; transition: left 0.3s ease; z-index: 1000; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+      .menu.open { left: 0; }
+      .menu a { display: block; padding: 15px 0; font-size: 18px; border-bottom: 1px solid #eee; }
+      .menu .right { margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; display: flex; flex-direction: column; gap: 10px; }
+      .modal__dialog { grid-template-columns: 1fr; width: 95%; }
+      .modal__media { min-height: 300px; }
+      .filter-pill { padding: 8px 12px; font-size: 13px; }
     }
 
-    /* Mali mobilni uređaji */
+    @media (min-width: 769px) {
+      .hamburger { display: none; }
+      .menu { display: flex; position: static; flex-direction: row; padding: 0; box-shadow: none; }
+    }
+
     @media (max-width: 480px) {
-        .filter-btn {
-            padding: 12px 20px;
-            font-size: 14px;
-        }
-        
-        .filter-btn .badge-count {
-            width: 20px;
-            height: 20px;
-            font-size: 11px;
-            top: -6px;
-            right: -6px;
-        }
-        
-        .chip {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-        
-        .filter-drawer-content {
-            padding: 12px;
-        }
-        
-        .filter-section-header {
-            padding: 12px;
-            font-size: 14px;
-        }
-        
-        .filter-section-content {
-            padding: 12px;
-            gap: 8px;
-        }
-        
-        .price-inputs {
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .price-inputs label {
-            width: 100%;
-        }
-        
-        .filter-actions .btn {
-            padding: 12px;
-            font-size: 14px;
-        }
-        
-        .modal__name {
-            font-size: 18px;
-        }
-        
-        .modal__price {
-            font-size: 22px;
-        }
-        
-        .specs li strong {
-            width: 100px;
-            font-size: 12px;
-        }
-        
-        .specs li {
-            font-size: 12px;
-        }
-        
-        .confirm-box {
-            padding: 20px;
-            width: 85%;
-        }
-        
-        .confirm-box h3 {
-            font-size: 18px;
-        }
+      .filter-pill { padding: 7px 10px; font-size: 12px; gap: 4px; }
+      .modal__name { font-size: 18px; }
+      .modal__price { font-size: 22px; }
+      .specs li strong { width: 100px; font-size: 12px; }
+      .specs li { font-size: 12px; }
     }
-
-    /* Sprečavanje skrolovanja pozadine kada je drawer otvoren */
-    body.drawer-open {
-        overflow: hidden;
-    }
-
-    /* Dodatni stilovi za bolji touch experience */
-    @media (hover: none) and (pointer: coarse) {
-        .btn-qty, .btn-remove, .filter-btn, .filter-section-header, .chip, .modal__close {
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        .filter-section-header:active {
-            background: #e8e8e8;
-        }
-        
-        .chip:active {
-            background: #e0e0e0;
-        }
-        
-        .filter-actions .btn:active {
-            transform: scale(0.98);
-        }
-    }
-
-    /* Animacija za scroll indikator u drawer-u */
-    .filter-drawer-content::-webkit-scrollbar {
-        width: 4px;
-    }
-    
-    .filter-drawer-content::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
-    }
-    
-    .filter-drawer-content::-webkit-scrollbar-thumb {
-        background: #c41e3a;
-        border-radius: 10px;
-    }
-    
-    .filter-drawer-content::-webkit-scrollbar-thumb:hover {
-        background: #a01830;
-    }
-    /* Osiguravanje da modal bude iznad svega */
-.modal {
-    z-index: 10000 !important;
-}
-
-.modal__dialog {
-    z-index: 10001 !important;
-}
-
-/* Kada je modal otvoren, sakrij filter dugme i drawer */
-body.modal-open .filter-toggle-container {
-    opacity: 0;
-    pointer-events: none;
-    visibility: hidden;
-}
-
-body.modal-open .filter-drawer,
-body.modal-open .filter-overlay,
-body.modal-open #filterOverlay {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
-
-/* Dodatno osiguranje za mobilne uređaje */
-@media (max-width: 768px) {
-    body.modal-open .filter-btn {
-        opacity: 0;
-        pointer-events: none;
-        transform: scale(0.9);
-    }
-}
-/* POTPUNO SAKRIJ FILTER ELEMENTE KAD JE MODAL OTVOREN - NAJJAČI PRIORITET */
-body.modal-open .filter-toggle-container,
-body.modal-open .filter-btn,
-body.modal-open .filter-drawer,
-body.modal-open .filter-overlay,
-body.modal-open #filterToggle,
-body.modal-open #filterDrawer,
-body.modal-open #filterOverlay,
-.filter-toggle-container[data-modal-hidden="true"],
-.filter-btn[data-modal-hidden="true"],
-.filter-drawer[data-modal-hidden="true"],
-.filter-overlay[data-modal-hidden="true"],
-#filterToggle[data-modal-hidden="true"],
-#filterDrawer[data-modal-hidden="true"],
-#filterOverlay[data-modal-hidden="true"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    z-index: -9999 !important;
-}
-
-/* Osiguravanje da modal bude na vrhu */
-.modal {
-    z-index: 10000 !important;
-}
-
-.modal__dialog {
-    z-index: 10001 !important;
-    position: relative;
-    background: white;
-}
-/* ======== HAMBURGER MENI ZA MOBILNE ======== */
-.hamburger {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: #333;
-    padding: 8px;
-    z-index: 1001;
-}
-
-@media (max-width: 768px) {
-    .hamburger {
-        display: block;
-    }
-    
-    .menu {
-        position: fixed;
-        top: 0;
-        left: -100%;
-        width: 80%;
-        max-width: 300px;
-        height: 100vh;
-        background: white;
-        flex-direction: column;
-        padding: 80px 20px 20px;
-        transition: left 0.3s ease;
-        z-index: 1000;
-        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-    }
-    
-    .menu.open {
-        left: 0;
-    }
-    
-    .menu a {
-        display: block;
-        padding: 15px 0;
-        font-size: 18px;
-        border-bottom: 1px solid #eee;
-    }
-    
-    .menu .right {
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid #ddd;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .menu .right span {
-        padding: 10px 0;
-    }
-    
-    body.menu-open {
-        overflow: hidden;
-    }
-}
-
-@media (min-width: 769px) {
-    .hamburger {
-        display: none;
-    }
-    
-    .menu {
-        display: flex;
-        position: static;
-        flex-direction: row;
-        padding: 0;
-        box-shadow: none;
-    }
-}
-</style>
+  </style>
 </body>
 </html>

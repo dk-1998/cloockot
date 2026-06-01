@@ -8,32 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'cloockot_watches/css/kontakt.css' %}">
   <style>
-    .email-btn {
-      display: inline-block;
-      padding: 16px 40px;
-      background: #10b981;
-      color: white;
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 18px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      border: none;
-      cursor: pointer;
-      margin: 10px;
-    }
-    .email-btn:hover {
-      background: #059669;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-    .copy-btn {
-      background: #3b82f6;
-    }
-    .copy-btn:hover {
-      background: #2563eb;
-    }
     .toast {
       position: fixed;
       bottom: 20px;
@@ -50,6 +24,48 @@
       from { transform: translateX(100px); opacity: 0; }
       to { transform: translateX(0); opacity: 1; }
     }
+    .kontakt-forma { padding: 30px 20px; }
+    .kontakt-forma h2 { margin-bottom: 20px; color: #333; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #444; font-size: 14px; }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 130px; }
+    .send-btn {
+      display: inline-block;
+      padding: 14px 36px;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      width: 100%;
+    }
+    .send-btn:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .required-note { font-size: 12px; color: #9ca3af; margin-bottom: 16px; }
   </style>
 </head>
 <body>
@@ -78,24 +94,33 @@
 
     <div class="grid">
       <section>
-        <!-- DUGMAD ZA EMAIL -->
-        <div style="text-align: center; padding: 40px 20px;">
-          <h2 style="margin-bottom: 20px; color: #333;">Pošaljite nam email</h2>
-          <p style="margin-bottom: 30px; color: #666; font-size: 16px;">
-            Izaberite jednu od opcija za kontaktiranje:
-          </p>
-          
-          <button onclick="openEmail()" class="email-btn">
-            ✉️ Otvori email program
+        <div class="kontakt-forma">
+          <h2>Pošaljite nam poruku</h2>
+          <p class="required-note">* Obavezna polja</p>
+
+          <div class="form-group">
+            <label for="ime">Ime i prezime</label>
+            <input type="text" id="ime" placeholder="Marko Petrović" />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email adresa *</label>
+            <input type="email" id="email" placeholder="vas@email.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="telefon">Telefon</label>
+            <input type="tel" id="telefon" placeholder="064 000 0000" />
+          </div>
+
+          <div class="form-group">
+            <label for="poruka">Poruka *</label>
+            <textarea id="poruka" placeholder="Napišite vaš upit ovde..." required></textarea>
+          </div>
+
+          <button class="send-btn" onclick="posaljiMailto()">
+            ✉️ Pošalji poruku
           </button>
-          <br>
-          <button onclick="copyEmail()" class="email-btn copy-btn">
-            📋 Kopiraj email adresu
-          </button>
-          
-          <p style="margin-top: 20px; color: #888; font-size: 14px;">
-            Email: <strong>cloockot2026@gmail.com</strong>
-          </p>
         </div>
       </section>
 
@@ -126,90 +151,68 @@
   <div id="toast" class="toast"></div>
 
 <script>
-    // Otvaranje email programa
-    function openEmail() {
-      const email = 'cloockot2026@gmail.com';
-      const subject = 'Upit sa sajta Cloockot';
-      const body = 'Poštovani,\n\nPišem vam u vezi...\n\nSrdačan pozdrav';
-      
-      const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      
-      // Pokušaj da otvoriš email program
-      window.location.href = mailtoLink;
-      
-      // Ako se ne otvori u roku od 2 sekunde, prikaži poruku
-      setTimeout(() => {
-        showToast('Ako se email program nije otvorio, kopirajte adresu: ' + email);
-      }, 2000);
+  function posaljiMailto() {
+    const ime     = document.getElementById('ime').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const telefon = document.getElementById('telefon').value.trim();
+    const poruka  = document.getElementById('poruka').value.trim();
+
+    if (!email) {
+      showToast('❌ Molimo unesite vašu email adresu.');
+      return;
     }
-    
-    // Kopiranje email adrese
-    function copyEmail() {
-      const email = 'cloockot2026@gmail.com';
-      
-      // Moderan način kopiranja
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(email).then(() => {
-          showToast('✅ Email adresa je kopirana!');
-        }).catch(() => {
-          // Fallback za starije browsere
-          fallbackCopy(email);
-        });
-      } else {
-        fallbackCopy(email);
-      }
+    if (!poruka) {
+      showToast('❌ Molimo unesite poruku.');
+      return;
     }
-    
-    // Fallback metoda za kopiranje
-    function fallbackCopy(text) {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.select();
-      
-      try {
-        document.execCommand('copy');
-        showToast('✅ Email adresa je kopirana!');
-      } catch (err) {
-        showToast('❌ Ručno kopirajte: ' + text);
-      }
-      
-      document.body.removeChild(textarea);
-    }
-    
-    // Prikazivanje toast poruke
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.style.display = 'block';
-      
-      setTimeout(() => {
-        toast.style.display = 'none';
-      }, 3000);
-    }
-    
-    // Mobile menu
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
-    const mainMenu = document.getElementById('mainMenu');
-    
-    if (hamburgerBtn) {
-      hamburgerBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        mainMenu.classList.toggle('active');
-        document.body.style.overflow = mainMenu.classList.contains('active') ? 'hidden' : '';
+
+    const primaoc = 'cloockot2026@gmail.com';
+    const subject = 'Upit sa Cloockot sajta';
+
+    const body =
+      'Ime: ' + (ime || 'Nije navedeno') + '\n' +
+      'Email: ' + email + '\n' +
+      'Telefon: ' + (telefon || 'Nije naveden') + '\n\n' +
+      'Poruka:\n' + poruka + '\n\n' +
+      '---\nPoslato putem kontakt forme na Cloockot sajtu.';
+
+    const mailtoLink =
+      'mailto:' + primaoc +
+      '?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(body);
+
+    window.location.href = mailtoLink;
+
+    setTimeout(() => {
+      showToast('Ako se email program nije otvorio, pišite nam direktno na: ' + primaoc);
+    }, 2000);
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 4000);
+  }
+
+  // Mobile menu
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mainMenu = document.getElementById('mainMenu');
+  if (hamburgerBtn) {
+    hamburgerBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      mainMenu.classList.toggle('active');
+      document.body.style.overflow = mainMenu.classList.contains('active') ? 'hidden' : '';
+    });
+  }
+  if (mainMenu) {
+    mainMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        mainMenu.classList.remove('active');
+        document.body.style.overflow = '';
       });
-    }
-    
-    if (mainMenu) {
-      mainMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function() {
-          mainMenu.classList.remove('active');
-          document.body.style.overflow = '';
-        });
-      });
-    }
+    });
+  }
 </script>
 </body>
 </html>

@@ -8,79 +8,10 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 import logging
-from django.core.mail import EmailMessage
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import os
-# DODAJ OVAJ IMPORT NA VRH FAJLA (ako već ne postoji)
-from django.core.mail import send_mail
-import cloudinary.uploader
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-import json
 
 logger = logging.getLogger(__name__)
 
 
-
-@csrf_exempt
-@require_http_methods(["POST"])
-def kontakt_api(request):
-    """API za kontakt formu - upload slike na Cloudinary i slanje email-a"""
-    try:
-        # Prikupljanje podataka
-        ime = request.POST.get('ime', '')
-        email = request.POST.get('email', '')
-        telefon = request.POST.get('telefon', '')
-        poruka = request.POST.get('poruka', '')
-        
-        # Provera obaveznih polja
-        if not email or not poruka:
-            return JsonResponse({'success': False, 'error': 'Email i poruka su obavezni'})
-        
-        # Upload slike na Cloudinary (ako postoji)
-        image_url = ''
-        if request.FILES.get('slika'):
-            slika = request.FILES['slika']
-            # Provera veličine (max 5MB)
-            if slika.size > 5 * 1024 * 1024:
-                return JsonResponse({'success': False, 'error': 'Slika je prevelika (max 5MB)'})
-            upload_result = cloudinary.uploader.upload(slika)
-            image_url = upload_result['secure_url']
-        
-        # Pravljenje email sadržaja
-        email_subject = f"Nova poruka sa Cloockot sajta"
-        email_body = f"""
-Nova poruka sa Cloockot sajta:
-
-Ime: {ime if ime else 'Nije navedeno'}
-Email: {email}
-Telefon: {telefon if telefon else 'Nije naveden'}
-
-Poruka:
-{poruka}
-
-{'Link do slike: ' + image_url if image_url else ''}
-
---- 
-Poslato preko kontakt forme na Cloockot sajtu.
-        """
-        
-        # Slanje email-a
-        send_mail(
-            subject=email_subject,
-            message=email_body,
-            from_email='cloockot2026@gmail.com',
-            recipient_list=['cloockot2026@gmail.com'],
-            fail_silently=False,
-        )
-        
-        return JsonResponse({'success': True, 'message': 'Poruka je uspešno poslata'})
-        
-    except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
 def index(request): 
     return render(request, 'cloockot_watches/index.html')
 
@@ -182,7 +113,6 @@ def checkout(request):
                 'ukupno_za_artikal': cena * kolicina
             })
         
-        # Kreiraj porudžbinu u bazi
         porudzbina = Porudzbina.objects.create(
             korisnik=korisnik,
             artikli=artikli_lista,
@@ -203,56 +133,3 @@ def checkout(request):
     except Exception as e:
         logger.error(f"Greška u checkout: {str(e)}")
         return JsonResponse({'error': f'Došlo je do greške: {str(e)}'}, status=400)
-
-
-# ======== KONTAKT FORMA – SLANJE EMAIL (RESEND) ========
-@require_http_methods(["POST"])
-@ensure_csrf_cookie
-def posalji_kontakt(request):
-    """Šalje email iz kontakt forme preko Resend SMTP"""
-    try:
-        email_korisnika = request.POST.get('email', '').strip()
-        ime = request.POST.get('ime', '').strip()
-        telefon = request.POST.get('telefon', '').strip()
-        poruka = request.POST.get('poruka', '').strip()
-        
-        if not email_korisnika:
-            return JsonResponse({'success': False, 'error': 'Email adresa je obavezna.'})
-        if not poruka:
-            return JsonResponse({'success': False, 'error': 'Poruka je obavezna.'})
-        
-        subject = f"Kontakt poruka sa Cloockot sajta - od {email_korisnika}"
-        
-        body = f"""
-Nova poruka sa kontakt forme:
-
-Ime: {ime if ime else 'Nije navedeno'}
-Email: {email_korisnika}
-Telefon: {telefon if telefon else 'Nije naveden'}
-
-Poruka:
-{poruka}
-        """
-        
-        email = EmailMessage(
-            subject=subject,
-            body=body,
-            from_email='kontakt@cloockot.com',     # Sa tvog verifikovanog domena
-            to=['cloockot2026@gmail.com'],          # Gde stiže poruka (tvoj Gmail)
-            reply_to=[email_korisnika]              # Kada odgovoriš, ide korisniku
-        )
-        
-        # Dodaj sliku ako postoji
-        if request.FILES.get('slika'):
-            slika = request.FILES['slika']
-            email.attach(slika.name, slika.read(), slika.content_type)
-        
-        email.send(fail_silently=False)
-        
-        logger.info(f"Kontakt email poslat od {email_korisnika} na cloockot2026@gmail.com")
-        
-        return JsonResponse({'success': True, 'message': 'Poruka je uspešno poslata.'})
-        
-    except Exception as e:
-        logger.error(f"Greška pri slanju kontakt emaila: {str(e)}")
-        return JsonResponse({'success': False, 'error': f'Greška: {str(e)}'})

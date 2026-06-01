@@ -5,9 +5,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Cloockot-Kontakt</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'cloockot_watches/css/kontakt.css' %}">
+
   <style>
+    .send-btn {
+      display: inline-block;
+      padding: 16px 36px;
+      background: #10b981;
+      color: white;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      text-align: center;
+      width: 100%;
+      transition: 0.3s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      font-size: 16px;
+    }
+
+    .send-btn:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .kontakt-box {
+      padding: 30px 20px;
+    }
+
+    .kontakt-box h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
     .toast {
       position: fixed;
       bottom: 20px;
@@ -18,201 +50,120 @@
       border-radius: 8px;
       display: none;
       z-index: 1000;
-      animation: slideIn 0.3s ease;
     }
-    @keyframes slideIn {
-      from { transform: translateX(100px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    .kontakt-forma { padding: 30px 20px; }
-    .kontakt-forma h2 { margin-bottom: 20px; color: #333; }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #444; font-size: 14px; }
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 15px;
-      font-family: inherit;
-      box-sizing: border-box;
-      transition: border-color 0.2s;
-    }
-    .form-group input:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #10b981;
-      box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
-    }
-    .form-group textarea { resize: vertical; min-height: 130px; }
-    .send-btn {
-      display: inline-block;
-      padding: 14px 36px;
-      background: #10b981;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      width: 100%;
-    }
-    .send-btn:hover {
-      background: #059669;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-    .required-note { font-size: 12px; color: #9ca3af; margin-bottom: 16px; }
   </style>
 </head>
+
 <body>
-  <header>
-    <a class="brand" href="{% url 'index' %}">Cloockot</a>
-    <button class="hamburger" id="hamburgerBtn">☰</button>
-    <nav class="menu" id="mainMenu">
-      <a href="{% url 'index' %}">POČETNA</a>
-      <a href="{% url 'onama' %}">O NAMA</a>
-      <a href="{% url 'satovi' %}">SATOVI</a>
-      <a href="{% url 'kontakt' %}">KONTAKT</a>
-      <div class="right">
-        {% if request.session.korisnicko_ime %}
-          <span><strong>{{ request.session.korisnicko_ime }}</strong></span>
-          <a href="{% url 'odjava' %}">Odjava</a>
-        {% else %}
-          <a href="{% url 'prijava' %}">Prijava</a>
-          <a href="{% url 'registracija' %}">Registracija</a>
-        {% endif %}
+
+<header>
+  <a class="brand" href="{% url 'index' %}">Cloockot</a>
+
+  <button class="hamburger" id="hamburgerBtn">☰</button>
+
+  <nav class="menu" id="mainMenu">
+    <a href="{% url 'index' %}">POČETNA</a>
+    <a href="{% url 'onama' %}">O NAMA</a>
+    <a href="{% url 'satovi' %}">SATOVI</a>
+    <a href="{% url 'kontakt' %}">KONTAKT</a>
+
+    <div class="right">
+      {% if request.session.korisnicko_ime %}
+        <span><strong>{{ request.session.korisnicko_ime }}</strong></span>
+        <a href="{% url 'odjava' %}">Odjava</a>
+      {% else %}
+        <a href="{% url 'prijava' %}">Prijava</a>
+        <a href="{% url 'registracija' %}">Registracija</a>
+      {% endif %}
+    </div>
+  </nav>
+</header>
+
+<main class="container">
+  <h1>Možete nas kontaktirati za dodatne modele i informacije</h1>
+
+  <div class="grid">
+
+    <!-- SAMO DUGME -->
+    <section>
+      <div class="kontakt-box">
+        <h2>Kontakt email</h2>
+
+        <a class="send-btn"
+           href="mailto:cloockot2026@gmail.com?subject=Upit sa Cloockot sajta">
+          ✉️ Pošaljite email
+        </a>
+
       </div>
-    </nav>
-  </header>
+    </section>
 
-  <main class="container">
-    <h1>Možete nas kontaktirati za dodatne modele i informacije</h1>
+    <!-- INFO -->
+    <aside class="info">
+      <div class="card-body">
+        <h3 style="margin:0 0 12px">Kontakt podaci</h3>
 
-    <div class="grid">
-      <section>
-        <div class="kontakt-forma">
-          <h2>Pošaljite nam poruku</h2>
-          <p class="required-note">* Obavezna polja</p>
-
-          <div class="form-group">
-            <label for="ime">Ime i prezime</label>
-            <input type="text" id="ime" placeholder="Marko Petrović" />
-          </div>
-
-          <div class="form-group">
-            <label for="email">Email adresa *</label>
-            <input type="email" id="email" placeholder="vas@email.com" required />
-          </div>
-
-          <div class="form-group">
-            <label for="telefon">Telefon</label>
-            <input type="tel" id="telefon" placeholder="064 000 0000" />
-          </div>
-
-          <div class="form-group">
-            <label for="poruka">Poruka *</label>
-            <textarea id="poruka" placeholder="Napišite vaš upit ovde..." required></textarea>
-          </div>
-
-          <button class="send-btn" onclick="posaljiMailto()">
-            ✉️ Pošalji poruku
-          </button>
+        <div style="margin:10px 0">
+          <b>Call Centar:</b><br>
+          <a href="tel:0640166411">064 016 6411</a>
         </div>
-      </section>
 
-      <aside class="info">
-        <div class="card-body">
-          <h3 style="margin:0 0 12px">Kontakt podaci</h3>
-          <div style="margin:10px 0"><b>Call Centar:</b><br><a href="tel:0640166411">064 016 6411</a></div>
-          <div style="margin:10px 0"><b>Email:</b><br><a href="mailto:cloockot2026@gmail.com">cloockot2026@gmail.com</a></div>
-          <div style="margin:10px 0"><b>Radno vreme:</b><br>Ponedeljak – subota 09:00 – 17:00h</div>
-          <div class="pill" style="margin-top:14px">🚚 Besplatna dostava</div>
+        <div style="margin:10px 0">
+          <b>Email:</b><br>
+          <a href="mailto:cloockot2026@gmail.com">cloockot2026@gmail.com</a>
         </div>
-      </aside>
-    </div>
-  </main>
 
-  <footer style="background:#111;color:#fff;margin-top:60px;">
-    <div style="max-width:1280px;margin:0 auto;padding:40px 20px;display:grid;grid-template-columns:1.5fr 1fr;gap:30px;">
-      <div>
-        <div style="font-size:26px;font-weight:800;margin-bottom:12px;">Cloockot</div>
-        <p style="color:#ccc;line-height:1.6;font-size:14px;">Koncept multibrend radnje koja spaja renomirane svetske brendove i profesionalnu uslugu – Vaše zadovoljstvo je naše merilo uspeha.</p>
+        <div style="margin:10px 0">
+          <b>Radno vreme:</b><br>
+          Ponedeljak – subota 09:00 – 17:00h
+        </div>
+
+        <div class="pill" style="margin-top:14px">
+          🚚 Besplatna dostava
+        </div>
       </div>
-    </div>
-    <div style="border-top:1px solid #333;padding:15px 20px;max-width:1280px;margin:0 auto;font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;color:#bbb;">
-      <div>©2025 Cloockot.com. Sva prava zadržana.</div>
-    </div>
-  </footer>
+    </aside>
 
-  <div id="toast" class="toast"></div>
+  </div>
+</main>
+
+<footer style="background:#111;color:#fff;margin-top:60px;">
+  <div style="max-width:1280px;margin:0 auto;padding:40px 20px;">
+    <div style="font-size:26px;font-weight:800;margin-bottom:12px;">Cloockot</div>
+    <p style="color:#ccc;line-height:1.6;font-size:14px;">
+      Koncept multibrend radnje koja spaja renomirane svetske brendove i profesionalnu uslugu.
+    </p>
+  </div>
+
+  <div style="border-top:1px solid #333;padding:15px 20px;max-width:1280px;margin:0 auto;font-size:13px;color:#bbb;">
+    ©2025 Cloockot.com. Sva prava zadržana.
+  </div>
+</footer>
+
+<div id="toast" class="toast"></div>
 
 <script>
-  function posaljiMailto() {
-    const ime     = document.getElementById('ime').value.trim();
-    const email   = document.getElementById('email').value.trim();
-    const telefon = document.getElementById('telefon').value.trim();
-    const poruka  = document.getElementById('poruka').value.trim();
-
-    if (!email) {
-      showToast('❌ Molimo unesite vašu email adresu.');
-      return;
-    }
-    if (!poruka) {
-      showToast('❌ Molimo unesite poruku.');
-      return;
-    }
-
-    const primaoc = 'cloockot2026@gmail.com';
-    const subject = 'Upit sa Cloockot sajta';
-
-    const body =
-      'Ime: ' + (ime || 'Nije navedeno') + '\n' +
-      'Email: ' + email + '\n' +
-      'Telefon: ' + (telefon || 'Nije naveden') + '\n\n' +
-      'Poruka:\n' + poruka + '\n\n' +
-      '---\nPoslato putem kontakt forme na Cloockot sajtu.';
-
-    const mailtoLink =
-      'mailto:' + primaoc +
-      '?subject=' + encodeURIComponent(subject) +
-      '&body=' + encodeURIComponent(body);
-
-    window.location.href = mailtoLink;
-
-    setTimeout(() => {
-      showToast('Ako se email program nije otvorio, pišite nam direktno na: ' + primaoc);
-    }, 2000);
-  }
-
-  function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.style.display = 'block';
-    setTimeout(() => { toast.style.display = 'none'; }, 4000);
-  }
-
   // Mobile menu
   const hamburgerBtn = document.getElementById('hamburgerBtn');
   const mainMenu = document.getElementById('mainMenu');
+
   if (hamburgerBtn) {
-    hamburgerBtn.addEventListener('click', function(e) {
+    hamburgerBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       mainMenu.classList.toggle('active');
-      document.body.style.overflow = mainMenu.classList.contains('active') ? 'hidden' : '';
+      document.body.style.overflow =
+        mainMenu.classList.contains('active') ? 'hidden' : '';
     });
   }
+
   if (mainMenu) {
     mainMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', function() {
+      link.addEventListener('click', function () {
         mainMenu.classList.remove('active');
         document.body.style.overflow = '';
       });
     });
   }
 </script>
+
 </body>
 </html>

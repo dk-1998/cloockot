@@ -43,139 +43,148 @@
   <main class="container">
     <div class="breadcrumb">Početna / Satovi</div>
     <h1 class="page-title">Satovi</h1><hr>
-    <h2>Filteri</h2>
-    <h3>Možete uraditi filtere po dostupnim kriterijumima</h3>
 
-    <!-- ======== PILL FILTER ROW ======== -->
-    <div class="filter-pills-row" id="filterPillsRow">
-      <button class="filter-pill" data-filter="pol">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="5"/><line x1="16" y1="6" x2="20" y2="2"/><line x1="20" y1="2" x2="17" y2="2"/><line x1="20" y1="2" x2="20" y2="5"/><circle cx="8" cy="17" r="5"/><line x1="8" y1="12" x2="8" y2="22"/><line x1="5" y1="19" x2="11" y2="19"/></svg>
-        <span>Pol</span>
-        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    <!-- ======== COLLAPSIBLE FILTER PANEL ======== -->
+    <div class="filter-collapsible">
+      <button class="filter-toggle-btn" id="filterToggleBtn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="4" y1="6" x2="20" y2="6"></line>
+          <line x1="8" y1="12" x2="20" y2="12"></line>
+          <line x1="12" y1="18" x2="20" y2="18"></line>
+          <circle cx="6" cy="6" r="1.5" fill="currentColor" stroke="none"></circle>
+          <circle cx="10" cy="12" r="1.5" fill="currentColor" stroke="none"></circle>
+          <circle cx="14" cy="18" r="1.5" fill="currentColor" stroke="none"></circle>
+        </svg>
+        <span>Filteri</span>
+        <span class="filter-count-badge" id="filterCountBadge" style="display:none;">0</span>
+        <svg class="toggle-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
       </button>
 
-      <button class="filter-pill" data-filter="brend">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-        <span>Brend</span>
-        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </button>
+      <div class="filter-panel" id="filterPanel">
+        <div class="filter-panel-content">
+          <div class="filter-grid">
+            <!-- POL -->
+            <div class="filter-group">
+              <h4 class="filter-group-title">Pol</h4>
+              <div class="filter-chips">
+                <label class="chip"><input type="checkbox" name="pol" value="muski"> Muški</label>
+                <label class="chip"><input type="checkbox" name="pol" value="zenski"> Ženski</label>
+                <label class="chip"><input type="checkbox" name="pol" value="unisex"> Unisex</label>
+              </div>
+            </div>
 
-      <button class="filter-pill" data-filter="narukvica">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/></svg>
-        <span>Narukvica</span>
-        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </button>
+            <!-- BREND -->
+            <div class="filter-group">
+              <h4 class="filter-group-title">Brend</h4>
+              <div class="filter-chips">
+                <label class="chip"><input type="checkbox" name="brend" value="casio"> Casio</label>
+                <label class="chip"><input type="checkbox" name="brend" value="boss"> Boss</label>
+                <label class="chip"><input type="checkbox" name="brend" value="amalys"> Amalys</label>
+                <label class="chip"><input type="checkbox" name="brend" value="anne-klein"> Anne Klein</label>
+                <label class="chip"><input type="checkbox" name="brend" value="garmin"> Garmin</label>
+                <label class="chip"><input type="checkbox" name="brend" value="naviforce"> Naviforce</label>
+              </div>
+            </div>
 
-      <button class="filter-pill" data-filter="kategorija">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-        <span>Kategorija</span>
-        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </button>
+            <!-- NARUKVICA -->
+            <div class="filter-group">
+              <h4 class="filter-group-title">Narukvica</h4>
+              <div class="filter-chips">
+                <label class="chip"><input type="checkbox" name="narukvica" value="metalni"> Metalni</label>
+                <label class="chip"><input type="checkbox" name="narukvica" value="kozni"> Kožni</label>
+                <label class="chip"><input type="checkbox" name="narukvica" value="platneni"> Platneni</label>
+                <label class="chip"><input type="checkbox" name="narukvica" value="mesh"> Mesh</label>
+                <label class="chip"><input type="checkbox" name="narukvica" value="smola"> Smola</label>
+              </div>
+            </div>
 
-      <button class="filter-pill" data-filter="boja">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg>
-        <span>Boja</span>
-        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </button>
+            <!-- KATEGORIJA -->
+            <div class="filter-group">
+              <h4 class="filter-group-title">Kategorija</h4>
+              <div class="filter-chips">
+                <label class="chip"><input type="checkbox" name="kategorija" value="novo"> Novo</label>
+                <label class="chip"><input type="checkbox" name="kategorija" value="ponuda-oglasi"> Polovno</label>
+              </div>
+            </div>
 
-      <button class="filter-pill" data-filter="cena">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-        <span>Cena</span>
-        <svg class="pill-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </button>
+            <!-- BOJA -->
+            <div class="filter-group">
+              <h4 class="filter-group-title">Boja</h4>
+              <div class="filter-chips">
+                <label class="chip"><input type="checkbox" name="boja" value="crni"> Crni</label>
+                <label class="chip"><input type="checkbox" name="boja" value="srebrni"> Srebrni</label>
+                <label class="chip"><input type="checkbox" name="boja" value="zlatni"> Zlatni</label>
+                <label class="chip"><input type="checkbox" name="boja" value="roze"> Roze</label>
+                <label class="chip"><input type="checkbox" name="boja" value="plavi"> Plavi</label>
+                <label class="chip"><input type="checkbox" name="boja" value="crveni"> Crveni</label>
+                <label class="chip"><input type="checkbox" name="boja" value="braon"> Braon</label>
+                <label class="chip"><input type="checkbox" name="boja" value="dvobojni"> Dvobojni</label>
+              </div>
+            </div>
 
-      <button class="filter-pill reset-pill" id="resetAllPills" style="display:none;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        <span>Resetuj</span>
-      </button>
+            <!-- CENA -->
+            <div class="filter-group">
+              <h4 class="filter-group-title">Cena</h4>
+              <div class="price-inputs">
+                <label>
+                  <span>Od:</span>
+                  <select id="minPrice">
+                    <option value="0">0</option>
+                    <option value="9990">9.990</option>
+                    <option value="10000">10.000</option>
+                    <option value="12490">12.490</option>
+                    <option value="12990">12.990</option>
+                    <option value="13990">13.990</option>
+                    <option value="14990">14.990</option>
+                    <option value="15490">15.490</option>
+                    <option value="17990">17.990</option>
+                    <option value="19490">19.490</option>
+                    <option value="25990">25.990</option>
+                    <option value="28990">28.990</option>
+                    <option value="32990">32.990</option>
+                    <option value="33990">33.990</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Do:</span>
+                  <select id="maxPrice">
+                    <option value="999999">Sve</option>
+                    <option value="9990">9.990</option>
+                    <option value="10000">10.000</option>
+                    <option value="12490">12.490</option>
+                    <option value="12990">12.990</option>
+                    <option value="13990">13.990</option>
+                    <option value="14990">14.990</option>
+                    <option value="15490">15.490</option>
+                    <option value="17990">17.990</option>
+                    <option value="19490">19.490</option>
+                    <option value="25990">25.990</option>
+                    <option value="28990">28.990</option>
+                    <option value="32990">32.990</option>
+                    <option value="33990">33.990</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </div>
 
-      <!-- ======== DROPDOWN PANELI ======== -->
-      <div class="pill-dropdown" id="drop-pol">
-        <label class="chip"><input type="checkbox" name="pol" value="muski"> Muški</label>
-        <label class="chip"><input type="checkbox" name="pol" value="zenski"> Ženski</label>
-        <label class="chip"><input type="checkbox" name="pol" value="unisex"> Unisex</label>
-      </div>
-
-      <div class="pill-dropdown" id="drop-brend">
-        <label class="chip"><input type="checkbox" name="brend" value="casio"> Casio</label>
-        <label class="chip"><input type="checkbox" name="brend" value="boss"> Boss</label>
-        <label class="chip"><input type="checkbox" name="brend" value="amalys"> Amalys</label>
-        <label class="chip"><input type="checkbox" name="brend" value="anne-klein"> Anne Klein</label>
-        <label class="chip"><input type="checkbox" name="brend" value="garmin"> Garmin</label>
-        <label class="chip"><input type="checkbox" name="brend" value="naviforce"> Naviforce</label>
-      </div>
-
-      <div class="pill-dropdown" id="drop-narukvica">
-        <label class="chip"><input type="checkbox" name="narukvica" value="metalni"> Metalni</label>
-        <label class="chip"><input type="checkbox" name="narukvica" value="kozni"> Kožni</label>
-        <label class="chip"><input type="checkbox" name="narukvica" value="platneni"> Platneni</label>
-        <label class="chip"><input type="checkbox" name="narukvica" value="mesh"> Mesh</label>
-        <label class="chip"><input type="checkbox" name="narukvica" value="smola"> Smola</label>
-      </div>
-
-      <div class="pill-dropdown" id="drop-kategorija">
-        <label class="chip"><input type="checkbox" name="kategorija" value="novo"> Novo</label>
-        <label class="chip"><input type="checkbox" name="kategorija" value="ponuda-oglasi"> Polovno</label>
-      </div>
-
-      <div class="pill-dropdown" id="drop-boja">
-        <label class="chip"><input type="checkbox" name="boja" value="crni"> Crni</label>
-        <label class="chip"><input type="checkbox" name="boja" value="srebrni"> Srebrni</label>
-        <label class="chip"><input type="checkbox" name="boja" value="zlatni"> Zlatni</label>
-        <label class="chip"><input type="checkbox" name="boja" value="roze"> Roze</label>
-        <label class="chip"><input type="checkbox" name="boja" value="plavi"> Plavi</label>
-        <label class="chip"><input type="checkbox" name="boja" value="crveni"> Crveni</label>
-        <label class="chip"><input type="checkbox" name="boja" value="braon"> Braon</label>
-        <label class="chip"><input type="checkbox" name="boja" value="dvobojni"> Dvobojni</label>
-      </div>
-
-      <div class="pill-dropdown" id="drop-cena">
-        <div class="price-inputs">
-          <label>
-            <span>Od:</span>
-            <select id="minPrice">
-              <option value="0">0</option>
-              <option value="9990">9.990</option>
-              <option value="10000">10.000</option>
-              <option value="12490">12.490</option>
-              <option value="12990">12.990</option>
-              <option value="13990">13.990</option>
-              <option value="14990">14.990</option>
-              <option value="15490">15.490</option>
-              <option value="17990">17.990</option>
-              <option value="19490">19.490</option>
-              <option value="25990">25.990</option>
-              <option value="28990">28.990</option>
-              <option value="32990">32.990</option>
-              <option value="33990">33.990</option>
-            </select>
-          </label>
-          <label>
-            <span>Do:</span>
-            <select id="maxPrice">
-              <option value="999999">Sve</option>
-              <option value="9990">9.990</option>
-              <option value="10000">10.000</option>
-              <option value="12490">12.490</option>
-              <option value="12990">12.990</option>
-              <option value="13990">13.990</option>
-              <option value="14990">14.990</option>
-              <option value="15490">15.490</option>
-              <option value="17990">17.990</option>
-              <option value="19490">19.490</option>
-              <option value="25990">25.990</option>
-              <option value="28990">28.990</option>
-              <option value="32990">32.990</option>
-              <option value="33990">33.990</option>
-            </select>
-          </label>
+          <!-- AKCIJE DUGMADI -->
+          <div class="filter-actions">
+            <button class="btn primary" id="applyFiltersBtn">Primeni filtere</button>
+            <button class="btn" id="resetFiltersBtn">Resetuj sve</button>
+          </div>
         </div>
-        <button type="button" class="btn primary" id="applyCenaBtn" style="margin-top:12px;width:100%;">Primeni</button>
       </div>
-
-      <div id="pillOverlay" class="pill-overlay"></div>
     </div>
-    <!-- ======== KRAJ PILL FILTER ROW ======== -->
+    <!-- ======== KRAJ COLLAPSIBLE FILTER PANEL ======== -->
+
+    <!-- Aktivni filteri -->
+    <div class="active-filters" id="activeFilters" style="display:none;">
+      <div class="active-filters-list" id="activeFiltersList"></div>
+      <button class="clear-all-filters" id="clearAllFilters">Obriši sve filtere</button>
+    </div>
 
     <div class="grid" id="grid">
       <!-- 1. CASIO ZLATNI -->
@@ -738,116 +747,137 @@
       setTimeout(() => div.remove(), 2500);
     }
 
-    // ======== PILL FILTERI ========
-    function initFilters() {
-      const pills = document.querySelectorAll('.filter-pill[data-filter]');
-      const overlay = document.getElementById('pillOverlay');
-      const resetBtn = document.getElementById('resetAllPills');
+    // ======== COLLAPSIBLE FILTER PANEL ========
+    function initCollapsibleFilter() {
+      const toggleBtn = document.getElementById('filterToggleBtn');
+      const filterPanel = document.getElementById('filterPanel');
+      const applyBtn = document.getElementById('applyFiltersBtn');
+      const resetBtn = document.getElementById('resetFiltersBtn');
+      const clearAllBtn = document.getElementById('clearAllFilters');
+      const filterCountBadge = document.getElementById('filterCountBadge');
+      const activeFilters = document.getElementById('activeFilters');
+      const activeFiltersList = document.getElementById('activeFiltersList');
 
-      function openDrop(filterKey, pill) {
-        closeAllDrops();
-        const drop = document.getElementById('drop-' + filterKey);
-        if (!drop) return;
-        const pillRect = pill.getBoundingClientRect();
-        const rowRect = pill.closest('.filter-pills-row').getBoundingClientRect();
-        let leftPos = pillRect.left - rowRect.left;
-        const dropWidth = 240;
-        const rowWidth = rowRect.width;
-        if (leftPos + dropWidth > rowWidth) {
-          leftPos = rowWidth - dropWidth;
+      // Toggle panel
+      toggleBtn.addEventListener('click', () => {
+        filterPanel.classList.toggle('open');
+        toggleBtn.classList.toggle('active');
+      });
+
+      // Close panel on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && filterPanel.classList.contains('open')) {
+          filterPanel.classList.remove('open');
+          toggleBtn.classList.remove('active');
         }
-        if (leftPos < 0) leftPos = 0;
-        drop.style.left = leftPos + 'px';
-        drop.classList.add('open');
-        pill.classList.add('active');
-        overlay.classList.add('active');
-      }
+      });
 
-      function closeAllDrops() {
-        document.querySelectorAll('.pill-dropdown.open').forEach(d => d.classList.remove('open'));
-        document.querySelectorAll('.filter-pill.active').forEach(p => p.classList.remove('active'));
-        overlay.classList.remove('active');
-      }
+      // Close panel when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.filter-collapsible')) {
+          filterPanel.classList.remove('open');
+          toggleBtn.classList.remove('active');
+        }
+      });
 
-      pills.forEach(pill => {
-        pill.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const key = pill.dataset.filter;
-          const drop = document.getElementById('drop-' + key);
-          if (drop && drop.classList.contains('open')) {
-            closeAllDrops();
-          } else {
-            openDrop(key, pill);
+      // Update active filters display
+      function updateActiveFiltersDisplay() {
+        const allCheckboxes = document.querySelectorAll('.filter-panel input[type="checkbox"]');
+        let checkedFilters = [];
+        
+        allCheckboxes.forEach(cb => {
+          if (cb.checked) {
+            const groupTitle = cb.closest('.filter-group').querySelector('.filter-group-title').textContent;
+            const value = cb.value;
+            checkedFilters.push({ group: groupTitle, value: value, name: cb.name });
           }
         });
-      });
 
-      overlay.addEventListener('click', () => {
-        closeAllDrops();
-        applyFilters();
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          closeAllDrops();
-          const modal = document.getElementById('productModal');
-          if (modal && modal.style.display === 'flex') closeModal();
+        // Add price range if changed
+        const minPrice = document.getElementById('minPrice');
+        const maxPrice = document.getElementById('maxPrice');
+        if (minPrice && minPrice.value !== '0') {
+          checkedFilters.push({ group: 'Cena', value: `Od ${parseInt(minPrice.value).toLocaleString()} RSD`, name: 'cena-min' });
         }
-      });
+        if (maxPrice && maxPrice.value !== '999999') {
+          checkedFilters.push({ group: 'Cena', value: `Do ${parseInt(maxPrice.value).toLocaleString()} RSD`, name: 'cena-max' });
+        }
 
-      const applyCenaBtn = document.getElementById('applyCenaBtn');
-      if (applyCenaBtn) {
-        applyCenaBtn.addEventListener('click', () => {
-          closeAllDrops();
-          applyFilters();
-        });
-      }
+        // Update badge
+        const totalCount = checkedFilters.length;
+        filterCountBadge.textContent = totalCount;
+        filterCountBadge.style.display = totalCount > 0 ? 'inline-flex' : 'none';
 
-      document.querySelectorAll('.pill-dropdown input[type="checkbox"]').forEach(cb => {
-        cb.addEventListener('change', () => {
-          updatePillBadges();
-          applyFilters();
-        });
-      });
+        // Update active filters list
+        if (totalCount > 0) {
+          activeFilters.style.display = 'block';
+          activeFiltersList.innerHTML = checkedFilters.map(f => `
+            <span class="active-filter-tag" data-name="${f.name}" data-value="${f.value}">
+              ${f.group}: ${f.value}
+              <button class="remove-filter" data-name="${f.name}" data-value="${f.value}">✕</button>
+            </span>
+          `).join('');
 
-      if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-          resetFilters();
-        });
-      }
-
-      updatePillBadges();
-    }
-
-    function updatePillBadges() {
-      let anyActive = false;
-      document.querySelectorAll('.filter-pill[data-filter]').forEach(pill => {
-        const key = pill.dataset.filter;
-        let count = 0;
-        if (key === 'cena') {
-          const min = document.getElementById('minPrice');
-          const max = document.getElementById('maxPrice');
-          if (min && min.value !== '0') count++;
-          if (max && max.value !== '999999') count++;
+          // Add click handlers to remove individual filters
+          activeFiltersList.querySelectorAll('.remove-filter').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const name = btn.dataset.name;
+              const value = btn.dataset.value;
+              
+              if (name === 'cena-min') {
+                document.getElementById('minPrice').value = '0';
+              } else if (name === 'cena-max') {
+                document.getElementById('maxPrice').value = '999999';
+              } else {
+                const checkbox = document.querySelector(`input[name="${name}"][value="${value}"]`);
+                if (checkbox) checkbox.checked = false;
+              }
+              
+              applyFilters();
+              updateActiveFiltersDisplay();
+            });
+          });
         } else {
-          count = document.querySelectorAll(`input[name="${key}"]:checked`).length;
+          activeFilters.style.display = 'none';
+          activeFiltersList.innerHTML = '';
         }
-        const existing = pill.querySelector('.pill-badge');
-        if (existing) existing.remove();
-        if (count > 0) {
-          const badge = document.createElement('span');
-          badge.className = 'pill-badge';
-          badge.textContent = count;
-          const chevron = pill.querySelector('.pill-chevron');
-          pill.insertBefore(badge, chevron);
-          anyActive = true;
-        }
+      }
+
+      // Apply filters
+      applyBtn.addEventListener('click', () => {
+        applyFilters();
+        updateActiveFiltersDisplay();
+        filterPanel.classList.remove('open');
+        toggleBtn.classList.remove('active');
       });
-      const resetBtn = document.getElementById('resetAllPills');
-      if (resetBtn) resetBtn.style.display = anyActive ? 'inline-flex' : 'none';
+
+      // Reset filters
+      resetBtn.addEventListener('click', () => {
+        resetFilters();
+        updateActiveFiltersDisplay();
+      });
+
+      // Clear all filters
+      if (clearAllBtn) {
+        clearAllBtn.addEventListener('click', () => {
+          resetFilters();
+          updateActiveFiltersDisplay();
+        });
+      }
+
+      // Listen for checkbox changes to update display
+      document.querySelectorAll('.filter-panel input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', updateActiveFiltersDisplay);
+      });
+
+      document.getElementById('minPrice').addEventListener('change', updateActiveFiltersDisplay);
+      document.getElementById('maxPrice').addEventListener('change', updateActiveFiltersDisplay);
+
+      // Initial state
+      updateActiveFiltersDisplay();
     }
 
-    window.applyFilters = function () {
+    function applyFilters() {
       const selectedPol = Array.from(document.querySelectorAll('input[name="pol"]:checked')).map(cb => cb.value);
       const selectedBrend = Array.from(document.querySelectorAll('input[name="brend"]:checked')).map(cb => cb.value);
       const selectedNarukvica = Array.from(document.querySelectorAll('input[name="narukvica"]:checked')).map(cb => cb.value);
@@ -888,12 +918,11 @@
         if (noResultsMsg) noResultsMsg.remove();
       }
 
-      updatePillBadges();
       showNotification(`Prikazano ${visibleCount} od ${cards.length} proizvoda`);
-    };
+    }
 
-    window.resetFilters = function () {
-      document.querySelectorAll('.pill-dropdown input[type="checkbox"]').forEach(cb => {
+    function resetFilters() {
+      document.querySelectorAll('.filter-panel input[type="checkbox"]').forEach(cb => {
         cb.checked = false;
       });
       const minPrice = document.getElementById('minPrice');
@@ -905,9 +934,8 @@
       });
       const noResultsMsg = document.getElementById('noResultsMsg');
       if (noResultsMsg) noResultsMsg.remove();
-      updatePillBadges();
       showNotification('Svi filteri su resetovani');
-    };
+    }
 
     // ======== MODAL ZA PROIZVODE ========
     function closeModal() {
@@ -1031,7 +1059,7 @@
     // ======== INIT ========
     document.addEventListener('DOMContentLoaded', () => {
       loadCart();
-      initFilters();
+      initCollapsibleFilter();
       initMobileMenu();
 
       const btnCart = document.getElementById('btnCart');
@@ -1114,6 +1142,7 @@
   <style>
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 1000px; } }
 
     .swiper-container { width: 100%; height: 400px; }
     .swiper-slide { display: flex; align-items: center; justify-content: center; }
@@ -1146,46 +1175,216 @@
     .specs li { padding: 8px 0; border-bottom: 1px solid #eee; font-size: 14px; }
     .specs li strong { display: inline-block; width: 120px; color: #666; }
 
-    /* Kad je modal otvoren sakrij pill row */
-    body.modal-open .filter-pills-row { opacity: 0; pointer-events: none; visibility: hidden; }
-
     /* ======== POTVRDA ======== */
     #confirmOverlay, #successOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10002; display: flex; align-items: center; justify-content: center; }
     .confirm-box { background: white; padding: 30px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; animation: fadeIn 0.3s ease; }
     .confirm-actions { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
 
-    /* ======== PILL FILTERI ======== */
-    .filter-pills-row { position: relative; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; z-index: 500; transition: opacity 0.2s, visibility 0.2s; }
+    /* ======== COLLAPSIBLE FILTER ======== */
+    .filter-collapsible { position: relative; margin-bottom: 24px; z-index: 500; }
 
-    .filter-pill { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; background: #c41e3a; color: white; border: none; border-radius: 50px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; transition: background 0.2s, transform 0.15s; white-space: nowrap; }
-    .filter-pill:hover { background: #a01830; }
-    .filter-pill.active { background: #7d1226; box-shadow: inset 0 2px 6px rgba(0,0,0,0.25); }
+    .filter-toggle-btn { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 12px; 
+      padding: 16px 28px; 
+      background: #c41e3a; 
+      color: white; 
+      border: none; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      font-size: 18px; 
+      font-weight: 700; 
+      font-family: inherit; 
+      transition: all 0.2s; 
+      box-shadow: 0 4px 15px rgba(196, 30, 58, 0.3);
+      width: 100%;
+      justify-content: center;
+    }
+    .filter-toggle-btn:hover { 
+      background: #a01830; 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 20px rgba(196, 30, 58, 0.4); 
+    }
+    .filter-toggle-btn.active { 
+      background: #7d1226; 
+      border-radius: 12px 12px 0 0; 
+    }
+    .filter-toggle-btn.active .toggle-chevron { 
+      transform: rotate(180deg); 
+    }
+    .toggle-chevron { 
+      transition: transform 0.3s ease; 
+    }
 
-    .filter-pill .pill-chevron { transition: transform 0.2s; }
-    .filter-pill.active .pill-chevron { transform: rotate(180deg); }
+    .filter-count-badge { 
+      background: white; 
+      color: #c41e3a; 
+      border-radius: 50%; 
+      width: 28px; 
+      height: 28px; 
+      font-size: 14px; 
+      font-weight: 800; 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+    }
 
-    .filter-pill .pill-badge { background: white; color: #c41e3a; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+    .filter-panel { 
+      display: none; 
+      background: white; 
+      border: 2px solid #c41e3a; 
+      border-top: none; 
+      border-radius: 0 0 12px 12px; 
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+      overflow: hidden; 
+    }
+    .filter-panel.open { 
+      display: block; 
+      animation: slideDown 0.3s ease; 
+    }
 
-    .reset-pill { background: #555; }
-    .reset-pill:hover { background: #333; }
+    .filter-panel-content { 
+      padding: 24px; 
+    }
 
-    /* Chip stilovi */
-    .chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: #f5f5f5; border-radius: 30px; font-size: 14px; cursor: pointer; transition: all 0.2s; user-select: none; }
-    .chip:hover { background: #e0e0e0; }
-    .chip input { margin: 0; cursor: pointer; }
-    .chip:has(input:checked) { background: #c41e3a; color: white; }
+    .filter-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+      gap: 24px; 
+    }
 
-    /* Dropdown panel */
-    .pill-dropdown { display: none; position: absolute; top: calc(100% + 8px); left: 0; background: white; border: 1px solid #ddd; border-radius: 14px; padding: 16px; z-index: 1001; min-width: 220px; max-width: 300px; flex-wrap: wrap; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); animation: fadeIn 0.2s ease; }
-    .pill-dropdown.open { display: flex; }
+    .filter-group { 
+      margin-bottom: 8px; 
+    }
 
-    .pill-dropdown .price-inputs { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-    .pill-dropdown .price-inputs label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #666; font-weight: 500; }
-    .pill-dropdown .price-inputs select { padding: 8px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
-    .pill-dropdown .price-inputs select:focus { outline: none; border-color: #c41e3a; }
+    .filter-group-title { 
+      font-size: 16px; 
+      font-weight: 700; 
+      color: #333; 
+      margin-bottom: 12px; 
+      padding-bottom: 8px; 
+      border-bottom: 2px solid #c41e3a; 
+    }
 
-    .pill-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; }
-    .pill-overlay.active { display: block; }
+    .filter-chips { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 8px; 
+    }
+
+    .chip { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      padding: 8px 14px; 
+      background: #f5f5f5; 
+      border-radius: 30px; 
+      font-size: 14px; 
+      cursor: pointer; 
+      transition: all 0.2s; 
+      user-select: none; 
+    }
+    .chip:hover { 
+      background: #e0e0e0; 
+    }
+    .chip input { 
+      margin: 0; 
+      cursor: pointer; 
+    }
+    .chip:has(input:checked) { 
+      background: #c41e3a; 
+      color: white; 
+    }
+
+    .price-inputs { 
+      display: flex; 
+      gap: 12px; 
+      flex-wrap: wrap; 
+    }
+    .price-inputs label { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 4px; 
+      font-size: 13px; 
+      color: #666; 
+      font-weight: 500; 
+      flex: 1; 
+      min-width: 120px; 
+    }
+    .price-inputs select { 
+      padding: 10px; 
+      border: 1px solid #ddd; 
+      border-radius: 8px; 
+      font-size: 14px; 
+      background: white; 
+    }
+    .price-inputs select:focus { 
+      outline: none; 
+      border-color: #c41e3a; 
+    }
+
+    .filter-actions { 
+      display: flex; 
+      gap: 12px; 
+      margin-top: 24px; 
+      padding-top: 20px; 
+      border-top: 1px solid #eee; 
+    }
+    .filter-actions .btn { 
+      flex: 1; 
+      padding: 12px; 
+      font-size: 16px; 
+    }
+
+    /* Aktivni filteri */
+    .active-filters { 
+      margin-bottom: 20px; 
+      padding: 12px; 
+      background: #f9f9f9; 
+      border-radius: 8px; 
+    }
+    .active-filters-list { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 8px; 
+      margin-bottom: 8px; 
+    }
+    .active-filter-tag { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      padding: 6px 12px; 
+      background: #c41e3a; 
+      color: white; 
+      border-radius: 20px; 
+      font-size: 13px; 
+      font-weight: 600; 
+    }
+    .remove-filter { 
+      background: none; 
+      border: none; 
+      color: white; 
+      cursor: pointer; 
+      font-size: 14px; 
+      padding: 2px; 
+      line-height: 1; 
+      opacity: 0.8; 
+      transition: opacity 0.2s; 
+    }
+    .remove-filter:hover { 
+      opacity: 1; 
+    }
+    .clear-all-filters { 
+      background: none; 
+      border: none; 
+      color: #c41e3a; 
+      cursor: pointer; 
+      font-size: 13px; 
+      font-weight: 600; 
+      padding: 4px 8px; 
+      text-decoration: underline; 
+    }
 
     /* ======== HAMBURGER MENI ======== */
     .hamburger { display: none; background: none; border: none; font-size: 28px; cursor: pointer; color: #333; padding: 8px; z-index: 1001; }
@@ -1198,7 +1397,9 @@
       .menu .right { margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; display: flex; flex-direction: column; gap: 10px; }
       .modal__dialog { grid-template-columns: 1fr; width: 95%; }
       .modal__media { min-height: 300px; }
-      .filter-pill { padding: 8px 12px; font-size: 13px; }
+      .filter-toggle-btn { padding: 14px 20px; font-size: 16px; }
+      .filter-grid { grid-template-columns: 1fr; gap: 16px; }
+      .filter-actions { flex-direction: column; }
     }
 
     @media (min-width: 769px) {
@@ -1207,7 +1408,9 @@
     }
 
     @media (max-width: 480px) {
-      .filter-pill { padding: 7px 10px; font-size: 12px; gap: 4px; }
+      .filter-toggle-btn { padding: 12px 16px; font-size: 14px; gap: 8px; }
+      .filter-toggle-btn svg { width: 20px; height: 20px; }
+      .filter-panel-content { padding: 16px; }
       .modal__name { font-size: 18px; }
       .modal__price { font-size: 22px; }
       .specs li strong { width: 100px; font-size: 12px; }

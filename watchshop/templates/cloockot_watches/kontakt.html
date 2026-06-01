@@ -7,6 +7,50 @@
   <title>Cloockot-Kontakt</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'cloockot_watches/css/kontakt.css' %}">
+  <style>
+    .email-btn {
+      display: inline-block;
+      padding: 16px 40px;
+      background: #10b981;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      border: none;
+      cursor: pointer;
+      margin: 10px;
+    }
+    .email-btn:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .copy-btn {
+      background: #3b82f6;
+    }
+    .copy-btn:hover {
+      background: #2563eb;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      display: none;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -34,20 +78,21 @@
 
     <div class="grid">
       <section>
-        <!-- DUGME ZA EMAIL -->
+        <!-- DUGMAD ZA EMAIL -->
         <div style="text-align: center; padding: 40px 20px;">
           <h2 style="margin-bottom: 20px; color: #333;">Pošaljite nam email</h2>
           <p style="margin-bottom: 30px; color: #666; font-size: 16px;">
-            Klikom na dugme ispod otvoriće se vaš email program gde možete napisati poruku.
+            Izaberite jednu od opcija za kontaktiranje:
           </p>
-          <a href="mailto:cloockot2026@gmail.com" 
-             style="display: inline-block; padding: 16px 40px; background: #10b981; color: white; 
-                    text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 18px;
-                    transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
-             onmouseover="this.style.background='#059669'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 12px rgba(0,0,0,0.15)';"
-             onmouseout="this.style.background='#10b981'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.1)';">
-            ✉️ Pošaljite nam email
-          </a>
+          
+          <button onclick="openEmail()" class="email-btn">
+            ✉️ Otvori email program
+          </button>
+          <br>
+          <button onclick="copyEmail()" class="email-btn copy-btn">
+            📋 Kopiraj email adresu
+          </button>
+          
           <p style="margin-top: 20px; color: #888; font-size: 14px;">
             Email: <strong>cloockot2026@gmail.com</strong>
           </p>
@@ -78,7 +123,73 @@
     </div>
   </footer>
 
+  <div id="toast" class="toast"></div>
+
 <script>
+    // Otvaranje email programa
+    function openEmail() {
+      const email = 'cloockot2026@gmail.com';
+      const subject = 'Upit sa sajta Cloockot';
+      const body = 'Poštovani,\n\nPišem vam u vezi...\n\nSrdačan pozdrav';
+      
+      const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      
+      // Pokušaj da otvoriš email program
+      window.location.href = mailtoLink;
+      
+      // Ako se ne otvori u roku od 2 sekunde, prikaži poruku
+      setTimeout(() => {
+        showToast('Ako se email program nije otvorio, kopirajte adresu: ' + email);
+      }, 2000);
+    }
+    
+    // Kopiranje email adrese
+    function copyEmail() {
+      const email = 'cloockot2026@gmail.com';
+      
+      // Moderan način kopiranja
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(() => {
+          showToast('✅ Email adresa je kopirana!');
+        }).catch(() => {
+          // Fallback za starije browsere
+          fallbackCopy(email);
+        });
+      } else {
+        fallbackCopy(email);
+      }
+    }
+    
+    // Fallback metoda za kopiranje
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        document.execCommand('copy');
+        showToast('✅ Email adresa je kopirana!');
+      } catch (err) {
+        showToast('❌ Ručno kopirajte: ' + text);
+      }
+      
+      document.body.removeChild(textarea);
+    }
+    
+    // Prikazivanje toast poruke
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+    
     // Mobile menu
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mainMenu = document.getElementById('mainMenu');

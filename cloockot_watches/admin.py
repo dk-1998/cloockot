@@ -29,7 +29,7 @@ class PorudzbinaAdmin(admin.ModelAdmin):
             return f"{obj.korisnik.ime} {obj.korisnik.prezime}"
         except Exception:
             return "Nepoznat"
-    korisnik_ime_prezime.short_description = 'Ime i prezime'
+    korisnik_ime_prezime.short_description = 'Ime i prezime kupca'
     korisnik_ime_prezime.admin_order_field = 'korisnik__ime'
     
     def korisnik_info(self, obj):

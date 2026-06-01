@@ -113,13 +113,24 @@ def checkout(request):
                 'ukupno_za_artikal': cena * kolicina
             })
         
+        # ======== KREIRANJE NAZIVA PORUDŽBINE ========
+        if len(artikli_lista) == 1:
+            # Samo jedan artikal
+            naziv_porudzbine = f"{artikli_lista[0].get('brend', '')} - {artikli_lista[0].get('naziv', '')}"
+        elif len(artikli_lista) > 1:
+            # Više artikala - uzmi prvi i dodaj "+ još X"
+            naziv_porudzbine = f"{artikli_lista[0].get('brend', '')} - {artikli_lista[0].get('naziv', '')} + još {len(artikli_lista) - 1}"
+        else:
+            naziv_porudzbine = "Porudžbina bez artikala"
+        
         porudzbina = Porudzbina.objects.create(
             korisnik=korisnik,
+            naziv=naziv_porudzbine,  # ← DODATO
             artikli=artikli_lista,
             ukupno=ukupno
         )
         
-        logger.info(f"Porudžbina #{porudzbina.id} kreirana - Korisnik: {korisnicko_ime}, Ukupno: {ukupno} RSD")
+        logger.info(f"Porudžbina #{porudzbina.id} kreirana - Korisnik: {korisnicko_ime}, Ukupno: {ukupno} RSD, Naziv: {naziv_porudzbine}")
         
         return JsonResponse({
             'success': True, 

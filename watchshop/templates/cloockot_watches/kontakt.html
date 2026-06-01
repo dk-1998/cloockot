@@ -7,8 +7,6 @@
   <title>Cloockot-Kontakt</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'cloockot_watches/css/kontakt.css' %}">
-  <!-- EmailJS SDK -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
   <header>
@@ -36,35 +34,24 @@
 
     <div class="grid">
       <section>
-        <!-- FORMA VISE NE SALJE NA DJANGO NEGO PREKO EmailJS -->
-        <form id="kontaktForma">
-          {% csrf_token %}
-
-          {% if not request.session.korisnicko_ime %}
-            <label for="from_email">Vaš email:</label><br>
-            <input type="email" id="from_email" name="from_email" required><br>
-          {% else %}
-            <input type="hidden" name="from_email" value="{{ request.session.korisnicko_ime }}@cloockot.com">
-            <input type="hidden" name="from_name" value="{{ request.session.korisnicko_ime }}">
-          {% endif %}
-
-          <label for="from_name">Ime i prezime (opciono):</label><br>
-          <input type="text" id="from_name" name="from_name"><br>
-
-          <label for="telefon">Telefon (opciono):</label><br>
-          <input type="text" id="telefon" name="telefon"><br>
-
-          <label for="message">Poruka:</label><br>
-          <textarea id="message" name="message" rows="5" required></textarea><br>
-
-          <label for="slika">Dodajte sliku (opciono):</label><br>
-          <input type="file" id="slika" name="slika" accept="image/*" onchange="previewImage(event)"><br><br>
-
-          <img id="preview" style="max-width:200px;display:none;border:1px solid #ccc;border-radius:8px;padding:4px">
-
-          <br><br>
-          <button type="submit" class="btn btn-primary" id="submitBtn">📧 Pošalji</button>
-        </form>
+        <!-- DUGME ZA EMAIL -->
+        <div style="text-align: center; padding: 40px 20px;">
+          <h2 style="margin-bottom: 20px; color: #333;">Pošaljite nam email</h2>
+          <p style="margin-bottom: 30px; color: #666; font-size: 16px;">
+            Klikom na dugme ispod otvoriće se vaš email program gde možete napisati poruku.
+          </p>
+          <a href="mailto:cloockot2026@gmail.com" 
+             style="display: inline-block; padding: 16px 40px; background: #10b981; color: white; 
+                    text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 18px;
+                    transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
+             onmouseover="this.style.background='#059669'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 12px rgba(0,0,0,0.15)';"
+             onmouseout="this.style.background='#10b981'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.1)';">
+            ✉️ Pošaljite nam email
+          </a>
+          <p style="margin-top: 20px; color: #888; font-size: 14px;">
+            Email: <strong>cloockot2026@gmail.com</strong>
+          </p>
+        </div>
       </section>
 
       <aside class="info">
@@ -91,36 +78,7 @@
     </div>
   </footer>
 
-  <div id="successOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
-    <div style="background:white; padding:50px; border-radius:16px; max-width:500px; text-align:center;">
-      <div style="font-size:60px; margin-bottom:20px; color:#10b981;">✓</div>
-      <h2 style="color:#10b981; margin:0 0 16px;">Poruka je uspešno poslata!</h2>
-      <p style="font-size:16px; color:#555;">Hvala vam što ste nas kontaktirali.<br>Odgovorićemo vam u najkraćem mogućem roku.</p>
-      <button id="closeSuccessBtn" style="padding:14px 40px; background:#10b981; color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">U redu</button>
-    </div>
-  </div>
-
-  <div id="errorOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
-    <div style="background:white; padding:50px; border-radius:16px; max-width:500px; text-align:center;">
-      <div style="font-size:60px; margin-bottom:20px; color:#e74c3c;">⚠️</div>
-      <h2 style="color:#e74c3c; margin:0 0 16px;">Greška pri slanju</h2>
-      <p style="font-size:16px; color:#555;" id="errorMessage">Došlo je do greške. Pokušajte ponovo kasnije.</p>
-      <button id="closeErrorBtn" style="padding:14px 40px; background:#e74c3c; color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">U redu</button>
-    </div>
-  </div>
 <script>
-    // Preview slike
-    function previewImage(event) {
-      const file = event.target.files[0];
-      const preview = document.getElementById('preview');
-      if (file) {
-        preview.src = URL.createObjectURL(file);
-        preview.style.display = 'block';
-      } else {
-        preview.style.display = 'none';
-      }
-    }
-
     // Mobile menu
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mainMenu = document.getElementById('mainMenu');
@@ -140,24 +98,6 @@
           document.body.style.overflow = '';
         });
       });
-    }
-
-    // JEDNOSTAVNIJA FORMA - BEZ FETCH, DIREKTNO SUBMIT
-    const form = document.getElementById('kontaktForma');
-    
-    if (form) {
-      // Uklanjamo event listener ako postoji i dodajemo novi
-      form.removeEventListener('submit', form.submitHandler);
-      
-      form.submitHandler = function(e) {
-        // Dozvoljavamo normalno slanje forme (bez preventDefault)
-        console.log("Forma se šalje...");
-        // Ne radimo e.preventDefault() jer želimo da se forma pošalje
-      };
-      
-      form.addEventListener('submit', form.submitHandler);
-    } else {
-      console.error("Forma sa id='kontaktForma' nije pronađena!");
     }
 </script>
 </body>
